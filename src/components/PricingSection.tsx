@@ -1,7 +1,12 @@
 
 import { ArrowRight } from "lucide-react";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const PricingSection = () => {
+  const handlePaymentSuccess = (details: any) => {
+    console.log("Transaction completed by " + details.payer.name.given_name);
+  };
+
   return (
     <section id="tarifs" className="py-12 md:py-16 bg-white">
       <div className="container px-4 mx-auto">
@@ -32,9 +37,37 @@ const PricingSection = () => {
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                <span>Paiement sécurisé</span>
+                <span>Paiement sécurisé via PayPal</span>
               </li>
             </ul>
+            
+            {/* PayPal Button */}
+            <div className="mt-6">
+              <PayPalScriptProvider options={{ 
+                "client-id": "test", 
+                currency: "EUR" 
+              }}>
+                <PayPalButtons
+                  createOrder={(data, actions) => {
+                    return actions.order.create({
+                      purchase_units: [
+                        {
+                          amount: {
+                            value: "50.00",
+                            currency_code: "EUR"
+                          },
+                          description: "Consultation d'une heure"
+                        }
+                      ]
+                    });
+                  }}
+                  onApprove={(data, actions) => {
+                    return actions.order.capture().then(handlePaymentSuccess);
+                  }}
+                  style={{ layout: "horizontal" }}
+                />
+              </PayPalScriptProvider>
+            </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-lg">
