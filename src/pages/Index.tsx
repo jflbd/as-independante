@@ -39,6 +39,47 @@ const Index = () => {
         </header>
 
         <main>
+          {/* A propos Section */}
+          <section id="a-propos" className="py-12 md:py-16 bg-gradient-to-b from-white to-gray-50" aria-labelledby="a-propos-title">
+            <div className="container px-4 mx-auto">
+              <div className="max-w-5xl mx-auto">
+                <div className="grid gap-8 md:grid-cols-2 items-center">
+                  <div className="order-2 md:order-1">
+                    <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold tracking-wider text-primary bg-primary/10 rounded-full">
+                      À propos de moi
+                    </span>
+                    <h2 id="a-propos-title" className="text-2xl md:text-4xl font-serif font-bold mb-4">
+                      Votre assistante sociale indépendante
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      Diplômée d'État, je mets mon expertise au service des personnes qui ont besoin d'un accompagnement social personnalisé. Mon approche est basée sur l'écoute, la bienveillance et le professionnalisme.
+                    </p>
+                    <p className="text-gray-600 mb-6">
+                      Je vous accompagne dans vos démarches administratives, vous aide à accéder à vos droits et vous propose un soutien adapté à votre situation spécifique.
+                    </p>
+                    <a
+                      href="#contact"
+                      className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      Me contacter
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </a>
+                  </div>
+                  <div className="order-1 md:order-2">
+                    <div className="relative mx-auto max-w-sm">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 transform rotate-6 rounded-2xl"></div>
+                      <img
+                        src="/lovable-uploads/4258ae87-906e-4c86-a270-5c8ab3711e89.png"
+                        alt="Portrait de votre assistante sociale indépendante"
+                        className="relative rounded-2xl shadow-lg w-full h-auto object-cover aspect-[3/4]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Services Section */}
           <section id="services" className="py-12 md:py-16 bg-white" aria-labelledby="services-title">
             <div className="container px-4 mx-auto">
