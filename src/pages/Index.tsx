@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -158,6 +157,14 @@ const Index = () => {
                   >
                     <h3 className="text-xl font-bold mb-3 md:mb-4">{service.title}</h3>
                     <p className="text-gray-600">{service.description}</p>
+                    <ul className="space-y-3 list-disc pl-6">
+                      {service.details.map((detail, idx) => (
+                        <li key={idx} className="text-gray-600">
+                          <span className="mr-2">•</span>
+                          {detail}
+                        </li>
+                      ))}
+                    </ul>
                   </article>
                 ))}
               </div>
@@ -314,28 +321,64 @@ const Index = () => {
 
 const services = [
   {
-    title: "Accompagnement administratif",
-    description: "Je vous aide dans vos démarches administratives et l'accès à vos droits.",
+    title: "Accompagnement des particuliers",
+    description: "Je vous accompagne dans toutes vos démarches personnelles et administratives, avec une approche globale et bienveillante.",
+    details: [
+      "Accès aux droits et démarches administratives",
+      "Gestion budgétaire et surendettement",
+      "Accompagnement familial et social",
+      "Logement et habitat",
+      "Santé et handicap",
+      "Protection des personnes vulnérables",
+      "Retraite et vieillissement"
+    ]
   },
   {
-    title: "Soutien personnalisé",
-    description: "Un accompagnement adapté à votre situation et vos besoins spécifiques.",
+    title: "Services aux entreprises",
+    description: "Un accompagnement social professionnel pour vos salariés, en soutien à votre service RH.",
+    details: [
+      "Prévention des risques psycho-sociaux",
+      "Réduction de l'absentéisme",
+      "Médiation et dialogue social",
+      "Accompagnement personnalisé des salariés",
+      "Soutien aux services RH",
+      "Aide à la gestion des situations complexes"
+    ]
   },
   {
-    title: "Conseil et orientation",
-    description: "Je vous guide vers les services et dispositifs adaptés à votre situation.",
+    title: "Services aux collectivités",
+    description: "Un accompagnement adapté pour optimiser le bien-être de vos agents et la qualité du service public.",
+    details: [
+      "Accompagnement social des agents",
+      "Soutien au développement professionnel",
+      "Médiation et résolution de conflits",
+      "Aide à la mobilité interne",
+      "Conseil en évolution de carrière"
+    ]
   },
+  {
+    title: "Bailleurs sociaux et agences immobilières",
+    description: "Prévention et gestion des situations locatives complexes.",
+    details: [
+      "Prévention des expulsions locatives",
+      "Médiation locataire-bailleur",
+      "Accompagnement budgétaire",
+      "Aide aux démarches administratives",
+      "Mobilisation des aides au logement"
+    ]
+  }
 ];
 
 const pricingPlans = [
   {
-    title: "Consultation initiale",
+    title: "Premier entretien",
     price: "Gratuit",
     features: [
-      "Premier rendez-vous découverte",
-      "Évaluation de vos besoins",
+      "Évaluation de votre situation",
+      "Diagnostic personnalisé",
       "Présentation des solutions adaptées",
-      "Sans engagement"
+      "Devis sur mesure",
+      "Possibilité de prise en charge mutuelle (N° ADELI)"
     ]
   },
   {
@@ -343,22 +386,50 @@ const pricingPlans = [
     price: "60€/heure",
     features: [
       "Aide aux démarches administratives",
+      "Constitution de dossiers",
       "Conseil personnalisé",
       "Suivi individuel",
       "Flexibilité des horaires"
     ]
   },
   {
-    title: "Suivi régulier",
+    title: "Forfait entreprise",
     price: "Sur devis",
     features: [
-      "Accompagnement personnalisé",
-      "Suivi à long terme",
-      "Tarif adapté à votre situation",
-      "Planning sur mesure"
+      "Contrat de prestation personnalisé",
+      "Accompagnement des salariés",
+      "Permanences sur site",
+      "Reporting et suivi",
+      "Interventions à la demande"
     ]
   }
 ];
+
+const companiesServices = {
+  title: "Mes missions auprès des professionnels",
+  types: [
+    {
+      title: "Entreprises",
+      description: "Soutien aux salariés et au service RH pour gérer les situations personnelles impactant le travail : problèmes financiers, santé, famille, logement, addictions..."
+    },
+    {
+      title: "Collectivités",
+      description: "Optimisation des conditions de travail des agents pour améliorer le service public et favoriser leur épanouissement professionnel."
+    },
+    {
+      title: "Bailleurs et agences",
+      description: "Prévention des expulsions locatives et accompagnement des locataires en difficulté pour trouver des solutions adaptées."
+    },
+    {
+      title: "Maisons de retraite",
+      description: "Entretiens psycho-sociaux, animations collectives et médiation pour améliorer la qualité de vie des résidents."
+    },
+    {
+      title: "Associations d'aide à domicile",
+      description: "Soutien aux équipes et aux bénéficiaires, préparation aux transitions de vie et accompagnement des familles."
+    }
+  ]
+};
 
 const testimonials = [
   {
