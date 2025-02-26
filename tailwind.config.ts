@@ -21,16 +21,20 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#4A90E2",
+          DEFAULT: "#FF69B4", // Rose
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#F5F7FA",
+          DEFAULT: "#FFA500", // Orange
           foreground: "#1A1A1A",
         },
         accent: {
-          DEFAULT: "#E2904A",
+          DEFAULT: "#9b87f5", // Violet
           foreground: "#FFFFFF",
+        },
+        highlight: {
+          DEFAULT: "#D6EF0D", // Vert-jaune
+          foreground: "#1A1A1A",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
