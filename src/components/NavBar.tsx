@@ -13,6 +13,18 @@ const NavBar = () => {
     }
   };
 
+  // Liste des sections pour le menu
+  const navItems = [
+    { id: "accueil", label: "Accueil" },
+    { id: "a-propos", label: "Qui suis-je ?" },
+    { id: "missions", label: "Mes missions" },
+    { id: "services", label: "Services" },
+    { id: "referentiel", label: "Référentiel" },
+    { id: "deontologie", label: "Déontologie" },
+    { id: "pricing", label: "Tarifs" },
+    { id: "contact", label: "Contact" },
+  ];
+
   return (
     <nav className="fixed w-full bg-white/90 backdrop-blur-sm z-50 shadow-sm">
       <div className="container mx-auto px-4">
@@ -29,63 +41,27 @@ const NavBar = () => {
           </a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
-            <a 
-              href="#accueil" 
-              className="text-gray-600 hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection("accueil");
-              }}
-            >
-              Accueil
-            </a>
-            <a 
-              href="#a-propos" 
-              className="text-gray-600 hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection("a-propos");
-              }}
-            >
-              Qui suis-je ?
-            </a>
-            <a 
-              href="#missions" 
-              className="text-gray-600 hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection("missions");
-              }}
-            >
-              Mes missions
-            </a>
-            <a 
-              href="#services" 
-              className="text-gray-600 hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection("services");
-              }}
-            >
-              Services
-            </a>
-            <a 
-              href="#contact" 
-              className="text-gray-600 hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection("contact");
-              }}
-            >
-              Contact
-            </a>
+          <div className="hidden md:flex space-x-6">
+            {navItems.map((item) => (
+              <a 
+                key={item.id}
+                href={`#${item.id}`} 
+                className="text-gray-600 hover:text-primary transition-colors text-sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(item.id);
+                }}
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
 
           {/* Mobile Menu Button */}
           <button
             className="md:hidden"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -95,56 +71,19 @@ const NavBar = () => {
         {isOpen && (
           <div className="md:hidden py-4 animate-fade-in">
             <div className="flex flex-col space-y-4">
-              <a
-                href="#accueil"
-                className="text-gray-600 hover:text-primary transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("accueil");
-                }}
-              >
-                Accueil
-              </a>
-              <a
-                href="#a-propos"
-                className="text-gray-600 hover:text-primary transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("a-propos");
-                }}
-              >
-                Qui suis-je ?
-              </a>
-              <a
-                href="#missions"
-                className="text-gray-600 hover:text-primary transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("missions");
-                }}
-              >
-                Mes missions
-              </a>
-              <a
-                href="#services"
-                className="text-gray-600 hover:text-primary transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("services");
-                }}
-              >
-                Services
-              </a>
-              <a
-                href="#contact"
-                className="text-gray-600 hover:text-primary transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("contact");
-                }}
-              >
-                Contact
-              </a>
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className="text-gray-600 hover:text-primary transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(item.id);
+                  }}
+                >
+                  {item.label}
+                </a>
+              ))}
             </div>
           </div>
         )}
