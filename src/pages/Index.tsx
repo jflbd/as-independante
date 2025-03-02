@@ -1,3 +1,4 @@
+
 import { ArrowRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -60,7 +61,7 @@ const Index = () => {
           <div className="container px-4 mx-auto">
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="flex-1 text-center md:text-left">
+                <div className="flex-1 text-center mx-auto max-w-2xl">
                   <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
                     Un accompagnement social personnalisé et professionnel en Normandie
                   </h1>
