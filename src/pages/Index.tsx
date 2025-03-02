@@ -1,4 +1,3 @@
-
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -16,7 +15,6 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   
-  // Add intersection observer for section animations
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -35,7 +33,6 @@ const Index = () => {
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
     
-    // Observe all sections
     document.querySelectorAll('section').forEach(section => {
       section.classList.add('opacity-0', 'translate-y-8', 'transition-all', 'duration-700');
       observer.observe(section);
@@ -54,7 +51,6 @@ const Index = () => {
         <meta name="keywords" content="assistante sociale, Normandie, Rachel Gervais, accompagnement social, démarches administratives, CCAS, aide sociale" />
       </Helmet>
       
-      {/* Éléments décoratifs de fond */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-secondary/5 blur-3xl"></div>
@@ -64,7 +60,6 @@ const Index = () => {
       <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative">
         <NavBar />
         
-        {/* Hero Section */}
         <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24 relative">
           <div className="absolute top-16 right-10 text-primary/20 animate-pulse-gentle">
             <Sparkles size={40} />
@@ -165,7 +160,7 @@ const Index = () => {
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/30 via-accent/30 to-secondary/30"></div>
           <div className="container px-4 mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-              <p className="text-gray-600">&copy; {new Date().getFullYear()} AS Indépendante. Tous droits réservés. par JFL</p>
+              <p className="text-gray-600">&copy; 2025 AS Indépendante par JFL. Tous droits réservés.</p>
               <a 
                 href="https://www.facebook.com/groups/508874659843806" 
                 target="_blank"
