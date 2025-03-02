@@ -46,7 +46,7 @@ const NavBar = () => {
     { id: "accueil", label: "Accueil" },
     { id: "a-propos", label: "Qui suis-je ?" },
     { id: "missions", label: "Mes missions" },
-    { id: "services", label: "Services" },
+    { id: "services", label: "Mes services" },
     { id: "referentiel", label: "Référentiel" },
     { id: "deontologie", label: "Déontologie" },
     { id: "pricing", label: "Tarifs" },
