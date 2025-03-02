@@ -1,5 +1,5 @@
 
-import { Mail, Phone } from "lucide-react";
+import { Mail, Phone, Facebook } from "lucide-react";
 
 const ContactSection = () => {
   return (
@@ -35,6 +35,15 @@ const ContactSection = () => {
               >
                 <Phone className="h-5 w-5 transition-transform group-hover:scale-110" />
                 <span>07 63 90 78 45</span>
+              </a>
+              <a 
+                href="https://www.facebook.com/groups/508874659843806" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors group"
+              >
+                <Facebook className="h-5 w-5 transition-transform group-hover:scale-110" />
+                <span>Rejoignez-moi sur Facebook</span>
               </a>
             </div>
           </div>

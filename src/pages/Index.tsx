@@ -10,6 +10,7 @@ import MissionsSection from "@/components/MissionsSection";
 import ReferentielSection from "@/components/ReferentielSection";
 import DeontologieSection from "@/components/DeontologieSection";
 import { useEffect } from "react";
+import { Facebook } from "lucide-react";
 
 const Index = () => {
   
@@ -90,8 +91,20 @@ const Index = () => {
         </main>
 
         <footer className="py-8 bg-gray-50">
-          <div className="container px-4 mx-auto text-center text-gray-600">
-            <p>&copy; {new Date().getFullYear()} AS Indépendante. Tous droits réservés.</p>
+          <div className="container px-4 mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-gray-600">&copy; {new Date().getFullYear()} AS Indépendante. Tous droits réservés.</p>
+              <a 
+                href="https://www.facebook.com/groups/508874659843806" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors group"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-5 w-5 transition-transform group-hover:scale-110" />
+                <span className="text-sm">Rejoignez-moi sur Facebook</span>
+              </a>
+            </div>
           </div>
         </footer>
       </div>
