@@ -60,9 +60,13 @@ const Index = () => {
         <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24">
           <div className="container px-4 mx-auto">
             <div className="max-w-3xl mx-auto text-center">
-              <span className="inline-block px-4 py-2 mb-4 md:mb-6 text-sm font-semibold tracking-wider text-primary bg-primary/10 rounded-full animate-fade-in">
-                Rachel Gervais - Assistante Sociale Indépendante
-              </span>
+              <div className="flex justify-center mb-8">
+                <img 
+                  src="/public/lovable-uploads/4911c24b-17e3-4e68-8309-148b70efc773.png" 
+                  alt="Rachel Gervais - Assistante Sociale Indépendante" 
+                  className="w-64 md:w-80 h-auto animate-fade-in"
+                />
+              </div>
               <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
                 Un accompagnement social personnalisé et professionnel en Normandie
               </h1>
