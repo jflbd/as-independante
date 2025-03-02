@@ -51,6 +51,16 @@ const NavBar = () => {
               Qui suis-je ?
             </a>
             <a 
+              href="#missions" 
+              className="text-gray-600 hover:text-primary transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("missions");
+              }}
+            >
+              Mes missions
+            </a>
+            <a 
               href="#services" 
               className="text-gray-600 hover:text-primary transition-colors"
               onClick={(e) => {
@@ -104,6 +114,16 @@ const NavBar = () => {
                 }}
               >
                 Qui suis-je ?
+              </a>
+              <a
+                href="#missions"
+                className="text-gray-600 hover:text-primary transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("missions");
+                }}
+              >
+                Mes missions
               </a>
               <a
                 href="#services"
