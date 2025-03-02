@@ -1,7 +1,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import PricingCard from "./pricing/PricingCard";
 import QuoteFormDialog from "./pricing/QuoteFormDialog";
 import PayPalPaymentButton from "./pricing/PayPalPaymentButton";
@@ -51,14 +51,16 @@ const PricingSection = () => {
             price="Sur devis" 
             features={professionalFeatures}
             cta={
-              <DialogTrigger asChild onClick={() => setIsDialogOpen(true)}>
-                <button
-                  className="btn-primary w-full justify-center py-3 px-6"
-                >
-                  Demander un devis
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </button>
-              </DialogTrigger>
+              <Dialog>
+                <DialogTrigger asChild onClick={() => setIsDialogOpen(true)}>
+                  <button
+                    className="btn-primary w-full justify-center py-3 px-6"
+                  >
+                    Demander un devis
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </button>
+                </DialogTrigger>
+              </Dialog>
             }
           />
         </div>
