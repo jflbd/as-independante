@@ -1,7 +1,63 @@
 
+import { useState } from "react";
 import { Mail, Phone, Facebook } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const ContactSection = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs du formulaire.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      // Simulate email sending with a timeout
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Show success toast
+      toast({
+        title: "Message envoyé !",
+        description: "Votre message a été envoyé avec succès. Je vous répondrai dès que possible.",
+      });
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        message: ""
+      });
+    } catch (error) {
+      // Show error toast
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.",
+        variant: "destructive"
+      });
+      console.error("Error sending email:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-12 md:py-16" aria-labelledby="contact-title">
       <div className="container px-4 mx-auto">
@@ -51,13 +107,15 @@ const ContactSection = () => {
 
         {/* Formulaire de contact */}
         <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 p-6 md:p-8">
-          <form className="space-y-4 md:space-y-6">
+          <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">Nom</label>
               <input
                 type="text"
                 id="name"
                 name="name"
+                value={formData.name}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 placeholder="Votre nom"
                 required
@@ -69,6 +127,8 @@ const ContactSection = () => {
                 type="email"
                 id="email"
                 name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 placeholder="votre@email.com"
                 required
@@ -79,6 +139,8 @@ const ContactSection = () => {
               <textarea
                 id="message"
                 name="message"
+                value={formData.message}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 rows={4}
                 placeholder="Votre message"
@@ -87,9 +149,20 @@ const ContactSection = () => {
             </div>
             <button
               type="submit"
-              className="btn-primary w-full py-3 px-6"
+              className="btn-primary w-full py-3 px-6 relative"
+              disabled={isSubmitting}
             >
-              Envoyer
+              {isSubmitting ? (
+                <>
+                  <span className="opacity-0">Envoyer</span>
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </span>
+                </>
+              ) : "Envoyer"}
             </button>
           </form>
         </div>
