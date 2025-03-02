@@ -105,7 +105,7 @@ const Index = () => {
                   <OptimizedImage 
                     src="/lovable-uploads/4cfe563e-2562-487a-aa53-d89205f63aae.png" 
                     alt="Ecoute et soutien" 
-                    className="w-full h-48 object-cover rounded-md mb-4"
+                    className="w-full h-48 object-cover object-center rounded-md mb-4"
                     width={600}
                     height={400}
                   />
@@ -123,7 +123,7 @@ const Index = () => {
                   <OptimizedImage 
                     src="/lovable-uploads/90dacb22-981f-4faa-a7ee-750d0c921513.png" 
                     alt="Accompagnement personnalisé" 
-                    className="w-full h-48 object-cover rounded-md mb-4"
+                    className="w-full h-48 object-cover object-center rounded-md mb-4"
                     width={600}
                     height={400}
                   />
@@ -214,3 +214,4 @@ const Index = () => {
 };
 
 export default Index;
+
