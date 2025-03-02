@@ -37,6 +37,10 @@ const PricingSection = () => {
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                <span>Accompagnement pour les démarches administratives et sociales</span>
+              </li>
+              <li className="flex items-start">
+                <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
                 <span>Paiement sécurisé via PayPal</span>
               </li>
             </ul>
@@ -77,15 +81,19 @@ const PricingSection = () => {
             <ul className="space-y-3 mb-6">
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                <span>Intervention sur devis, en fonction des besoins</span>
+              </li>
+              <li className="flex items-start">
+                <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                <span>Possibilité de contrat de prestations de services</span>
+              </li>
+              <li className="flex items-start">
+                <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
                 <span>Permanences en entreprise</span>
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                <span>Interventions ponctuelles</span>
-              </li>
-              <li className="flex items-start">
-                <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                <span>Solutions personnalisées</span>
+                <span>Accompagnement des salariés, bailleurs sociaux, collectivités, associations</span>
               </li>
             </ul>
             <a

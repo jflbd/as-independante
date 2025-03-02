@@ -1,9 +1,11 @@
+
 import { ArrowRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
 import ServicesSection from "@/components/ServicesSection";
 import PricingSection from "@/components/PricingSection";
 import ContactSection from "@/components/ContactSection";
+import AboutSection from "@/components/AboutSection";
 
 const Index = () => {
   return (
@@ -43,6 +45,7 @@ const Index = () => {
         </header>
 
         <main>
+          <AboutSection />
           <ServicesSection />
           <PricingSection />
           <ContactSection />

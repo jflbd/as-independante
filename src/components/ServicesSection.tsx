@@ -1,52 +1,39 @@
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 export const services = [
   {
-    title: "Accompagnement des particuliers",
+    title: "Vous êtes un Particulier",
     description: "Je vous accompagne dans toutes vos démarches personnelles et administratives, avec une approche globale et bienveillante.",
     details: [
-      "Accès aux droits et démarches administratives",
-      "Gestion budgétaire et surendettement",
-      "Accompagnement familial et social",
-      "Logement et habitat",
-      "Santé et handicap",
-      "Protection des personnes vulnérables",
-      "Retraite et vieillissement"
+      "Des démarches administratives complexes",
+      "La gestion de votre budget et de vos dettes",
+      "L'accès à un logement adapté à votre situation",
+      "Un accompagnement dans votre demande de retraite, MDPH, CMU, surendettement",
+      "Un soutien face à des difficultés familiales, sociales ou professionnelles",
+      "Une situation de vulnérabilité ou d'isolement"
+    ],
+    interventions: [
+      "Premier entretien d'évaluation et de diagnostic",
+      "Accompagnement personnalisé en fonction de vos besoins",
+      "Aide à la constitution de dossiers (DALO, SYPLO, retraite, MDPH, logement, surendettement…)",
+      "Possibilité de prise en charge par votre mutuelle"
     ]
   },
   {
-    title: "Services aux entreprises",
-    description: "Un accompagnement social professionnel pour vos salariés, en soutien à votre service RH.",
+    title: "Vous êtes un Professionnel",
+    description: "Un accompagnement social professionnel adapté à vos besoins spécifiques.",
     details: [
-      "Prévention des risques psycho-sociaux",
-      "Réduction de l'absentéisme",
-      "Médiation et dialogue social",
-      "Accompagnement personnalisé des salariés",
-      "Soutien aux services RH",
-      "Aide à la gestion des situations complexes"
-    ]
-  },
-  {
-    title: "Services aux collectivités",
-    description: "Un accompagnement adapté pour optimiser le bien-être de vos agents et la qualité du service public.",
-    details: [
-      "Accompagnement social des agents",
-      "Soutien au développement professionnel",
-      "Médiation et résolution de conflits",
-      "Aide à la mobilité interne",
-      "Conseil en évolution de carrière"
-    ]
-  },
-  {
-    title: "Bailleurs sociaux et agences immobilières",
-    description: "Prévention et gestion des situations locatives complexes.",
-    details: [
-      "Prévention des expulsions locatives",
-      "Médiation locataire-bailleur",
-      "Accompagnement budgétaire",
-      "Aide aux démarches administratives",
-      "Mobilisation des aides au logement"
+      "Entreprises : soutien aux salariés en difficulté, prévention des risques psychosociaux",
+      "Collectivités : amélioration des conditions de travail et service social aux agents",
+      "Bailleurs sociaux & agences immobilières : prévention des expulsions locatives",
+      "Associations d'aide à domicile : accompagnement des bénéficiaires et de leurs familles",
+      "Maisons de retraite : écoute, soutien et médiation"
+    ],
+    interventions: [
+      "Contrat de prestations de services sur mesure",
+      "Permanences régulières ou interventions ponctuelles",
+      "Travail en partenariat avec les acteurs locaux et les services RH"
     ]
   }
 ];
@@ -54,39 +41,21 @@ export const services = [
 const ServicesSection = () => {
   const referentiel = [
     {
-      title: "Accueil et Écoute des personnes",
+      title: "Les missions d'un assistant social",
       items: [
-        "Accueillir les personnes dans le respect de la confidentialité",
-        "Instaurer une relation de confiance avec la personne",
-        "Recueillir l'expression des personnes",
-        "Analyser les demandes des personnes"
+        "Accueil et écoute : instaurer une relation de confiance",
+        "Évaluation, conseil et orientation : accompagner la personne dans son parcours",
+        "Accompagnement individuel et collectif : mobiliser les ressources nécessaires",
+        "Contribution au développement des politiques sociales et territoriales"
       ]
     },
     {
-      title: "Évaluation, Conseil et Orientation",
+      title: "Code Déontologie de l'ANAS",
       items: [
-        "Évaluer la situation globale des personnes",
-        "Informer sur les droits et dispositifs",
-        "Conseiller sur les actions à entreprendre",
-        "Orienter vers les services appropriés"
-      ]
-    },
-    {
-      title: "Accompagnement Social Individuel",
-      items: [
-        "Construction d'un projet personnalisé",
-        "Mobilisation des ressources disponibles",
-        "Soutien et suivi continu",
-        "Évaluation régulière de l'évolution"
-      ]
-    },
-    {
-      title: "Accompagnement Social Collectif",
-      items: [
-        "Développement de projets collectifs",
-        "Animation de groupes",
-        "Mobilisation des partenaires",
-        "Évaluation des actions menées"
+        "Respect de la dignité humaine et de la confidentialité",
+        "Secret professionnel et protection des données",
+        "Intervention dans l'intérêt des personnes, sans discrimination",
+        "Indépendance et engagement pour une pratique éthique"
       ]
     }
   ];
@@ -107,23 +76,43 @@ const ServicesSection = () => {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 md:gap-8">
+          <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
             {services.map((service, index) => (
               <article
                 key={index}
-                className="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow animate-fade-up"
+                className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow animate-fade-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <h3 className="text-xl font-bold mb-3 md:mb-4">{service.title}</h3>
-                <p className="text-gray-600 mb-4">{service.description}</p>
-                <ul className="space-y-2">
-                  {service.details.map((detail, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                      <span className="text-gray-600">{detail}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-3 md:mb-4">{service.title}</h3>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
+                  
+                  <div className="mb-6">
+                    <h4 className="font-semibold mb-2">Vous avez besoin d'aide pour :</h4>
+                    <ul className="space-y-2">
+                      {service.details.map((detail, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                          <span className="text-gray-600">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">
+                      {service.title === "Vous êtes un Particulier" ? "Comment se déroule mon intervention ?" : "Un service adapté à vos besoins"}
+                    </h4>
+                    <ul className="space-y-2">
+                      {service.interventions.map((intervention, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <Check className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                          <span className="text-gray-600">{intervention}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
@@ -138,14 +127,14 @@ const ServicesSection = () => {
               Référentiel d'activités
             </span>
             <h2 className="text-2xl md:text-4xl font-serif font-bold mb-4">
-              Les missions de l'assistant social
+              Le métier d'assistant social
             </h2>
             <p className="text-gray-600">
               Le métier d'assistant de service social comprend des activités très larges et variées, encadrées par un code de déontologie strict.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
             {referentiel.map((section, index) => (
               <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-bold mb-4 text-primary">{section.title}</h3>
