@@ -55,6 +55,7 @@ const NavBar = () => {
     { id: "accueil", label: "Accueil" },
     { id: "a-propos", label: "Qui suis-je ?" },
     { id: "missions", label: "Mes missions" },
+    { id: "temoignages", label: "Témoignages" },
     { id: "services", label: "Mes services" },
     { id: "referentiel", label: "Référentiel" },
     { id: "deontologie", label: "Déontologie" },
@@ -90,7 +91,9 @@ const NavBar = () => {
                 key={item.id}
                 href={`#${item.id}`} 
                 className={`text-gray-600 hover:text-primary transition-colors relative text-sm ${
-                  activeSection === item.id ? "text-primary font-medium" : ""
+                  activeSection === item.id 
+                    ? "text-primary font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-primary" 
+                    : ""
                 } after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full`}
                 onClick={(e) => {
                   e.preventDefault();
@@ -121,8 +124,10 @@ const NavBar = () => {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded-md ${
-                    activeSection === item.id ? "text-primary font-medium bg-primary/5" : ""
+                  className={`text-gray-600 hover:text-primary transition-colors px-3 py-2 rounded-md ${
+                    activeSection === item.id 
+                      ? "text-primary font-semibold bg-primary/10 border-l-4 border-primary" 
+                      : ""
                   } hover:bg-gray-100`}
                   onClick={(e) => {
                     e.preventDefault();

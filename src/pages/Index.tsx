@@ -153,8 +153,8 @@ const Index = () => {
         <main className="relative z-10">
           <AboutSection />
           <MissionsSection />
-          <ServicesSection />
           <TestimonialsSection />
+          <ServicesSection />
           <ReferentielSection />
           <DeontologieSection />
           <PricingSection />
