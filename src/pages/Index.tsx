@@ -14,7 +14,6 @@ import { Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
-  
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -42,6 +41,10 @@ const Index = () => {
       observer.disconnect();
     };
   }, []);
+
+  const handleLegalLinkClick = () => {
+    window.scrollTo(0, 0);
+  };
 
   return (
     <>
@@ -176,6 +179,7 @@ const Index = () => {
               <Link 
                 to="/mentions-legales" 
                 className="text-sm text-gray-500 hover:text-primary hover:underline transition-colors"
+                onClick={handleLegalLinkClick}
               >
                 Mentions légales
               </Link>
