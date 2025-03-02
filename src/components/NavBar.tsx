@@ -59,14 +59,19 @@ const NavBar = () => {
         <div className="flex justify-between items-center h-16">
           <a 
             href="#" 
-            className="text-2xl font-serif font-bold text-primary"
+            className="flex items-center space-x-2"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
               setActiveSection("accueil");
             }}
           >
-            AS Indépendante
+            <img 
+              src="/public/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
+              alt="Rachel Gervais" 
+              className="h-10 w-10" 
+            />
+            <span className="text-xl font-serif font-bold text-primary">Rachel Gervais</span>
           </a>
 
           {/* Desktop Menu */}
