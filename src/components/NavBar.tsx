@@ -5,19 +5,28 @@ import { Menu, X } from "lucide-react";
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("accueil");
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
+      setIsScrolling(true);
       section.scrollIntoView({ behavior: "smooth" });
       setIsOpen(false);
       setActiveSection(sectionId);
+      
+      // Reset scrolling state after animation completes
+      setTimeout(() => {
+        setIsScrolling(false);
+      }, 1000);
     }
   };
 
   // Track scroll position to highlight active section
   useEffect(() => {
     const handleScroll = () => {
+      if (isScrolling) return; // Don't update during programmatic scrolling
+      
       const sections = navItems.map(item => item.id);
       
       // Find the current section based on scroll position
@@ -39,7 +48,7 @@ const NavBar = () => {
     
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isScrolling]);
 
   // Liste des sections pour le menu
   const navItems = [
@@ -67,7 +76,7 @@ const NavBar = () => {
             }}
           >
             <img 
-              src="/public/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
+              src="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
               alt="Rachel Gervais" 
               className="h-10 w-10" 
             />

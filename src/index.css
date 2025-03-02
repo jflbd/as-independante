@@ -41,4 +41,17 @@ body {
   .btn-accent {
     @apply btn bg-accent text-white hover:bg-accent/90 focus:ring-accent/50;
   }
+  
+  /* Section animation classes */
+  .section-animate {
+    @apply transition-all duration-700 ease-out;
+  }
+  
+  .section-animate.is-visible {
+    @apply opacity-100 translate-y-0;
+  }
+  
+  .section-animate:not(.is-visible) {
+    @apply opacity-0 translate-y-8;
+  }
 }
