@@ -58,7 +58,6 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isScrolling]);
 
-  // Liste des sections mise à jour avec les nouveaux titres
   const navItems = [
     { id: "accueil", label: "Accueil" },
     { id: "a-propos", label: "Mon parcours" },
@@ -72,13 +71,14 @@ const NavBar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${
+    <nav className={`fixed w-full z-50 transition-all duration-500 ${
       scrolled 
-        ? "bg-white/95 backdrop-blur-md shadow-md py-2" 
-        : "bg-white/85 backdrop-blur-sm py-4"
+        ? "bg-white/90 backdrop-blur-md shadow-lg py-2" 
+        : "bg-transparent py-4"
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
+          {/* Logo and Name */}
           <a 
             href="#" 
             className="flex items-center space-x-3 transition-all duration-300 hover:scale-105"
@@ -89,14 +89,14 @@ const NavBar = () => {
             }}
             aria-label="Retour à l'accueil"
           >
-            <div className="relative overflow-hidden rounded-full border-2 border-primary/20 p-0.5 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-md">
+            <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-primary/20 p-0.5 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-md">
               <img 
                 src="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
                 alt="Rachel Gervais" 
-                className="h-10 w-10 rounded-full object-cover"
+                className="h-full w-full rounded-full object-cover"
               />
             </div>
-            <span className="text-xl font-serif font-bold text-primary tracking-wide">Rachel Gervais</span>
+            <span className="text-xl font-serif font-bold text-primary tracking-wider">Rachel Gervais</span>
           </a>
 
           {/* Desktop Menu */}
@@ -105,11 +105,12 @@ const NavBar = () => {
               <a 
                 key={item.id}
                 href={`#${item.id}`} 
-                className={`px-3 py-2 text-sm rounded-full transition-all duration-300 relative ${
-                  activeSection === item.id 
-                    ? "text-primary font-semibold bg-primary/10" 
-                    : "text-gray-600 hover:text-primary hover:bg-gray-100"
-                }`}
+                className={`
+                  px-3 py-2 text-sm rounded-full transition-all duration-300 
+                  ${activeSection === item.id 
+                    ? "text-white font-semibold bg-primary shadow-md transform -translate-y-0.5" 
+                    : "text-gray-600 hover:text-primary hover:bg-primary/5"}
+                `}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection(item.id);
@@ -118,9 +119,6 @@ const NavBar = () => {
               >
                 <span className="relative">
                   {item.label}
-                  {activeSection === item.id && (
-                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full animate-fade-in"></span>
-                  )}
                 </span>
               </a>
             ))}
@@ -128,7 +126,7 @@ const NavBar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden rounded-full p-2 transition-all duration-300 hover:bg-gray-100 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="md:hidden rounded-full p-2 bg-primary/10 text-primary transition-all duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
           >
@@ -142,16 +140,17 @@ const NavBar = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 animate-fade-in">
-            <div className="flex flex-col space-y-1 bg-white/80 backdrop-blur-md p-3 rounded-xl shadow-lg border border-gray-100">
+            <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-xl border border-primary/10">
               {navItems.map((item) => (
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 ${
-                    activeSection === item.id 
-                      ? "text-primary font-semibold bg-primary/10 border-l-4 border-primary" 
-                      : "text-gray-600 hover:text-primary hover:bg-gray-100 border-l-4 border-transparent"
-                  }`}
+                  className={`
+                    flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 
+                    ${activeSection === item.id 
+                      ? "text-white font-semibold bg-primary border-l-4 border-primary/60" 
+                      : "text-gray-600 hover:text-primary hover:bg-primary/5 border-l-4 border-transparent"}
+                  `}
                   onClick={(e) => {
                     e.preventDefault();
                     scrollToSection(item.id);
@@ -160,7 +159,9 @@ const NavBar = () => {
                 >
                   <ChevronDown 
                     size={16} 
-                    className={`transform transition-transform duration-300 ${activeSection === item.id ? "rotate-180 text-primary" : ""}`} 
+                    className={`transform transition-transform duration-300 ${
+                      activeSection === item.id ? "rotate-180 text-white" : ""
+                    }`} 
                   />
                   <span>{item.label}</span>
                 </a>
