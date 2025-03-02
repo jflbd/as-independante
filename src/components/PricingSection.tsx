@@ -1,8 +1,44 @@
 
 import { ArrowRight } from "lucide-react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const PricingSection = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // In a real implementation, this would send an email to rachel.gervais@as-independante.fr
+    // For now, we'll simulate success with a toast notification
+    console.log("Form submitted:", formData);
+    console.log("Would send email to: rachel.gervais@as-independante.fr");
+    
+    toast.success("Votre demande de devis a bien été envoyée ! Nous vous contacterons rapidement.");
+    
+    // Reset form
+    setFormData({
+      name: "",
+      company: "",
+      email: "",
+      phone: "",
+      message: ""
+    });
+  };
+
   const handlePaymentSuccess = (details: any) => {
     console.log("Transaction completed by " + details.payer.name.given_name);
   };
@@ -96,13 +132,107 @@ const PricingSection = () => {
                 <span>Accompagnement des salariés, bailleurs sociaux, collectivités, associations</span>
               </li>
             </ul>
-            <a
-              href="#contact"
-              className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors w-full justify-center"
-            >
-              Demander un devis
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </a>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button
+                  className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors w-full justify-center"
+                >
+                  Demander un devis
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-bold">Demande de devis professionnel</DialogTitle>
+                  <DialogDescription>
+                    Remplissez ce formulaire pour recevoir un devis personnalisé pour votre entreprise ou organisation.
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label htmlFor="name" className="text-sm font-medium">Nom et prénom</label>
+                      <input 
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="company" className="text-sm font-medium">Entreprise / Organisation</label>
+                      <input 
+                        id="company"
+                        name="company"
+                        type="text"
+                        value={formData.company}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-sm font-medium">Email</label>
+                      <input 
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="phone" className="text-sm font-medium">Téléphone</label>
+                      <input 
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label htmlFor="message" className="text-sm font-medium">Votre besoin</label>
+                    <textarea 
+                      id="message"
+                      name="message"
+                      rows={4}
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                      required
+                    ></textarea>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500">
+                    En soumettant ce formulaire, vous serez contacté par Rachel Gervais à l'adresse email rachel.gervais@as-independante.fr
+                  </div>
+                  
+                  <div className="flex justify-end pt-2">
+                    <button 
+                      type="submit"
+                      className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      Envoyer ma demande
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
