@@ -97,7 +97,7 @@ const Index = () => {
               </div>
               <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="absolute -right-4 -bottom-4 text-primary/10 transform rotate-12 group-hover:scale-110 transition-transform">
                     <MessageCircle size={60} />
                   </div>
@@ -113,7 +113,7 @@ const Index = () => {
                   <p className="text-gray-600 relative z-10">Une approche bienveillante et sans jugement pour vous aider à surmonter les difficultés.</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="absolute -right-4 -bottom-4 text-secondary/10 transform rotate-12 group-hover:scale-110 transition-transform">
                     <Shield size={60} />
                   </div>
@@ -129,8 +129,8 @@ const Index = () => {
                   <p className="text-gray-600 relative z-10">Un suivi personnalisé et adapté à votre situation spécifique, à votre rythme.</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -right-4 -bottom-4 text-accent/10 transform rotate-12 group-hover:scale-110 transition-transform">
+                  <div className="absolute inset-0 bg-gradient-to-br from-highlight/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute -right-4 -bottom-4 text-accent/15 transform rotate-12 group-hover:scale-110 transition-transform">
                     <Star size={60} />
                   </div>
                   <img 
@@ -191,4 +191,3 @@ const Index = () => {
 };
 
 export default Index;
-

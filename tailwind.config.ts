@@ -21,20 +21,20 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#FF69B4", // Rose du logo
+          DEFAULT: "#4F6D7A", // Bleu pétrole apaisant
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#FFA500", // Orange du logo
-          foreground: "#1A1A1A",
-        },
-        accent: {
-          DEFAULT: "#9b87f5", // Violet du logo
+          DEFAULT: "#7A9E9F", // Bleu-vert doux
           foreground: "#FFFFFF",
         },
+        accent: {
+          DEFAULT: "#B8D8D8", // Bleu pastel clair
+          foreground: "#333333",
+        },
         highlight: {
-          DEFAULT: "#D6EF0D", // Vert-jaune du logo
-          foreground: "#1A1A1A",
+          DEFAULT: "#EEF5DB", // Crème doux
+          foreground: "#333333",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
