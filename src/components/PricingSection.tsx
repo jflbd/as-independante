@@ -82,7 +82,7 @@ const PricingSection = () => {
             </ul>
             
             {/* PayPal Button */}
-            <div className="mt-6">
+            <div className="mt-6 relative z-10">
               <PayPalScriptProvider options={{ 
                 clientId: "test", 
                 currency: "EUR" 
@@ -141,7 +141,7 @@ const PricingSection = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px]">
+              <DialogContent className="sm:max-w-[500px] z-50">
                 <DialogHeader>
                   <DialogTitle className="text-xl font-bold">Demande de devis professionnel</DialogTitle>
                   <DialogDescription>
