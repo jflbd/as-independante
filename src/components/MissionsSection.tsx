@@ -49,8 +49,8 @@ const MissionsSection = () => {
             <div className="absolute -top-4 -right-4 w-20 h-20 bg-accent/20 rounded-full z-0"></div>
             <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary/10 rounded-full z-0"></div>
             <OptimizedImage 
-              src="https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Illustration d'accompagnement social" 
+              src="/lovable-uploads/aa4d9af9-79a9-450d-aa97-977c613c12be.png"
+              alt="Illustration d'accompagnement familial" 
               className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
               width={800}
               height={600}
