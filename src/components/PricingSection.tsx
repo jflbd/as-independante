@@ -1,3 +1,4 @@
+
 import { ArrowRight } from "lucide-react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -26,7 +27,7 @@ const PricingSection = () => {
     console.log("Form submitted:", formData);
     console.log("Would send email to: rachel.gervais@as-independante.fr");
     
-    toast.success("Votre demande de devis a bien été envoyée ! Nous vous contacterons rapidement.", {
+    toast.success("J'ai bien reçu votre demande de devis ! Je vous contacterai rapidement.", {
       duration: 5000,
       style: {
         backgroundColor: "white",
