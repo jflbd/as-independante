@@ -44,12 +44,13 @@ const PricingSection = () => {
             {/* PayPal Button */}
             <div className="mt-6">
               <PayPalScriptProvider options={{ 
-                "client-id": "test", 
+                clientId: "test", 
                 currency: "EUR" 
               }}>
                 <PayPalButtons
                   createOrder={(data, actions) => {
                     return actions.order.create({
+                      intent: "CAPTURE",
                       purchase_units: [
                         {
                           amount: {
