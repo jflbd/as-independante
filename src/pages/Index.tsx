@@ -94,7 +94,7 @@ const Index = () => {
         <footer className="py-8 bg-gray-50">
           <div className="container px-4 mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-              <p className="text-gray-600">&copy; {new Date().getFullYear()} AS Indépendante. Tous droits réservés.</p>
+              <p className="text-gray-600">&copy; {new Date().getFullYear()} AS Indépendante. Tous droits réservés. par JFL</p>
               <a 
                 href="https://www.facebook.com/groups/508874659843806" 
                 target="_blank"
