@@ -1,3 +1,4 @@
+
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -55,19 +56,19 @@ const Index = () => {
       </Helmet>
       
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-secondary/5 blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-accent/5 blur-3xl"></div>
+        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/10 blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-secondary/10 blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-accent/10 blur-3xl"></div>
       </div>
       
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative">
+      <div className="min-h-screen relative">
         <NavBar />
         
-        <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24 relative">
-          <div className="absolute top-16 right-10 text-primary/20 animate-pulse-gentle">
+        <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24 relative bg-gradient-to-b from-white to-section-light">
+          <div className="absolute top-16 right-10 text-primary/40 animate-pulse-gentle">
             <Sparkles size={40} />
           </div>
-          <div className="absolute bottom-8 left-10 text-secondary/20 animate-pulse-gentle" style={{ animationDelay: "1s" }}>
+          <div className="absolute bottom-8 left-10 text-secondary/40 animate-pulse-gentle" style={{ animationDelay: "1s" }}>
             <Heart size={30} />
           </div>
           
@@ -75,7 +76,7 @@ const Index = () => {
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-col md:flex-row items-center gap-8">
                 <div className="flex-1 text-center mx-auto max-w-2xl">
-                  <span className="inline-block px-3 py-1 text-xs font-medium text-primary bg-primary/10 rounded-full mb-4">
+                  <span className="inline-block px-3 py-1 text-xs font-medium text-primary bg-primary/20 rounded-full mb-4">
                     <Sparkles className="inline mr-1 h-3 w-3" /> Accompagnement professionnel
                   </span>
                   <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
@@ -95,9 +96,9 @@ const Index = () => {
                 </div>
               </div>
               <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -right-4 -bottom-4 text-primary/10 transform rotate-12 group-hover:scale-110 transition-transform">
+                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 border-primary">
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute -right-4 -bottom-4 text-primary/20 transform rotate-12 group-hover:scale-110 transition-transform">
                     <MessageCircle size={60} />
                   </div>
                   <img 
@@ -111,9 +112,9 @@ const Index = () => {
                   </div>
                   <p className="text-gray-600 relative z-10">Une approche bienveillante et sans jugement pour vous aider à surmonter les difficultés.</p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -right-4 -bottom-4 text-secondary/10 transform rotate-12 group-hover:scale-110 transition-transform">
+                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 border-secondary">
+                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute -right-4 -bottom-4 text-secondary/20 transform rotate-12 group-hover:scale-110 transition-transform">
                     <Shield size={60} />
                   </div>
                   <img 
@@ -127,9 +128,9 @@ const Index = () => {
                   </div>
                   <p className="text-gray-600 relative z-10">Un suivi personnalisé et adapté à votre situation spécifique, à votre rythme.</p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-highlight/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -right-4 -bottom-4 text-accent/15 transform rotate-12 group-hover:scale-110 transition-transform">
+                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 border-accent">
+                  <div className="absolute inset-0 bg-gradient-to-br from-highlight/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute -right-4 -bottom-4 text-accent/25 transform rotate-12 group-hover:scale-110 transition-transform">
                     <Star size={60} />
                   </div>
                   <img 
@@ -146,21 +147,36 @@ const Index = () => {
               </div>
             </div>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-section-dark to-transparent"></div>
         </header>
 
         <main className="relative z-10">
           <AboutSection />
+          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+          
           <MissionsSection />
+          <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+          
           <TestimonialsSection />
+          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+          
           <ServicesSection />
+          <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+          
           <ReferentielSection />
+          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+          
           <DeontologieSection />
+          <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+          
           <PricingSection />
+          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+          
           <ContactSection />
         </main>
 
         <footer className="py-8 bg-gray-50 relative">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/30 via-accent/30 to-secondary/30"></div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/40 via-accent/40 to-secondary/40"></div>
           <div className="container px-4 mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
               <p className="text-gray-600">&copy; 2025 AS Indépendante par JFL. Tous droits réservés.</p>

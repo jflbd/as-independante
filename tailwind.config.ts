@@ -21,20 +21,25 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#4F6D7A", // Bleu pétrole apaisant
+          DEFAULT: "#2A5674", // Bleu pétrole plus foncé
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#7A9E9F", // Bleu-vert doux
+          DEFAULT: "#5A8A8B", // Bleu-vert plus intense
           foreground: "#FFFFFF",
         },
         accent: {
-          DEFAULT: "#B8D8D8", // Bleu pastel clair
+          DEFAULT: "#8BB8B8", // Bleu pastel plus intense
           foreground: "#333333",
         },
         highlight: {
-          DEFAULT: "#EEF5DB", // Crème doux
+          DEFAULT: "#EAE5C7", // Crème plus prononcé
           foreground: "#333333",
+        },
+        section: {
+          light: "#F0F7FA", // Fond clair pour les sections
+          dark: "#E5EFF3", // Fond légèrement plus foncé pour alterner
+          accent: "#DCEEF5", // Fond avec une touche d'accent
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

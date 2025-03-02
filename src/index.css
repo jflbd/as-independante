@@ -14,6 +14,23 @@ body {
   @apply text-gray-900 antialiased;
 }
 
+section {
+  @apply relative overflow-hidden border-b border-gray-100;
+}
+
+section:nth-of-type(odd) {
+  @apply bg-section-light;
+}
+
+section:nth-of-type(even) {
+  @apply bg-section-dark;
+}
+
+section::before {
+  content: "";
+  @apply absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20;
+}
+
 @layer components {
   .btn {
     @apply relative inline-flex items-center justify-center overflow-hidden rounded-lg 
@@ -53,6 +70,19 @@ body {
   
   .section-animate:not(.is-visible) {
     @apply opacity-0 translate-y-8;
+  }
+  
+  /* Section dividers */
+  .section-divider {
+    @apply w-full h-4 bg-gradient-to-r;
+  }
+  
+  .section-divider-1 {
+    @apply from-primary/10 via-secondary/10 to-accent/10;
+  }
+  
+  .section-divider-2 {
+    @apply from-accent/10 via-secondary/10 to-primary/10;
   }
   
   /* Custom animation for the navbar */
