@@ -50,8 +50,8 @@ const MissionsSection = () => {
             <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary/10 rounded-full z-0"></div>
             <div className="aspect-square w-full max-w-md relative z-10 overflow-hidden rounded-lg shadow-lg">
               <OptimizedImage 
-                src="/lovable-uploads/aa4d9af9-79a9-450d-aa97-977c613c12be.png"
-                alt="Illustration d'accompagnement familial" 
+                src="/lovable-uploads/092b7f4d-f9ae-4f56-97d6-f99a9db65aca.png"
+                alt="Illustration d'accompagnement et soutien" 
                 className="w-full h-full object-cover"
                 width={600}
                 height={600}
