@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -14,7 +13,6 @@ const PricingSection = () => {
     message: ""
   });
   
-  // Ajout d'un état pour contrôler l'ouverture/fermeture de la modale
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -25,17 +23,23 @@ const PricingSection = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // In a real implementation, this would send an email to rachel.gervais@as-independante.fr
-    // For now, we'll simulate success with a toast notification
     console.log("Form submitted:", formData);
     console.log("Would send email to: rachel.gervais@as-independante.fr");
     
-    toast.success("Votre demande de devis a bien été envoyée ! Nous vous contacterons rapidement.");
+    toast.success("Votre demande de devis a bien été envoyée ! Nous vous contacterons rapidement.", {
+      duration: 5000,
+      style: {
+        backgroundColor: "white",
+        color: "black",
+        border: "1px solid #e2e8f0",
+        padding: "16px",
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        zIndex: 1000,
+      }
+    });
     
-    // Fermer la modale après l'envoi
     setIsDialogOpen(false);
     
-    // Reset form
     setFormData({
       name: "",
       company: "",
@@ -87,7 +91,6 @@ const PricingSection = () => {
               </li>
             </ul>
             
-            {/* PayPal Button */}
             <div className="mt-6 relative z-10">
               <PayPalScriptProvider options={{ 
                 clientId: "test", 
