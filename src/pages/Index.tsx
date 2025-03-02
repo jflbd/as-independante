@@ -59,28 +59,61 @@ const Index = () => {
         {/* Hero Section */}
         <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24">
           <div className="container px-4 mx-auto">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="flex justify-center mb-8">
-                <img 
-                  src="/public/lovable-uploads/4911c24b-17e3-4e68-8309-148b70efc773.png" 
-                  alt="Rachel Gervais - Assistante Sociale Indépendante" 
-                  className="w-64 md:w-80 h-auto animate-pulse-gentle hover:scale-105 transition-transform duration-300"
-                />
+            <div className="max-w-5xl mx-auto">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-1 text-center md:text-left">
+                  <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
+                    Un accompagnement social personnalisé et professionnel en Normandie
+                  </h1>
+                  <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600 animate-fade-up">
+                    Diplômée d'État depuis 2009, je vous accompagne dans vos démarches sociales avec bienveillance et professionnalisme, que vous soyez un particulier ou un professionnel.
+                  </p>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors animate-fade-up"
+                    aria-label="Me contacter"
+                  >
+                    Me contacter
+                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                  </a>
+                </div>
+                <div className="flex justify-center">
+                  <img 
+                    src="/public/lovable-uploads/4911c24b-17e3-4e68-8309-148b70efc773.png" 
+                    alt="Rachel Gervais - Assistante Sociale Indépendante" 
+                    className="w-64 md:w-80 h-auto animate-pulse-gentle hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
               </div>
-              <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
-                Un accompagnement social personnalisé et professionnel en Normandie
-              </h1>
-              <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600 animate-fade-up">
-                Diplômée d'État depuis 2009, je vous accompagne dans vos démarches sociales avec bienveillance et professionnalisme, que vous soyez un particulier ou un professionnel.
-              </p>
-              <a
-                href="#contact"
-                className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors animate-fade-up"
-                aria-label="Me contacter"
-              >
-                Me contacter
-                <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-              </a>
+              <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                  <img 
+                    src="https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=900&q=80" 
+                    alt="Ecoute et soutien" 
+                    className="w-full h-48 object-cover rounded-md mb-4"
+                  />
+                  <h3 className="text-xl font-semibold mb-2 text-primary">Écoute & Soutien</h3>
+                  <p className="text-gray-600">Une approche bienveillante et sans jugement pour vous aider à surmonter les difficultés.</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                  <img 
+                    src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=900&q=80" 
+                    alt="Accompagnement personnalisé" 
+                    className="w-full h-48 object-cover rounded-md mb-4"
+                  />
+                  <h3 className="text-xl font-semibold mb-2 text-primary">Accompagnement</h3>
+                  <p className="text-gray-600">Un suivi personnalisé et adapté à votre situation spécifique, à votre rythme.</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                  <img 
+                    src="https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=900&q=80" 
+                    alt="Solutions concrètes" 
+                    className="w-full h-48 object-cover rounded-md mb-4"
+                  />
+                  <h3 className="text-xl font-semibold mb-2 text-primary">Solutions</h3>
+                  <p className="text-gray-600">Des réponses concrètes et des démarches efficaces pour améliorer votre situation.</p>
+                </div>
+              </div>
             </div>
           </div>
         </header>

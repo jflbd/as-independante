@@ -45,7 +45,16 @@ const AboutSection = () => {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="relative">
+            <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-full z-0"></div>
+            <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-accent/20 rounded-full z-0"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              alt="Assistante sociale en entretien" 
+              className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
+            />
+          </div>
+          <div className="flex flex-col justify-center">
             <h3 className="text-xl font-bold mb-4 text-primary">Pourquoi faire appel à mes services ?</h3>
             <ul className="space-y-3">
               {advantages.map((item, idx) => (
@@ -56,9 +65,11 @@ const AboutSection = () => {
               ))}
             </ul>
           </div>
+        </div>
 
+        <div className="mt-12 grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold mb-4 text-primary">Mon parcours et mes valeurs</h3>
+            <h3 className="text-xl font-bold mb-4 text-primary">Mon parcours</h3>
             <ul className="space-y-3 mb-6">
               {background.map((item, idx) => (
                 <li key={idx} className="flex items-start">
@@ -68,12 +79,8 @@ const AboutSection = () => {
               ))}
             </ul>
           </div>
-        </div>
-
-        <div className="mt-8 max-w-5xl mx-auto">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold mb-4 text-primary">Mes missions</h3>
-            
+            <h3 className="text-xl font-bold mb-4 text-primary">Mes missions et valeurs</h3>
             <div className="mb-6">
               <h4 className="font-bold mb-2">Accompagnement social global</h4>
               <ul className="space-y-2">
@@ -93,7 +100,7 @@ const AboutSection = () => {
             </div>
             
             <div>
-              <h4 className="font-bold mb-2">Valeurs et engagements</h4>
+              <h4 className="font-bold mb-2">Mes engagements</h4>
               <ul className="space-y-2">
                 {values.map((value, idx) => (
                   <li key={idx} className="flex items-start">

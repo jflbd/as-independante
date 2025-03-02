@@ -26,7 +26,7 @@ const MissionsSection = () => {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto mb-12">
+        <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto mb-12">
           <div className="bg-gray-50 p-6 md:p-8 rounded-lg shadow-md">
             <p className="text-gray-700 mb-4">
               Mes champs d'intervention sont très larges : la famille, la santé, le logement, le budget, le travail, le handicap, l'accès aux droits…
@@ -43,6 +43,15 @@ const MissionsSection = () => {
             <p className="text-gray-700 font-semibold">
               Je suis également soumise au secret professionnel par le Code de l'Action Sociale et des Familles.
             </p>
+          </div>
+          <div className="relative">
+            <div className="absolute -top-4 -right-4 w-20 h-20 bg-accent/20 rounded-full z-0"></div>
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary/10 rounded-full z-0"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1581078426770-6d336e5de7bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              alt="Accompagnement social" 
+              className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
+            />
           </div>
         </div>
 
