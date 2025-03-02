@@ -1,3 +1,4 @@
+
 import { ArrowRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -56,12 +57,12 @@ const Index = () => {
         <NavBar />
         
         {/* Hero Section */}
-        <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24">
+        <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24 bg-gradient-to-r from-gray-50 to-slate-100">
           <div className="container px-4 mx-auto">
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="flex-1 text-center md:text-left">
-                  <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
+                <div className="flex-1 p-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-gray-100">
+                  <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight text-primary/90 animate-fade-up">
                     Un accompagnement social personnalisé et professionnel en Normandie
                   </h1>
                   <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600 animate-fade-up">
@@ -69,7 +70,7 @@ const Index = () => {
                   </p>
                   <a
                     href="#contact"
-                    className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors animate-fade-up"
+                    className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors animate-fade-up shadow-md hover:shadow-lg"
                     aria-label="Me contacter"
                   >
                     Me contacter
