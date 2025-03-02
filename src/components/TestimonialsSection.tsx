@@ -1,9 +1,10 @@
 
 import { Star, Quote } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const TestimonialsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   
   const testimonials = [
     {
@@ -40,20 +41,51 @@ const TestimonialsSection = () => {
     },
   ];
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     setActiveIndex((prevIndex) => 
       prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
     );
-  };
+    setIsAutoPlaying(false);
+  }, [testimonials.length]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setActiveIndex((prevIndex) => 
       prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
     );
-  };
+    setIsAutoPlaying(false);
+  }, [testimonials.length]);
+
+  const goToSlide = useCallback((index: number) => {
+    setActiveIndex(index);
+    setIsAutoPlaying(false);
+  }, []);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      setActiveIndex((prevIndex) => 
+        prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, testimonials.length]);
+
+  // Resume auto-play after user inactivity
+  useEffect(() => {
+    if (!isAutoPlaying) {
+      const timeout = setTimeout(() => {
+        setIsAutoPlaying(true);
+      }, 10000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [isAutoPlaying]);
 
   return (
-    <section id="temoignages" className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white">
+    <section id="temoignages" className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold tracking-wider text-primary bg-primary/10 rounded-full">
@@ -65,132 +97,104 @@ const TestimonialsSection = () => {
           </p>
         </div>
         
-        <div className="max-w-5xl mx-auto">
-          {/* Desktop testimonial slider */}
-          <div className="hidden md:block relative">
-            <div className="grid grid-cols-2 gap-8">
-              {testimonials.map((testimonial, index) => (
-                <div 
-                  key={testimonial.id}
-                  className={`bg-white p-8 rounded-xl shadow-lg transition-all duration-500 transform ${
-                    index === activeIndex || index === (activeIndex + 1) % testimonials.length 
-                      ? "opacity-100 scale-100" 
-                      : "opacity-0 scale-95 hidden"
-                  }`}
-                >
-                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                    <Quote className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <div className="relative mr-4">
-                      <img 
-                        src={testimonial.image} 
-                        alt={testimonial.name} 
-                        className="w-16 h-16 rounded-full object-cover border-2 border-primary/20"
-                      />
-                      <div className="absolute -bottom-1 -right-1 bg-white p-0.5 rounded-full">
-                        <div className="bg-green-500 w-3 h-3 rounded-full"></div>
+        <div className="max-w-5xl mx-auto relative">
+          {/* Testimonial cards carousel */}
+          <div className="relative px-4 py-10">
+            <div 
+              className="transition-all duration-700 ease-in-out"
+              style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+            >
+              <div className="flex">
+                {testimonials.map((testimonial) => (
+                  <div 
+                    key={testimonial.id}
+                    className="w-full flex-shrink-0 px-4"
+                  >
+                    <div className="bg-white p-8 rounded-xl shadow-lg relative overflow-hidden transform transition-all duration-500 hover:shadow-xl">
+                      {/* Background decoration */}
+                      <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full"></div>
+                      <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent/5 rounded-full"></div>
+                      
+                      {/* Quote icon */}
+                      <div className="absolute top-6 right-6 text-primary/20">
+                        <Quote className="h-10 w-10" />
                       </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-lg">{testimonial.name}</h4>
-                      <p className="text-gray-600 text-sm">{testimonial.role}</p>
-                      <div className="flex mt-1">
-                        {[...Array(testimonial.stars)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        ))}
+                      
+                      <div className="flex items-center mb-6 relative z-10">
+                        <div className="relative mr-4">
+                          <img 
+                            src={testimonial.image} 
+                            alt={testimonial.name} 
+                            className="w-20 h-20 rounded-full object-cover border-2 border-primary/20"
+                          />
+                          <div className="absolute -bottom-1 -right-1 bg-white p-0.5 rounded-full">
+                            <div className="bg-green-500 w-3 h-3 rounded-full"></div>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-lg">{testimonial.name}</h4>
+                          <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                          <div className="flex mt-1">
+                            {[...Array(testimonial.stars)].map((_, i) => (
+                              <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                            ))}
+                          </div>
+                        </div>
                       </div>
+                      <p className="text-gray-700 italic relative z-10 text-lg">"{testimonial.quote}"</p>
                     </div>
                   </div>
-                  <p className="text-gray-700 italic">"{testimonial.quote}"</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
             
-            <div className="flex justify-center mt-10 space-x-4">
-              <button 
-                onClick={handlePrevious}
-                className="p-2 rounded-full border border-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                aria-label="Témoignage précédent"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button 
-                onClick={handleNext}
-                className="p-2 rounded-full border border-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                aria-label="Témoignage suivant"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+            {/* Navigation arrows */}
+            <button 
+              onClick={handlePrevious}
+              className="absolute left-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white shadow-lg hover:bg-primary hover:text-white transition-colors z-20"
+              aria-label="Témoignage précédent"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button 
+              onClick={handleNext}
+              className="absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white shadow-lg hover:bg-primary hover:text-white transition-colors z-20"
+              aria-label="Témoignage suivant"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
           
-          {/* Mobile testimonial */}
-          <div className="md:hidden">
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="absolute -top-4 -left-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                <Quote className="h-5 w-5 text-primary" />
-              </div>
-              <div className="flex items-center mb-4">
-                <div className="relative mr-3">
-                  <img 
-                    src={testimonials[activeIndex].image} 
-                    alt={testimonials[activeIndex].name} 
-                    className="w-14 h-14 rounded-full object-cover border-2 border-primary/20"
-                  />
-                  <div className="absolute -bottom-1 -right-1 bg-white p-0.5 rounded-full">
-                    <div className="bg-green-500 w-2.5 h-2.5 rounded-full"></div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold">{testimonials[activeIndex].name}</h4>
-                  <p className="text-gray-600 text-xs">{testimonials[activeIndex].role}</p>
-                  <div className="flex mt-1">
-                    {[...Array(testimonials[activeIndex].stars)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 text-yellow-400 fill-yellow-400" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <p className="text-gray-700 text-sm italic">"{testimonials[activeIndex].quote}"</p>
-              
-              <div className="flex justify-between mt-6">
-                <button 
-                  onClick={handlePrevious}
-                  className="p-1.5 rounded-full border border-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                  aria-label="Témoignage précédent"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <div className="flex space-x-1">
-                  {testimonials.map((_, index) => (
-                    <button 
-                      key={index}
-                      className={`w-2 h-2 rounded-full ${
-                        index === activeIndex ? "bg-primary" : "bg-gray-300"
-                      }`}
-                      onClick={() => setActiveIndex(index)}
-                      aria-label={`Aller au témoignage ${index + 1}`}
-                    />
-                  ))}
-                </div>
-                <button 
-                  onClick={handleNext}
-                  className="p-1.5 rounded-full border border-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                  aria-label="Témoignage suivant"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+          {/* Pagination indicators */}
+          <div className="flex justify-center space-x-2 mt-8">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === activeIndex ? "bg-primary w-8" : "bg-gray-300"
+                }`}
+                aria-label={`Aller au témoignage ${index + 1}`}
+              />
+            ))}
+          </div>
+          
+          {/* Auto-play indicator */}
+          <div className="flex justify-center mt-4">
+            <button 
+              onClick={() => setIsAutoPlaying(!isAutoPlaying)} 
+              className={`text-xs px-3 py-1 rounded-full transition-colors ${
+                isAutoPlaying 
+                  ? "bg-primary/10 text-primary" 
+                  : "bg-gray-200 text-gray-600"
+              }`}
+            >
+              {isAutoPlaying ? "Défilement automatique activé" : "Défilement automatique désactivé"}
+            </button>
           </div>
         </div>
       </div>
