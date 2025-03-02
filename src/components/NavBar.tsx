@@ -48,7 +48,7 @@ const NavBar = () => {
                 scrollToSection("a-propos");
               }}
             >
-              À propos
+              Qui suis-je ?
             </a>
             <a 
               href="#services" 
@@ -103,7 +103,7 @@ const NavBar = () => {
                   scrollToSection("a-propos");
                 }}
               >
-                À propos
+                Qui suis-je ?
               </a>
               <a
                 href="#services"

@@ -119,12 +119,12 @@ const ServicesSection = () => {
         </div>
       </section>
 
-      {/* Référentiel d'activités */}
+      {/* Section Référentiel renommée */}
       <section id="referentiel" className="py-12 md:py-16 bg-gray-50">
         <div className="container px-4 mx-auto">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold tracking-wider text-primary bg-primary/10 rounded-full">
-              Référentiel d'activités
+              Le métier d'assistant social
             </span>
             <h2 className="text-2xl md:text-4xl font-serif font-bold mb-4">
               Le métier d'assistant social
