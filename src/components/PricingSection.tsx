@@ -13,6 +13,9 @@ const PricingSection = () => {
     phone: "",
     message: ""
   });
+  
+  // Ajout d'un état pour contrôler l'ouverture/fermeture de la modale
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -28,6 +31,9 @@ const PricingSection = () => {
     console.log("Would send email to: rachel.gervais@as-independante.fr");
     
     toast.success("Votre demande de devis a bien été envoyée ! Nous vous contacterons rapidement.");
+    
+    // Fermer la modale après l'envoi
+    setIsDialogOpen(false);
     
     // Reset form
     setFormData({
@@ -132,7 +138,7 @@ const PricingSection = () => {
                 <span>Accompagnement des salariés, bailleurs sociaux, collectivités, associations</span>
               </li>
             </ul>
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <button
                   className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors w-full justify-center"
