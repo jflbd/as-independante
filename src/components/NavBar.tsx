@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
+import SafeLink from "./SafeLink";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -79,8 +80,8 @@ const NavBar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Logo and Name */}
-          <a 
-            href="#" 
+          <SafeLink 
+            to="#accueil" 
             className="flex items-center space-x-3 transition-all duration-300 hover:scale-105"
             onClick={(e) => {
               e.preventDefault();
@@ -94,17 +95,20 @@ const NavBar = () => {
                 src="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
                 alt="Rachel Gervais" 
                 className="h-full w-full rounded-full object-cover"
+                loading="eager"
+                width={48}
+                height={48}
               />
             </div>
             <span className="text-xl font-serif font-bold text-primary tracking-wider">Rachel Gervais</span>
-          </a>
+          </SafeLink>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-1 lg:space-x-2">
             {navItems.map((item) => (
-              <a 
+              <SafeLink 
                 key={item.id}
-                href={`#${item.id}`} 
+                to={`#${item.id}`} 
                 className={`
                   px-3 py-2 text-sm rounded-full transition-all duration-300 
                   ${activeSection === item.id 
@@ -120,7 +124,7 @@ const NavBar = () => {
                 <span className="relative">
                   {item.label}
                 </span>
-              </a>
+              </SafeLink>
             ))}
           </div>
 
@@ -142,9 +146,9 @@ const NavBar = () => {
           <div className="md:hidden py-4 animate-fade-in">
             <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-xl border border-primary/10">
               {navItems.map((item) => (
-                <a
+                <SafeLink
                   key={item.id}
-                  href={`#${item.id}`}
+                  to={`#${item.id}`}
                   className={`
                     flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 
                     ${activeSection === item.id 
@@ -164,7 +168,7 @@ const NavBar = () => {
                     }`} 
                   />
                   <span>{item.label}</span>
-                </a>
+                </SafeLink>
               ))}
             </div>
           </div>

@@ -1,5 +1,6 @@
 
 import { ShieldCheck, Users, Lightbulb, Headphones, MessageSquare, Home } from "lucide-react";
+import OptimizedImage from "./OptimizedImage";
 
 const MissionsSection = () => {
   const values = [
@@ -47,10 +48,12 @@ const MissionsSection = () => {
           <div className="relative">
             <div className="absolute -top-4 -right-4 w-20 h-20 bg-accent/20 rounded-full z-0"></div>
             <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary/10 rounded-full z-0"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+            <OptimizedImage 
+              src="https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Illustration d'accompagnement social" 
               className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
+              width={800}
+              height={600}
             />
           </div>
         </div>
