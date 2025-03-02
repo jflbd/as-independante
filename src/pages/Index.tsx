@@ -9,6 +9,7 @@ import AboutSection from "@/components/AboutSection";
 import MissionsSection from "@/components/MissionsSection";
 import ReferentielSection from "@/components/ReferentielSection";
 import DeontologieSection from "@/components/DeontologieSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 import { useEffect } from "react";
 import { Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -153,6 +154,7 @@ const Index = () => {
           <AboutSection />
           <MissionsSection />
           <ServicesSection />
+          <TestimonialsSection />
           <ReferentielSection />
           <DeontologieSection />
           <PricingSection />
