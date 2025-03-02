@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("accueil");
   const [isScrolling, setIsScrolling] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
@@ -22,9 +23,16 @@ const NavBar = () => {
     }
   };
 
-  // Track scroll position to highlight active section
+  // Track scroll position to highlight active section and navbar background
   useEffect(() => {
     const handleScroll = () => {
+      // Set background effect when scrolled
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+      
       if (isScrolling) return; // Don't update during programmatic scrolling
       
       const sections = navItems.map(item => item.id);
@@ -64,78 +72,97 @@ const NavBar = () => {
   ];
 
   return (
-    <nav className="fixed w-full bg-white/90 backdrop-blur-sm z-50 shadow-sm">
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${
+      scrolled 
+        ? "bg-white/95 backdrop-blur-md shadow-md py-2" 
+        : "bg-white/85 backdrop-blur-sm py-4"
+    }`}>
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center">
           <a 
             href="#" 
-            className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105"
+            className="flex items-center space-x-3 transition-all duration-300 hover:scale-105"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
               setActiveSection("accueil");
             }}
+            aria-label="Retour à l'accueil"
           >
-            <img 
-              src="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
-              alt="Rachel Gervais" 
-              className="h-10 w-10" 
-            />
-            <span className="text-xl font-serif font-bold text-primary">Rachel Gervais</span>
+            <div className="relative overflow-hidden rounded-full border-2 border-primary/20 p-0.5 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-md">
+              <img 
+                src="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
+                alt="Rachel Gervais" 
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            </div>
+            <span className="text-xl font-serif font-bold text-primary tracking-wide">Rachel Gervais</span>
           </a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex space-x-1 lg:space-x-2">
             {navItems.map((item) => (
               <a 
                 key={item.id}
                 href={`#${item.id}`} 
-                className={`text-gray-600 hover:text-primary transition-colors relative text-sm ${
+                className={`px-3 py-2 text-sm rounded-full transition-all duration-300 relative ${
                   activeSection === item.id 
-                    ? "text-primary font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-primary" 
-                    : ""
-                } after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full`}
+                    ? "text-primary font-semibold bg-primary/10" 
+                    : "text-gray-600 hover:text-primary hover:bg-gray-100"
+                }`}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection(item.id);
                 }}
                 aria-label={`Naviguer vers la section ${item.label}`}
               >
-                {item.label}
+                <span className="relative">
+                  {item.label}
+                  {activeSection === item.id && (
+                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full animate-fade-in"></span>
+                  )}
+                </span>
               </a>
             ))}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden transition-colors duration-300 hover:text-primary"
+            className="md:hidden rounded-full p-2 transition-all duration-300 hover:bg-gray-100 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
           >
-            {isOpen ? <X size={24} className="animate-scale-in" /> : <Menu size={24} />}
+            {isOpen ? 
+              <X size={24} className="animate-scale-in" /> : 
+              <Menu size={24} />
+            }
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 animate-fade-in">
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col space-y-1 bg-white/80 backdrop-blur-md p-3 rounded-xl shadow-lg border border-gray-100">
               {navItems.map((item) => (
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`text-gray-600 hover:text-primary transition-colors px-3 py-2 rounded-md ${
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 ${
                     activeSection === item.id 
                       ? "text-primary font-semibold bg-primary/10 border-l-4 border-primary" 
-                      : ""
-                  } hover:bg-gray-100`}
+                      : "text-gray-600 hover:text-primary hover:bg-gray-100 border-l-4 border-transparent"
+                  }`}
                   onClick={(e) => {
                     e.preventDefault();
                     scrollToSection(item.id);
                   }}
                   aria-label={`Naviguer vers la section ${item.label}`}
                 >
-                  {item.label}
+                  <ChevronDown 
+                    size={16} 
+                    className={`transform transition-transform duration-300 ${activeSection === item.id ? "rotate-180 text-primary" : ""}`} 
+                  />
+                  <span>{item.label}</span>
                 </a>
               ))}
             </div>
@@ -147,4 +174,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
