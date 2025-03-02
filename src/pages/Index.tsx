@@ -11,6 +11,7 @@ import ReferentielSection from "@/components/ReferentielSection";
 import DeontologieSection from "@/components/DeontologieSection";
 import { useEffect } from "react";
 import { Facebook } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   
@@ -92,7 +93,7 @@ const Index = () => {
 
         <footer className="py-8 bg-gray-50">
           <div className="container px-4 mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
               <p className="text-gray-600">&copy; {new Date().getFullYear()} AS Indépendante. Tous droits réservés.</p>
               <a 
                 href="https://www.facebook.com/groups/508874659843806" 
@@ -104,6 +105,14 @@ const Index = () => {
                 <Facebook className="h-5 w-5 transition-transform group-hover:scale-110" />
                 <span className="text-sm">Rejoignez-moi sur Facebook</span>
               </a>
+            </div>
+            <div className="flex justify-center">
+              <Link 
+                to="/mentions-legales" 
+                className="text-sm text-gray-500 hover:text-primary hover:underline transition-colors"
+              >
+                Mentions légales
+              </Link>
             </div>
           </div>
         </footer>
