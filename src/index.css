@@ -99,4 +99,24 @@ section::before {
     background-size: 200% 100%;
     animation: nav-item-hover 0.5s ease forwards;
   }
+  
+  /* Cookie banner animation */
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .cookie-banner-enter {
+    animation: slide-up 0.5s ease forwards;
+  }
+  
+  .cookie-banner-exit {
+    animation: slide-up 0.5s ease backwards reverse;
+  }
 }
