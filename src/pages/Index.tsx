@@ -64,7 +64,7 @@ const Index = () => {
                 <img 
                   src="/public/lovable-uploads/4911c24b-17e3-4e68-8309-148b70efc773.png" 
                   alt="Rachel Gervais - Assistante Sociale Indépendante" 
-                  className="w-64 md:w-80 h-auto animate-fade-in"
+                  className="w-64 md:w-80 h-auto animate-pulse-gentle hover:scale-105 transition-transform duration-300"
                 />
               </div>
               <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
