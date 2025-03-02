@@ -45,16 +45,18 @@ const MissionsSection = () => {
               Je suis également soumise au secret professionnel par le Code de l'Action Sociale et des Familles.
             </p>
           </div>
-          <div className="relative">
+          <div className="relative flex justify-center items-center">
             <div className="absolute -top-4 -right-4 w-20 h-20 bg-accent/20 rounded-full z-0"></div>
             <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary/10 rounded-full z-0"></div>
-            <OptimizedImage 
-              src="/lovable-uploads/aa4d9af9-79a9-450d-aa97-977c613c12be.png"
-              alt="Illustration d'accompagnement familial" 
-              className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
-              width={800}
-              height={600}
-            />
+            <div className="aspect-square w-full max-w-md relative z-10 overflow-hidden rounded-lg shadow-lg">
+              <OptimizedImage 
+                src="/lovable-uploads/aa4d9af9-79a9-450d-aa97-977c613c12be.png"
+                alt="Illustration d'accompagnement familial" 
+                className="w-full h-full object-cover"
+                width={600}
+                height={600}
+              />
+            </div>
           </div>
         </div>
 
