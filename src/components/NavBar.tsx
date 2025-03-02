@@ -1,17 +1,45 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("accueil");
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
       setIsOpen(false);
+      setActiveSection(sectionId);
     }
   };
+
+  // Track scroll position to highlight active section
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navItems.map(item => item.id);
+      
+      // Find the current section based on scroll position
+      const current = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+      
+      if (current) {
+        setActiveSection(current);
+      } else if (window.scrollY <= 100) {
+        setActiveSection("accueil");
+      }
+    };
+    
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Liste des sections pour le menu
   const navItems = [
@@ -35,6 +63,7 @@ const NavBar = () => {
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
+              setActiveSection("accueil");
             }}
           >
             AS Indépendante
@@ -46,11 +75,14 @@ const NavBar = () => {
               <a 
                 key={item.id}
                 href={`#${item.id}`} 
-                className="text-gray-600 hover:text-primary transition-colors text-sm"
+                className={`text-gray-600 hover:text-primary transition-colors text-sm ${
+                  activeSection === item.id ? "text-primary font-medium" : ""
+                }`}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection(item.id);
                 }}
+                aria-label={`Naviguer vers la section ${item.label}`}
               >
                 {item.label}
               </a>
@@ -75,11 +107,14 @@ const NavBar = () => {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className={`text-gray-600 hover:text-primary transition-colors ${
+                    activeSection === item.id ? "text-primary font-medium" : ""
+                  }`}
                   onClick={(e) => {
                     e.preventDefault();
                     scrollToSection(item.id);
                   }}
+                  aria-label={`Naviguer vers la section ${item.label}`}
                 >
                   {item.label}
                 </a>
