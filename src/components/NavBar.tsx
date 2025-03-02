@@ -50,14 +50,14 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isScrolling]);
 
-  // Liste des sections pour le menu
+  // Liste des sections mise à jour avec les nouveaux titres
   const navItems = [
     { id: "accueil", label: "Accueil" },
-    { id: "a-propos", label: "Qui suis-je ?" },
+    { id: "a-propos", label: "Mon parcours" },
     { id: "missions", label: "Mes missions" },
-    { id: "temoignages", label: "Témoignages" },
+    { id: "temoignages", label: "Ils me font confiance" },
     { id: "services", label: "Mes services" },
-    { id: "referentiel", label: "Référentiel" },
+    { id: "referentiel", label: "Cadre d'intervention" },
     { id: "deontologie", label: "Déontologie" },
     { id: "pricing", label: "Tarifs" },
     { id: "contact", label: "Contact" },
@@ -147,3 +147,4 @@ const NavBar = () => {
 };
 
 export default NavBar;
+

@@ -33,7 +33,7 @@ const AboutSection = () => {
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold tracking-wider text-primary bg-primary/10 rounded-full">
-            Qui suis-je ?
+            Mon parcours
           </span>
           <h2 className="text-2xl md:text-4xl font-serif font-bold mb-4">
             Rachel Gervais, Assistante Sociale Indépendante
@@ -118,3 +118,4 @@ const AboutSection = () => {
 };
 
 export default AboutSection;
+
