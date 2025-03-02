@@ -103,7 +103,7 @@ const Index = () => {
                     <MessageCircle size={60} />
                   </div>
                   <OptimizedImage 
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                    src="/lovable-uploads/4cfe563e-2562-487a-aa53-d89205f63aae.png" 
                     alt="Ecoute et soutien" 
                     className="w-full h-48 object-cover rounded-md mb-4"
                     width={600}
@@ -121,7 +121,7 @@ const Index = () => {
                     <Shield size={60} />
                   </div>
                   <OptimizedImage 
-                    src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                    src="/lovable-uploads/90dacb22-981f-4faa-a7ee-750d0c921513.png" 
                     alt="Accompagnement personnalisé" 
                     className="w-full h-48 object-cover rounded-md mb-4"
                     width={600}
