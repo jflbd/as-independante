@@ -80,26 +80,26 @@ const ContactSection = () => {
             <div className="space-y-4">
               <a 
                 href="mailto:rachel.gervais@as-independante.fr" 
-                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors group"
+                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary hover:bg-primary/10 py-2 px-4 rounded-md transition-all duration-300 group"
               >
-                <Mail className="h-5 w-5 transition-transform group-hover:scale-110" />
-                <span>rachel.gervais@as-independante.fr</span>
+                <Mail className="h-5 w-5 transition-transform group-hover:scale-125 group-hover:rotate-12" />
+                <span className="group-hover:font-medium">rachel.gervais@as-independante.fr</span>
               </a>
               <a 
                 href="tel:0763907845" 
-                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors group"
+                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary hover:bg-primary/10 py-2 px-4 rounded-md transition-all duration-300 group"
               >
-                <Phone className="h-5 w-5 transition-transform group-hover:scale-110" />
-                <span>07 63 90 78 45</span>
+                <Phone className="h-5 w-5 transition-transform group-hover:scale-125 group-hover:rotate-12" />
+                <span className="group-hover:font-medium">07 63 90 78 45</span>
               </a>
               <a 
                 href="https://www.facebook.com/groups/508874659843806" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors group"
+                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary hover:bg-primary/10 py-2 px-4 rounded-md transition-all duration-300 group"
               >
-                <Facebook className="h-5 w-5 transition-transform group-hover:scale-110" />
-                <span>Rejoignez-moi sur Facebook</span>
+                <Facebook className="h-5 w-5 transition-transform group-hover:scale-125 group-hover:rotate-12" />
+                <span className="group-hover:font-medium">Rejoignez-moi sur Facebook</span>
               </a>
             </div>
           </div>
