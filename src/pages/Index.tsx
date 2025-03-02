@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -76,13 +75,6 @@ const Index = () => {
                     Me contacter
                     <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                   </a>
-                </div>
-                <div className="flex justify-center">
-                  <img 
-                    src="/public/lovable-uploads/4911c24b-17e3-4e68-8309-148b70efc773.png" 
-                    alt="Rachel Gervais - Assistante Sociale Indépendante" 
-                    className="w-64 md:w-80 h-auto animate-pulse-gentle hover:scale-105 transition-transform duration-300"
-                  />
                 </div>
               </div>
               <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
