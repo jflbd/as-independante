@@ -19,21 +19,21 @@ const ContactSection = () => {
 
         {/* Coordonnées de contact */}
         <div className="max-w-xl mx-auto mb-12">
-          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 p-6 md:p-8 mb-8">
             <h3 className="text-xl font-bold mb-6 text-center">Détails de contact</h3>
             <div className="space-y-4">
               <a 
                 href="mailto:rachel.gervais@as-independante.fr" 
-                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors"
+                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors group"
               >
-                <Mail className="h-5 w-5" />
+                <Mail className="h-5 w-5 transition-transform group-hover:scale-110" />
                 <span>rachel.gervais@as-independante.fr</span>
               </a>
               <a 
                 href="tel:0763907845" 
-                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors"
+                className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary transition-colors group"
               >
-                <Phone className="h-5 w-5" />
+                <Phone className="h-5 w-5 transition-transform group-hover:scale-110" />
                 <span>07 63 90 78 45</span>
               </a>
             </div>
@@ -41,7 +41,7 @@ const ContactSection = () => {
         </div>
 
         {/* Formulaire de contact */}
-        <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
+        <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 p-6 md:p-8">
           <form className="space-y-4 md:space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">Nom</label>
@@ -49,7 +49,7 @@ const ContactSection = () => {
                 type="text"
                 id="name"
                 name="name"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 placeholder="Votre nom"
                 required
               />
@@ -60,7 +60,7 @@ const ContactSection = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 placeholder="votre@email.com"
                 required
               />
@@ -70,7 +70,7 @@ const ContactSection = () => {
               <textarea
                 id="message"
                 name="message"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 rows={4}
                 placeholder="Votre message"
                 required
@@ -78,7 +78,7 @@ const ContactSection = () => {
             </div>
             <button
               type="submit"
-              className="w-full px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+              className="btn-primary w-full py-3 px-6"
             >
               Envoyer
             </button>

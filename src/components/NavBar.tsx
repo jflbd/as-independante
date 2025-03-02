@@ -59,7 +59,7 @@ const NavBar = () => {
         <div className="flex justify-between items-center h-16">
           <a 
             href="#" 
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -80,9 +80,9 @@ const NavBar = () => {
               <a 
                 key={item.id}
                 href={`#${item.id}`} 
-                className={`text-gray-600 hover:text-primary transition-colors text-sm ${
+                className={`text-gray-600 hover:text-primary transition-colors relative text-sm ${
                   activeSection === item.id ? "text-primary font-medium" : ""
-                }`}
+                } after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full`}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection(item.id);
@@ -96,11 +96,11 @@ const NavBar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="md:hidden transition-colors duration-300 hover:text-primary"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={24} className="animate-scale-in" /> : <Menu size={24} />}
           </button>
         </div>
 
@@ -112,9 +112,9 @@ const NavBar = () => {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`text-gray-600 hover:text-primary transition-colors ${
-                    activeSection === item.id ? "text-primary font-medium" : ""
-                  }`}
+                  className={`text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded-md ${
+                    activeSection === item.id ? "text-primary font-medium bg-primary/5" : ""
+                  } hover:bg-gray-100`}
                   onClick={(e) => {
                     e.preventDefault();
                     scrollToSection(item.id);

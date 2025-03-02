@@ -54,7 +54,7 @@ const PricingSection = () => {
   };
 
   return (
-    <section id="tarifs" className="py-12 md:py-16 bg-white">
+    <section id="pricing" className="py-12 md:py-16 bg-white">
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold tracking-wider text-primary bg-primary/10 rounded-full">
@@ -69,7 +69,7 @@ const PricingSection = () => {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
             <h3 className="text-xl font-bold mb-4">Particuliers</h3>
             <div className="text-3xl font-bold text-primary mb-4">50€ / heure</div>
             <ul className="space-y-3 mb-6">
@@ -120,7 +120,7 @@ const PricingSection = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
             <h3 className="text-xl font-bold mb-4">Professionnels</h3>
             <div className="text-3xl font-bold text-primary mb-4">Sur devis</div>
             <ul className="space-y-3 mb-6">
@@ -144,7 +144,7 @@ const PricingSection = () => {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <button
-                  className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors w-full justify-center"
+                  className="btn-primary w-full justify-center py-3 px-6"
                 >
                   Demander un devis
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -233,7 +233,7 @@ const PricingSection = () => {
                   <div className="flex justify-end pt-2">
                     <button 
                       type="submit"
-                      className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+                      className="btn-primary py-3 px-6"
                     >
                       Envoyer ma demande
                       <ArrowRight className="ml-2 h-5 w-5" />
