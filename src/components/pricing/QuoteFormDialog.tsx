@@ -40,56 +40,85 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
     console.log("Données du formulaire:", formData);
     
     try {
-      // Créer l'URL pour le service EmailJS
-      const serviceID = "default_service"; // Remplacer par votre ID de service
-      const templateID = "template_devis"; // Remplacer par votre ID de template
-      const userID = "your_emailjs_user_id"; // Remplacer par votre ID utilisateur EmailJS
+      // Configuration pour FormSubmit
+      const formElement = e.target as HTMLFormElement;
       
-      const emailData = {
-        service_id: serviceID,
-        template_id: templateID,
-        user_id: userID,
-        template_params: {
-          to_email: "rachel.gervais@as-independante.fr",
-          from_name: formData.name,
-          from_email: formData.email,
-          company: formData.company,
-          phone: formData.phone,
-          message: formData.message,
-          subject: `Demande de devis de ${formData.name} - ${formData.company}`
-        }
-      };
+      // Créer un élément caché pour l'email de destination
+      const destinationEmail = document.createElement("input");
+      destinationEmail.type = "hidden";
+      destinationEmail.name = "_to";
+      destinationEmail.value = "rachel.gervais@as-independante.fr";
+      formElement.appendChild(destinationEmail);
       
-      // Simuler l'envoi d'email avec un délai (à remplacer par l'appel API réel)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // Quand vous êtes prêt à implémenter l'envoi réel, utilisez:
-      // const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(emailData)
-      // });
+      // Élément pour le sujet de l'email
+      const subjectField = document.createElement("input");
+      subjectField.type = "hidden";
+      subjectField.name = "_subject";
+      subjectField.value = `Demande de devis de ${formData.name} - ${formData.company}`;
+      formElement.appendChild(subjectField);
       
-      toast.success("J'ai bien reçu votre demande de devis ! Je vous contacterai rapidement.", {
-        duration: 5000,
-        style: {
-          backgroundColor: "white",
-          color: "black",
-          border: "1px solid #e2e8f0",
-          padding: "16px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          zIndex: 1000,
+      // Désactiver le captcha
+      const captchaField = document.createElement("input");
+      captchaField.type = "hidden";
+      captchaField.name = "_captcha";
+      captchaField.value = "false";
+      formElement.appendChild(captchaField);
+      
+      // Comportement après envoi - afficher un toast puis fermer le modal
+      const redirectField = document.createElement("input");
+      redirectField.type = "hidden";
+      redirectField.name = "_next";
+      redirectField.value = window.location.href;
+      formElement.appendChild(redirectField);
+      
+      // Ajouter les données du formulaire comme champs cachés pour FormSubmit
+      Object.entries(formData).forEach(([key, value]) => {
+        const hiddenField = document.createElement("input");
+        hiddenField.type = "hidden";
+        hiddenField.name = key;
+        hiddenField.value = value;
+        formElement.appendChild(hiddenField);
+      });
+      
+      // Définir l'action du formulaire vers FormSubmit
+      formElement.action = "https://formsubmit.co/rachel.gervais@as-independante.fr";
+      formElement.method = "POST";
+      
+      // Soumettre le formulaire via AJAX pour éviter la redirection
+      const formData = new FormData(formElement);
+      const response = await fetch(formElement.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
         }
       });
       
-      setIsOpen(false);
-      
-      setFormData({
-        name: "",
-        company: "",
-        email: "",
-        phone: "",
-        message: ""
-      });
+      if (response.ok) {
+        toast.success("J'ai bien reçu votre demande de devis ! Je vous contacterai rapidement.", {
+          duration: 5000,
+          style: {
+            backgroundColor: "white",
+            color: "black",
+            border: "1px solid #e2e8f0",
+            padding: "16px",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            zIndex: 1000,
+          }
+        });
+        
+        setIsOpen(false);
+        
+        setFormData({
+          name: "",
+          company: "",
+          email: "",
+          phone: "",
+          message: ""
+        });
+      } else {
+        throw new Error("Échec de l'envoi du formulaire");
+      }
     } catch (error) {
       console.error("Erreur lors de l'envoi du devis:", error);
       toast.error("Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.", {

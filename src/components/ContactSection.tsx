@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Mail, Phone, Facebook } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -29,49 +30,51 @@ const ContactSection = () => {
     setIsSubmitting(true);
     
     try {
-      // Créer l'URL pour le service EmailJS
-      const serviceID = "default_service"; // Remplacer par votre ID de service
-      const templateID = "template_contact"; // Remplacer par votre ID de template
-      const userID = "your_emailjs_user_id"; // Remplacer par votre ID utilisateur EmailJS
+      // Configuration pour FormSubmit
+      const formElement = e.target as HTMLFormElement;
       
-      const emailData = {
-        service_id: serviceID,
-        template_id: templateID,
-        user_id: userID,
-        template_params: {
-          to_email: "rachel.gervais@as-independante.fr",
-          from_name: formData.name,
-          from_email: formData.email,
-          message: formData.message,
-          subject: `Message de contact de ${formData.name}`
-        }
-      };
+      // Créer un élément caché pour l'email de destination
+      const destinationEmail = document.createElement("input");
+      destinationEmail.type = "hidden";
+      destinationEmail.name = "_to";
+      destinationEmail.value = "rachel.gervais@as-independante.fr";
+      formElement.appendChild(destinationEmail);
       
+      // Élément pour le sujet de l'email
+      const subjectField = document.createElement("input");
+      subjectField.type = "hidden";
+      subjectField.name = "_subject";
+      subjectField.value = `Message de contact de ${formData.name}`;
+      formElement.appendChild(subjectField);
+      
+      // Comportement après envoi
+      const redirectField = document.createElement("input");
+      redirectField.type = "hidden";
+      redirectField.name = "_after";
+      redirectField.value = window.location.href;
+      formElement.appendChild(redirectField);
+      
+      // Désactiver le captcha
+      const captchaField = document.createElement("input");
+      captchaField.type = "hidden";
+      captchaField.name = "_captcha";
+      captchaField.value = "false";
+      formElement.appendChild(captchaField);
+      
+      // Log les données avant envoi
       console.log("Envoi d'email à: rachel.gervais@as-independante.fr");
-      console.log("Données:", emailData);
+      console.log("Données:", formData);
       
-      // Simuler l'envoi d'email avec un délai (à remplacer par l'appel API réel)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Définir l'action du formulaire vers FormSubmit
+      formElement.action = "https://formsubmit.co/rachel.gervais@as-independante.fr";
+      formElement.method = "POST";
       
-      // Quand vous êtes prêt à implémenter l'envoi réel, utilisez:
-      // const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(emailData)
-      // });
+      // Soumettre le formulaire
+      formElement.submit();
       
-      // Show success toast
-      toast({
-        title: "Message envoyé !",
-        description: "Votre message a été envoyé avec succès. Je vous répondrai dès que possible.",
-      });
+      // Pas besoin de toast car la page sera redirigée
+      // Reset form sera géré après redirection
       
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        message: ""
-      });
     } catch (error) {
       // Show error toast
       toast({
@@ -80,7 +83,6 @@ const ContactSection = () => {
         variant: "destructive"
       });
       console.error("Error sending email:", error);
-    } finally {
       setIsSubmitting(false);
     }
   };
