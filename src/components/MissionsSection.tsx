@@ -1,52 +1,8 @@
 
-import { useEffect, useState } from "react";
-import { 
-  ShieldCheck, Users, Lightbulb, Headphones, 
-  MessageSquare, Home, Heart, Star 
-} from "lucide-react";
+import { ShieldCheck, Users, Lightbulb, Headphones, MessageSquare, Home } from "lucide-react";
 import OptimizedImage from "./OptimizedImage";
-import { supabase } from "@/lib/supabase";
-import { Mission } from "@/types/cms";
-
-const iconComponents: Record<string, React.ElementType> = {
-  MessageSquare,
-  Headphones,
-  Users,
-  Home,
-  Lightbulb,
-  ShieldCheck,
-  Heart,
-  Star
-};
 
 const MissionsSection = () => {
-  const [missions, setMissions] = useState<Mission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchMissions = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('missions')
-          .select('*')
-          .eq('is_visible', true)
-          .order('order');
-
-        if (error) throw error;
-        
-        setMissions(data || []);
-      } catch (error: any) {
-        console.error('Error fetching missions:', error.message);
-        setError("Impossible de charger les missions");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMissions();
-  }, []);
-
   const values = [
     { icon: <MessageSquare className="h-8 w-8 text-primary" />, label: "INFORMATION" },
     { icon: <Headphones className="h-8 w-8 text-primary" />, label: "ECOUTE" },
@@ -55,30 +11,6 @@ const MissionsSection = () => {
     { icon: <Lightbulb className="h-8 w-8 text-primary" />, label: "CONSEIL" },
     { icon: <ShieldCheck className="h-8 w-8 text-primary" />, label: "SECRET PROFESSIONNEL" },
   ];
-
-  if (loading) {
-    return (
-      <section id="missions" className="py-12 md:py-16 bg-white">
-        <div className="container px-4 mx-auto">
-          <div className="flex justify-center py-10">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="missions" className="py-12 md:py-16 bg-white">
-        <div className="container px-4 mx-auto">
-          <div className="text-center text-red-500 py-10">
-            {error}
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="missions" className="py-12 md:py-16 bg-white">
@@ -97,22 +29,21 @@ const MissionsSection = () => {
 
         <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto mb-12">
           <div className="bg-gray-50 p-6 md:p-8 rounded-lg shadow-md">
-            {missions.map((mission) => {
-              const IconComponent = iconComponents[mission.icon] || MessageSquare;
-              return (
-                <div key={mission.id} className="mb-6 last:mb-0">
-                  <div className="flex items-start">
-                    <div className="mr-3 mt-1 bg-primary/10 p-2 rounded-full">
-                      <IconComponent className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg mb-2">{mission.title}</h3>
-                      <p className="text-gray-700">{mission.description}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            <p className="text-gray-700 mb-4">
+              Mes champs d'intervention sont très larges : la famille, la santé, le logement, le budget, le travail, le handicap, l'accès aux droits…
+            </p>
+            <p className="text-gray-700 mb-4">
+              Mon métier consiste à créer un lien de confiance, à valoriser la personne en mettant l'accent sur l'estime de soi, à mobiliser ses propres ressources mais également sa famille et/ou son réseau de manière globale.
+            </p>
+            <p className="text-gray-700 mb-4">
+              <strong>Le but étant de la rendre autonome.</strong>
+            </p>
+            <p className="text-gray-700 mb-4">
+              Afin d'atteindre cet objectif, plusieurs leviers peuvent être actionnés tels que l'écoute, le soutien, l'information, l'orientation vers des services compétents le cas échéant…
+            </p>
+            <p className="text-gray-700 font-semibold">
+              Je suis également soumise au secret professionnel par le Code de l'Action Sociale et des Familles.
+            </p>
           </div>
           <div className="relative flex justify-center items-center">
             <div className="absolute -top-4 -right-4 w-20 h-20 bg-accent/20 rounded-full z-0"></div>

@@ -1,40 +1,8 @@
 
 import { ArrowRight, Check } from "lucide-react";
-import { useEffect, useState } from "react";
 import OptimizedImage from "./OptimizedImage";
-import { supabase } from "@/lib/supabase";
-import { Section } from "@/types/cms";
 
 const AboutSection = () => {
-  const [sections, setSections] = useState<Section[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchAboutSections = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('sections')
-          .select('*')
-          .eq('type', 'about')
-          .eq('is_visible', true)
-          .order('order');
-
-        if (error) throw error;
-        
-        setSections(data || []);
-      } catch (error: any) {
-        console.error('Error fetching about sections:', error.message);
-        setError("Impossible de charger les informations");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAboutSections();
-  }, []);
-
-  // Fallback content if no sections are loaded
   const advantages = [
     "Garantie de la qualité des interventions par une professionnelle diplômée d'État",
     "Souplesse d'intervention",
@@ -60,30 +28,6 @@ const AboutSection = () => {
     "Conseil et médiation",
     "Respect du secret professionnel"
   ];
-
-  if (loading) {
-    return (
-      <section id="a-propos" className="py-12 md:py-16 bg-gray-50">
-        <div className="container px-4 mx-auto">
-          <div className="flex justify-center py-10">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="a-propos" className="py-12 md:py-16 bg-gray-50">
-        <div className="container px-4 mx-auto">
-          <div className="text-center text-red-500 py-10">
-            {error}
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="a-propos" className="py-12 md:py-16 bg-gray-50">
@@ -127,61 +71,49 @@ const AboutSection = () => {
         </div>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
-          {sections.map((section) => (
-            <div key={section.id} className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-xl font-bold mb-4 text-primary">{section.title}</h3>
-              <div className="prose text-gray-600" dangerouslySetInnerHTML={{ __html: section.content }} />
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-bold mb-4 text-primary">Mon parcours</h3>
+            <ul className="space-y-3 mb-6">
+              {background.map((item, idx) => (
+                <li key={idx} className="flex items-start">
+                  <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                  <span className="text-gray-600">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-bold mb-4 text-primary">Mes missions et valeurs</h3>
+            <div className="mb-6">
+              <h4 className="font-bold mb-2">Accompagnement social global</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                  <span className="text-gray-600">Aide sur des problématiques variées : logement, budget, travail, santé, handicap, accès aux droits</span>
+                </li>
+                <li className="flex items-start">
+                  <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                  <span className="text-gray-600">Intervention basée sur une relation de confiance et de bienveillance</span>
+                </li>
+                <li className="flex items-start">
+                  <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                  <span className="text-gray-600">Objectif : favoriser l'autonomie et la stabilité des personnes</span>
+                </li>
+              </ul>
             </div>
-          ))}
-          
-          {/* Fallback content if no sections from database */}
-          {sections.length === 0 && (
-            <>
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-primary">Mon parcours</h3>
-                <ul className="space-y-3 mb-6">
-                  {background.map((item, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                      <span className="text-gray-600">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-primary">Mes missions et valeurs</h3>
-                <div className="mb-6">
-                  <h4 className="font-bold mb-2">Accompagnement social global</h4>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                      <span className="text-gray-600">Aide sur des problématiques variées : logement, budget, travail, santé, handicap, accès aux droits</span>
-                    </li>
-                    <li className="flex items-start">
-                      <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                      <span className="text-gray-600">Intervention basée sur une relation de confiance et de bienveillance</span>
-                    </li>
-                    <li className="flex items-start">
-                      <ArrowRight className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                      <span className="text-gray-600">Objectif : favoriser l'autonomie et la stabilité des personnes</span>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h4 className="font-bold mb-2">Mes engagements</h4>
-                  <ul className="space-y-2">
-                    {values.map((value, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
-                        <span className="text-gray-600">{value}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </>
-          )}
+            
+            <div>
+              <h4 className="font-bold mb-2">Mes engagements</h4>
+              <ul className="space-y-2">
+                {values.map((value, idx) => (
+                  <li key={idx} className="flex items-start">
+                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5 mr-2" />
+                    <span className="text-gray-600">{value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
