@@ -85,10 +85,10 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
       formElement.method = "POST";
       
       // Soumettre le formulaire via AJAX pour éviter la redirection
-      const formData = new FormData(formElement);
+      const formDataToSend = new FormData(formElement);
       const response = await fetch(formElement.action, {
         method: 'POST',
-        body: formData,
+        body: formDataToSend,
         headers: {
           'Accept': 'application/json'
         }
