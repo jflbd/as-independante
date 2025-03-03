@@ -1,4 +1,3 @@
-
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star, Facebook } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -18,11 +17,9 @@ const Index = () => {
   const observerInitialized = useRef(false);
   
   useEffect(() => {
-    // Make sure we initialize the observer only once to prevent memory leaks
     if (observerInitialized.current) return;
     observerInitialized.current = true;
     
-    // Only apply animations on desktop, not on mobile
     if (window.innerWidth <= 768) return;
     
     const observer = new IntersectionObserver(
@@ -40,14 +37,12 @@ const Index = () => {
       }
     );
     
-    // Make all sections visible immediately on mobile
     const sections = document.querySelectorAll('section');
     if (window.innerWidth <= 768) {
       sections.forEach(section => {
         section.classList.add('is-visible');
       });
     } else {
-      // Only apply animation classes on desktop
       sections.forEach(section => {
         section.classList.add('section-animate');
         observer.observe(section);
@@ -60,10 +55,6 @@ const Index = () => {
       }
     };
   }, []);
-
-  const handleLegalLinkClick = () => {
-    window.scrollTo(0, 0);
-  };
 
   return (
     <>
@@ -219,7 +210,6 @@ const Index = () => {
               <SafeLink 
                 to="/mentions-legales" 
                 className="text-sm text-gray-500 hover:text-primary hover:underline transition-colors"
-                onClick={handleLegalLinkClick}
               >
                 Mentions légales
               </SafeLink>

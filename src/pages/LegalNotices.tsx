@@ -2,6 +2,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useEffect } from "react";
 import LegalDefinitions from "../components/legal/LegalDefinitions";
 import LegalPresentation from "../components/legal/LegalPresentation";
 import LegalTermsOfUse from "../components/legal/LegalTermsOfUse";
@@ -15,6 +16,11 @@ import LegalCookies from "../components/legal/LegalCookies";
 import LegalJurisdiction from "../components/legal/LegalJurisdiction";
 
 const LegalNotices = () => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
