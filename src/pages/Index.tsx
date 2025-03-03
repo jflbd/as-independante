@@ -1,4 +1,3 @@
-
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star, Facebook } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -139,7 +138,7 @@ const Index = () => {
                     <Star size={60} />
                   </div>
                   <OptimizedImage 
-                    src="https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                    src="/lovable-uploads/7b80847b-ef43-4381-909c-728df9b030e5.png" 
                     alt="Solutions concrètes" 
                     className="w-full h-48 object-cover rounded-md mb-4"
                     width={600}
@@ -214,4 +213,3 @@ const Index = () => {
 };
 
 export default Index;
-
