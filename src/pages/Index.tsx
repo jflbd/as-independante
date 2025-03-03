@@ -138,11 +138,11 @@ const Index = () => {
                     <Star size={60} />
                   </div>
                   <OptimizedImage 
-                    src="/lovable-uploads/7b80847b-ef43-4381-909c-728df9b030e5.png" 
+                    src="/lovable-uploads/836f0247-dd27-4c4b-8491-4d1174cd78b5.png" 
                     alt="Solutions concrètes" 
-                    className="w-full h-48 object-cover rounded-md mb-4"
+                    className="w-full h-48 object-cover object-center rounded-md mb-4"
                     width={600}
-                    height={400}
+                    height={600}
                   />
                   <div className="flex items-center mb-3">
                     <Star className="h-5 w-5 mr-2 text-accent" aria-hidden="true" />
