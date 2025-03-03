@@ -47,19 +47,19 @@ const ContactSection = () => {
       subjectField.value = `Message de contact de ${formData.name}`;
       formElement.appendChild(subjectField);
       
-      // Comportement après envoi
+      // Ne pas rediriger après soumission, simplement afficher un toast
       const redirectField = document.createElement("input");
       redirectField.type = "hidden";
-      redirectField.name = "_after";
-      redirectField.value = window.location.href;
+      redirectField.name = "_captcha";
+      redirectField.value = "false";
       formElement.appendChild(redirectField);
       
-      // Désactiver le captcha
-      const captchaField = document.createElement("input");
-      captchaField.type = "hidden";
-      captchaField.name = "_captcha";
-      captchaField.value = "false";
-      formElement.appendChild(captchaField);
+      // Ajouter également _next pour empêcher la redirection
+      const nextField = document.createElement("input");
+      nextField.type = "hidden";
+      nextField.name = "_next";
+      nextField.value = "false";
+      formElement.appendChild(nextField);
       
       // Log les données avant envoi
       console.log("Envoi d'email à: rachel.gervais@as-independante.fr");
@@ -69,11 +69,24 @@ const ContactSection = () => {
       formElement.action = "https://formsubmit.co/rachel.gervais@as-independante.fr";
       formElement.method = "POST";
       
-      // Soumettre le formulaire
-      formElement.submit();
+      // Soumettre le formulaire via AJAX pour éviter la redirection
+      const formDataToSend = new FormData(formElement);
+      await fetch(formElement.action, {
+        method: 'POST',
+        body: formDataToSend,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
       
-      // Pas besoin de toast car la page sera redirigée
-      // Reset form sera géré après redirection
+      // Afficher un toast de succès
+      toast({
+        title: "Message envoyé",
+        description: "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais.",
+      });
+      
+      // Réinitialiser le formulaire
+      setFormData({ name: "", email: "", message: "" });
       
     } catch (error) {
       // Show error toast
@@ -83,6 +96,7 @@ const ContactSection = () => {
         variant: "destructive"
       });
       console.error("Error sending email:", error);
+    } finally {
       setIsSubmitting(false);
     }
   };
