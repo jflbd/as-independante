@@ -1,202 +1,39 @@
 
 import { createClient } from '@supabase/supabase-js';
+import { toast } from '@/hooks/use-toast';
+
+// Récupérer les variables d'environnement Supabase
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Vérifier si les variables d'environnement sont définies
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Les variables d\'environnement Supabase ne sont pas définies');
+  // Au lieu de lancer une erreur, nous allons créer un client factice
+  // qui n'interférera pas avec le rendu de l'application
+}
 
 // Créer le client Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const supabase = supabaseUrl && supabaseKey 
+  ? createClient(supabaseUrl, supabaseKey)
+  : createClient(
+      'https://placeholder-url.supabase.co',
+      'placeholder-key', 
+      { 
+        auth: { 
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false
+        } 
+      }
+    );
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Les variables d\'environnement Supabase ne sont pas définies');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Fonctions pour la gestion des sections
-export async function getSiteContent() {
-  const { data, error } = await supabase
-    .from('site_content')
-    .select('*')
-    .single();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function updateSiteContent(content: Partial<any>) {
-  const { data, error } = await supabase
-    .from('site_content')
-    .update(content)
-    .eq('id', 1)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-// Fonctions pour la gestion des témoignages
-export async function getTestimonials() {
-  const { data, error } = await supabase
-    .from('testimonials')
-    .select('*')
-    .order('order', { ascending: true });
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function createTestimonial(testimonial: Partial<any>) {
-  const { data, error } = await supabase
-    .from('testimonials')
-    .insert(testimonial)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function updateTestimonial(id: string, testimonial: Partial<any>) {
-  const { data, error } = await supabase
-    .from('testimonials')
-    .update(testimonial)
-    .eq('id', id)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function deleteTestimonial(id: string) {
-  const { error } = await supabase
-    .from('testimonials')
-    .delete()
-    .eq('id', id);
-  
-  if (error) throw error;
-  return true;
-}
-
-// Fonctions pour la gestion des services
-export async function getServices() {
-  const { data, error } = await supabase
-    .from('services')
-    .select('*')
-    .order('order', { ascending: true });
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function createService(service: Partial<any>) {
-  const { data, error } = await supabase
-    .from('services')
-    .insert(service)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function updateService(id: string, service: Partial<any>) {
-  const { data, error } = await supabase
-    .from('services')
-    .update(service)
-    .eq('id', id)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function deleteService(id: string) {
-  const { error } = await supabase
-    .from('services')
-    .delete()
-    .eq('id', id);
-  
-  if (error) throw error;
-  return true;
-}
-
-// Fonctions pour la gestion des tarifs
-export async function getPricingOptions() {
-  const { data, error } = await supabase
-    .from('pricing_options')
-    .select('*')
-    .order('order', { ascending: true });
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function createPricingOption(option: Partial<any>) {
-  const { data, error } = await supabase
-    .from('pricing_options')
-    .insert(option)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function updatePricingOption(id: string, option: Partial<any>) {
-  const { data, error } = await supabase
-    .from('pricing_options')
-    .update(option)
-    .eq('id', id)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function deletePricingOption(id: string) {
-  const { error } = await supabase
-    .from('pricing_options')
-    .delete()
-    .eq('id', id);
-  
-  if (error) throw error;
-  return true;
-}
-
-// Fonctions pour la gestion des missions
-export async function getMissions() {
-  const { data, error } = await supabase
-    .from('missions')
-    .select('*')
-    .order('order', { ascending: true });
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function createMission(mission: Partial<any>) {
-  const { data, error } = await supabase
-    .from('missions')
-    .insert(mission)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function updateMission(id: string, mission: Partial<any>) {
-  const { data, error } = await supabase
-    .from('missions')
-    .update(mission)
-    .eq('id', id)
-    .select();
-  
-  if (error) throw error;
-  return data;
-}
-
-export async function deleteMission(id: string) {
-  const { error } = await supabase
-    .from('missions')
-    .delete()
-    .eq('id', id);
-  
-  if (error) throw error;
-  return true;
-}
+// Helper pour gérer les erreurs de base de données
+export const handleDatabaseError = (error: any, fallbackMessage: string) => {
+  console.error('Database error:', error);
+  toast({
+    title: 'Erreur',
+    description: error?.message || fallbackMessage,
+    variant: 'destructive',
+  });
+};
