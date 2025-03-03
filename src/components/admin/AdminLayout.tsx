@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Home, Settings, Users, Package, Star, MessageSquare, DollarSign, LogOut } from 'lucide-react';
+import { Home, Settings, Users, Package, Star, MessageSquare, DollarSign, LogOut, FileText } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 
@@ -16,6 +16,7 @@ const AdminLayout = () => {
     { icon: Package, label: 'Services', path: '/admin/services' },
     { icon: Star, label: 'Missions', path: '/admin/missions' },
     { icon: DollarSign, label: 'Tarifs', path: '/admin/pricing' },
+    { icon: FileText, label: 'Mentions légales', path: '/admin/legal' },
   ];
 
   const handleSignOut = async () => {
@@ -49,7 +50,10 @@ const AdminLayout = () => {
                 <Link
                   to={item.path}
                   className={`flex items-center p-2 rounded-lg hover:bg-gray-100 transition-colors ${
-                    location.pathname === item.path ? 'bg-primary/10 text-primary font-medium' : 'text-gray-700'
+                    (location.pathname === item.path || 
+                     (item.path !== '/admin' && location.pathname.startsWith(item.path))) 
+                      ? 'bg-primary/10 text-primary font-medium' 
+                      : 'text-gray-700'
                   }`}
                 >
                   <item.icon className="h-5 w-5 mr-3" />
