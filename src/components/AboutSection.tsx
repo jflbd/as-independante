@@ -1,5 +1,6 @@
 
 import { ArrowRight, Check } from "lucide-react";
+import OptimizedImage from "./OptimizedImage";
 
 const AboutSection = () => {
   const advantages = [
@@ -48,10 +49,12 @@ const AboutSection = () => {
           <div className="relative">
             <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-full z-0"></div>
             <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-accent/20 rounded-full z-0"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-              alt="Assistante sociale en entretien" 
+            <OptimizedImage 
+              src="/lovable-uploads/6cb34f73-d784-4e68-a81f-865b14db6002.png"
+              alt="Rachel Gervais, Assistante sociale indépendante" 
               className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
+              width={600}
+              height={800}
             />
           </div>
           <div className="flex flex-col justify-center">
@@ -118,4 +121,3 @@ const AboutSection = () => {
 };
 
 export default AboutSection;
-
