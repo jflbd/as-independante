@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Mail, Phone, Facebook } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -30,8 +29,36 @@ const ContactSection = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate email sending with a timeout
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Créer l'URL pour le service EmailJS
+      const serviceID = "default_service"; // Remplacer par votre ID de service
+      const templateID = "template_contact"; // Remplacer par votre ID de template
+      const userID = "your_emailjs_user_id"; // Remplacer par votre ID utilisateur EmailJS
+      
+      const emailData = {
+        service_id: serviceID,
+        template_id: templateID,
+        user_id: userID,
+        template_params: {
+          to_email: "rachel.gervais@as-independante.fr",
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          subject: `Message de contact de ${formData.name}`
+        }
+      };
+      
+      console.log("Envoi d'email à: rachel.gervais@as-independante.fr");
+      console.log("Données:", emailData);
+      
+      // Simuler l'envoi d'email avec un délai (à remplacer par l'appel API réel)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Quand vous êtes prêt à implémenter l'envoi réel, utilisez:
+      // const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(emailData)
+      // });
       
       // Show success toast
       toast({
@@ -119,6 +146,7 @@ const ContactSection = () => {
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 placeholder="Votre nom"
                 required
+                disabled={isSubmitting}
               />
             </div>
             <div>
@@ -132,6 +160,7 @@ const ContactSection = () => {
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-300"
                 placeholder="votre@email.com"
                 required
+                disabled={isSubmitting}
               />
             </div>
             <div>
@@ -145,6 +174,7 @@ const ContactSection = () => {
                 rows={4}
                 placeholder="Votre message"
                 required
+                disabled={isSubmitting}
               />
             </div>
             <button
