@@ -1,4 +1,3 @@
-
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star, Facebook } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -10,45 +9,42 @@ import MissionsSection from "@/components/MissionsSection";
 import ReferentielSection from "@/components/ReferentielSection";
 import DeontologieSection from "@/components/DeontologieSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import SafeLink from "@/components/SafeLink";
 import OptimizedImage from "@/components/OptimizedImage";
 
 const Index = () => {
+  const observerInitialized = useRef(false);
+  
   useEffect(() => {
-    // Improved intersection observer for smoother animations
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach(entry => {
-        // Use requestAnimationFrame to reduce jank
-        requestAnimationFrame(() => {
+    if (observerInitialized.current) return;
+    observerInitialized.current = true;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // Only add the visible class to prevent flickering
             entry.target.classList.add('is-visible');
-          } else if (!document.hidden) {
-            // Only remove when document is visible and not during fast scrolling
-            entry.target.classList.remove('is-visible');
           }
         });
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -10% 0px',
+        threshold: 0.1
+      }
+    );
     
-    // Simplified class handling for better performance
-    document.querySelectorAll('section').forEach(section => {
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
       section.classList.add('section-animate');
       observer.observe(section);
     });
-
-    // Clean up observer on unmount
+    
     return () => {
-      observer.disconnect();
+      if (observer) {
+        observer.disconnect();
+      }
     };
   }, []);
 

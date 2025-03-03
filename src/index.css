@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -17,7 +18,7 @@ body {
 
 section {
   @apply relative overflow-hidden border-b border-gray-100;
-  will-change: transform, opacity; /* Improve performance for animations */
+  /* Removed will-change to prevent rendering issues */
 }
 
 section:nth-of-type(odd) {
@@ -68,21 +69,13 @@ section::before {
     @apply btn bg-accent text-white hover:bg-accent/90 focus:ring-accent/50;
   }
   
-  /* Section animation classes - Modified for better performance */
+  /* Simplified section animation - eliminated transition artifacts */
   .section-animate {
-    @apply transition-opacity duration-700 ease-out;
-    backface-visibility: hidden; /* Reduce flickering */
-    -webkit-backface-visibility: hidden;
-    transform: translateZ(0); /* Force GPU acceleration */
-    -webkit-transform: translateZ(0);
+    opacity: 0;
   }
   
   .section-animate.is-visible {
-    @apply opacity-100;
-  }
-  
-  .section-animate:not(.is-visible) {
-    @apply opacity-0;
+    animation: fade-in-simple 0.4s ease-out forwards;
   }
   
   /* Section dividers */
@@ -134,14 +127,29 @@ section::before {
   }
 }
 
+/* Simple fade-in animation without transforms */
+@keyframes fade-in-simple {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Add this to improve scrolling performance */
 * {
   -webkit-overflow-scrolling: touch; /* Improve scrolling on iOS */
 }
 
-/* Reduce animation complexity on mobile */
-@media (max-width: 767px) {
+/* Remove all animations on mobile for even better performance if still needed */
+@media (prefers-reduced-motion), (max-width: 767px) {
   .section-animate {
-    @apply transition-opacity duration-500 ease-out;
+    transition: none !important;
+  }
+  
+  .section-animate.is-visible {
+    opacity: 1;
+    animation: none;
   }
 }
