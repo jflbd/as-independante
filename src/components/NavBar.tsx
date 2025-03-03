@@ -13,14 +13,18 @@ const NavBar = () => {
     const section = document.getElementById(sectionId);
     if (section) {
       setIsScrolling(true);
-      section.scrollIntoView({ behavior: "smooth" });
-      setIsOpen(false);
-      setActiveSection(sectionId);
+      setIsOpen(false); // Close mobile menu before scrolling
       
-      // Reset scrolling state after animation completes
+      // Use setTimeout to allow menu to close before scrolling
       setTimeout(() => {
-        setIsScrolling(false);
-      }, 1000);
+        section.scrollIntoView({ behavior: "smooth" });
+        setActiveSection(sectionId);
+        
+        // Reset scrolling state after animation completes
+        setTimeout(() => {
+          setIsScrolling(false);
+        }, 1000);
+      }, 50);
     }
   };
 
@@ -59,6 +63,22 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isScrolling]);
 
+  // Handle body scroll locking when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent body scrolling when menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scrolling when menu is closed
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      // Cleanup - ensure scrolling is enabled when component unmounts
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const navItems = [
     { id: "accueil", label: "Accueil" },
     { id: "a-propos", label: "Mon parcours" },
@@ -87,6 +107,7 @@ const NavBar = () => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
               setActiveSection("accueil");
+              setIsOpen(false); // Close mobile menu when clicking on logo
             }}
             aria-label="Retour à l'accueil"
           >
@@ -143,33 +164,35 @@ const NavBar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 animate-fade-in">
-            <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-xl border border-primary/10">
-              {navItems.map((item) => (
-                <SafeLink
-                  key={item.id}
-                  to={`#${item.id}`}
-                  className={`
-                    flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 
-                    ${activeSection === item.id 
-                      ? "text-white font-semibold bg-primary border-l-4 border-primary/60" 
-                      : "text-gray-600 hover:text-primary hover:bg-primary/5 border-l-4 border-transparent"}
-                  `}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection(item.id);
-                  }}
-                  aria-label={`Naviguer vers la section ${item.label}`}
-                >
-                  <ChevronDown 
-                    size={16} 
-                    className={`transform transition-transform duration-300 ${
-                      activeSection === item.id ? "rotate-180 text-white" : ""
-                    }`} 
-                  />
-                  <span>{item.label}</span>
-                </SafeLink>
-              ))}
+          <div className="md:hidden py-4 animate-fade-in fixed inset-x-0 top-[4.5rem] overflow-y-auto bg-white/95 backdrop-blur-lg shadow-xl max-h-[calc(100vh-4.5rem)] z-50">
+            <div className="container mx-auto px-4">
+              <div className="flex flex-col space-y-1 p-4 rounded-xl">
+                {navItems.map((item) => (
+                  <SafeLink
+                    key={item.id}
+                    to={`#${item.id}`}
+                    className={`
+                      flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 
+                      ${activeSection === item.id 
+                        ? "text-white font-semibold bg-primary border-l-4 border-primary/60" 
+                        : "text-gray-600 hover:text-primary hover:bg-primary/5 border-l-4 border-transparent"}
+                    `}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(item.id);
+                    }}
+                    aria-label={`Naviguer vers la section ${item.label}`}
+                  >
+                    <ChevronDown 
+                      size={16} 
+                      className={`transform transition-transform duration-300 ${
+                        activeSection === item.id ? "rotate-180 text-white" : ""
+                      }`} 
+                    />
+                    <span>{item.label}</span>
+                  </SafeLink>
+                ))}
+              </div>
             </div>
           </div>
         )}
