@@ -18,9 +18,9 @@ const CookieBanner = () => {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-section-light border-t border-primary/20 shadow-lg animate-fade-up">
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-primary/5 border-t border-primary/20 shadow-lg animate-fade-up">
       <div className="container mx-auto">
-        <div className="relative flex flex-col md:flex-row md:items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
+        <div className="relative flex flex-col md:flex-row md:items-center gap-4 p-4 bg-white rounded-lg shadow-md border border-primary/10">
           <button 
             onClick={() => setShowBanner(false)} 
             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -29,7 +29,7 @@ const CookieBanner = () => {
             <X size={20} />
           </button>
           
-          <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full">
+          <div className="flex-shrink-0 bg-primary/20 p-3 rounded-full">
             <Cookie className="h-6 w-6 text-primary" />
           </div>
           
