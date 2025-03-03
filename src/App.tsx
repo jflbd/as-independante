@@ -10,6 +10,7 @@ import LegalNotices from "./pages/LegalNotices";
 import { CookieConsentProvider } from "./contexts/CookieConsentContext";
 import CookieBanner from "./components/CookieBanner";
 
+// Create a new query client instance
 const queryClient = new QueryClient();
 
 const App = () => (
