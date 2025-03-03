@@ -2,31 +2,12 @@
 import { createClient } from '@supabase/supabase-js';
 import { toast } from '@/hooks/use-toast';
 
-// Récupérer les variables d'environnement Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Définition directe des variables d'environnement Supabase
+const supabaseUrl = "https://levybizvwzwaszhyjhff.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxldnliaXp2d3p3YXN6aHlqaGZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwMDgwNjcsImV4cCI6MjA1NjU4NDA2N30.pZ1jlzLymF4qeDjVWJx2AlmPFdJDOYqAZW-w0EQ1fcI";
 
-// Vérifier si les variables d'environnement sont définies
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Les variables d\'environnement Supabase ne sont pas définies');
-  // Au lieu de lancer une erreur, nous allons créer un client factice
-  // qui n'interférera pas avec le rendu de l'application
-}
-
-// Créer le client Supabase
-export const supabase = supabaseUrl && supabaseKey 
-  ? createClient(supabaseUrl, supabaseKey)
-  : createClient(
-      'https://placeholder-url.supabase.co',
-      'placeholder-key', 
-      { 
-        auth: { 
-          persistSession: false,
-          autoRefreshToken: false,
-          detectSessionInUrl: false
-        } 
-      }
-    );
+// Créer le client Supabase avec les clés codées en dur
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Helper pour gérer les erreurs de base de données
 export const handleDatabaseError = (error: any, fallbackMessage: string) => {
