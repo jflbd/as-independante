@@ -1,3 +1,4 @@
+
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star, Facebook } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -15,6 +16,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 
 const Index = () => {
   useEffect(() => {
+    // Improved intersection observer for smoother animations
     const observerOptions = {
       root: null,
       rootMargin: '0px',
@@ -23,20 +25,28 @@ const Index = () => {
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-up');
-          entry.target.classList.remove('opacity-0', 'translate-y-8');
-        }
+        // Use requestAnimationFrame to reduce jank
+        requestAnimationFrame(() => {
+          if (entry.isIntersecting) {
+            // Only add the visible class to prevent flickering
+            entry.target.classList.add('is-visible');
+          } else if (!document.hidden) {
+            // Only remove when document is visible and not during fast scrolling
+            entry.target.classList.remove('is-visible');
+          }
+        });
       });
     };
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
     
+    // Simplified class handling for better performance
     document.querySelectorAll('section').forEach(section => {
-      section.classList.add('opacity-0', 'translate-y-8', 'transition-all', 'duration-700');
+      section.classList.add('section-animate');
       observer.observe(section);
     });
 
+    // Clean up observer on unmount
     return () => {
       observer.disconnect();
     };
