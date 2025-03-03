@@ -1,3 +1,4 @@
+
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star, Facebook } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
@@ -17,8 +18,12 @@ const Index = () => {
   const observerInitialized = useRef(false);
   
   useEffect(() => {
+    // Make sure we initialize the observer only once to prevent memory leaks
     if (observerInitialized.current) return;
     observerInitialized.current = true;
+    
+    // Only apply animations on desktop, not on mobile
+    if (window.innerWidth <= 768) return;
     
     const observer = new IntersectionObserver(
       (entries) => {
@@ -30,16 +35,24 @@ const Index = () => {
       },
       {
         root: null,
-        rootMargin: '0px 0px -10% 0px',
+        rootMargin: '0px',
         threshold: 0.1
       }
     );
     
+    // Make all sections visible immediately on mobile
     const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-      section.classList.add('section-animate');
-      observer.observe(section);
-    });
+    if (window.innerWidth <= 768) {
+      sections.forEach(section => {
+        section.classList.add('is-visible');
+      });
+    } else {
+      // Only apply animation classes on desktop
+      sections.forEach(section => {
+        section.classList.add('section-animate');
+        observer.observe(section);
+      });
+    }
     
     return () => {
       if (observer) {

@@ -18,7 +18,7 @@ body {
 
 section {
   @apply relative overflow-hidden border-b border-gray-100;
-  /* Removed will-change to prevent rendering issues */
+  /* No animation properties that could hide content */
 }
 
 section:nth-of-type(odd) {
@@ -69,9 +69,9 @@ section::before {
     @apply btn bg-accent text-white hover:bg-accent/90 focus:ring-accent/50;
   }
   
-  /* Simplified section animation - eliminated transition artifacts */
+  /* Remove initial opacity:0 - sections are now visible by default */
   .section-animate {
-    opacity: 0;
+    /* No initial opacity:0 */
   }
   
   .section-animate.is-visible {
@@ -130,7 +130,7 @@ section::before {
 /* Simple fade-in animation without transforms */
 @keyframes fade-in-simple {
   from {
-    opacity: 0;
+    opacity: 0.95;
   }
   to {
     opacity: 1;
@@ -146,10 +146,11 @@ section::before {
 @media (prefers-reduced-motion), (max-width: 767px) {
   .section-animate {
     transition: none !important;
+    opacity: 1 !important; /* Force visibility on mobile */
   }
   
   .section-animate.is-visible {
-    opacity: 1;
-    animation: none;
+    opacity: 1 !important;
+    animation: none !important;
   }
 }
