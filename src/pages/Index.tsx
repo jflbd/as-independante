@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star, Facebook } from "lucide-react";
+import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Helmet } from "react-helmet";
 import ServicesSection from "@/components/ServicesSection";
@@ -12,6 +12,9 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import { useEffect, useRef } from "react";
 import SafeLink from "@/components/SafeLink";
 import OptimizedImage from "@/components/OptimizedImage";
+import EbookHero from "@/components/EbookHero";
+import Footer from "@/components/Footer";
+import { siteConfig } from "@/config/siteConfig";
 
 const Index = () => {
   const observerInitialized = useRef(false);
@@ -59,10 +62,13 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Rachel Gervais | Assistante Sociale Indépendante en Normandie</title>
-        <meta name="description" content="Rachel Gervais, assistante sociale diplômée d'État depuis 2009, vous accompagne dans vos démarches sociales en Normandie. Plus de 10 ans d'expérience au service de votre bien-être social." />
-        <meta name="keywords" content="assistante sociale, Normandie, Rachel Gervais, accompagnement social, démarches administratives, CCAS, aide sociale" />
-        <link rel="canonical" href="https://www.as-independante.fr/" />
+        <title>{siteConfig.title}</title>
+        <meta name="description" content={siteConfig.description} />
+        <meta property="og:title" content={siteConfig.title} />
+        <meta property="og:description" content={siteConfig.description} />
+        <meta property="og:url" content={siteConfig.url} />
+        <meta name="keywords" content={siteConfig.keywords} />
+        <link rel="canonical" href={siteConfig.url} />
       </Helmet>
       
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -90,7 +96,7 @@ const Index = () => {
                     <Sparkles className="inline mr-1 h-3 w-3" /> Accompagnement professionnel
                   </span>
                   <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
-                    Un accompagnement social personnalisé et professionnel en Normandie
+                    Un accompagnement social personnalisé et professionnel en {siteConfig.contact.region}
                   </h1>
                   <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600 animate-fade-up">
                     Diplômée d'État depuis 2009, je vous accompagne dans vos démarches sociales avec bienveillance et professionnalisme, que vous soyez un particulier ou un professionnel.
@@ -184,6 +190,9 @@ const Index = () => {
           
           <DeontologieSection />
           <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+
+          <EbookHero />
+          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
           
           <PricingSection />
           <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
@@ -191,31 +200,7 @@ const Index = () => {
           <ContactSection />
         </main>
 
-        <footer className="py-8 bg-gray-50 relative">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/40 via-accent/40 to-secondary/40"></div>
-          <div className="container px-4 mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-              <p className="text-gray-600">&copy; 2025 AS Indépendante par JFL. Tous droits réservés.</p>
-              <SafeLink 
-                to="https://www.facebook.com/groups/508874659843806" 
-                external={true}
-                className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors group"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5 transition-transform group-hover:scale-110" />
-                <span className="text-sm">Rejoignez-moi sur Facebook</span>
-              </SafeLink>
-            </div>
-            <div className="flex justify-center">
-              <SafeLink 
-                to="/mentions-legales" 
-                className="text-sm text-gray-500 hover:text-primary hover:underline transition-colors"
-              >
-                Mentions légales
-              </SafeLink>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );

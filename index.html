@@ -4,17 +4,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rachel Gervais | Assistante Sociale Indépendante en Normandie</title>
+    <title>{siteConfig.title} en {siteConfig..contact.region}</title>
     <meta name="description" content="Accompagnement social personnalisé et professionnel. Assistance dans vos démarches administratives, soutien et conseil par une assistante sociale indépendante." />
-    <meta name="keywords" content="assistante sociale, indépendante, accompagnement social, démarches administratives, aide sociale, conseil social, Normandie" />
+    <meta name="keywords" content={siteConfig.keywords} />
     <meta name="author" content="AS Indépendante" />
-    <meta property="og:title" content="Rachel Gervais | Assistante Sociale Indépendante" />
-    <meta property="og:description" content="Accompagnement social personnalisé et professionnel. Assistance dans vos démarches administratives, soutien et conseil." />
+    <meta property="og:title" content={siteConfig.title} />
+    <meta property="og:description" content={siteConfig.description} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/public/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" />
-    <meta property="og:url" content="https://www.as-independante.fr" />
-    <link rel="canonical" href="https://www.as-independante.fr" />
-    <link rel="icon" type="image/png" href="/public/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" />
+    <meta property="og:image" content="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" />
+    <meta property="og:url" content={siteConfig.url} />
+    <link rel="canonical" href={siteConfig.url} />
+    <link rel="icon" type="image/png" href="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" />
     <meta name="robots" content="index, follow" />
     
     <!-- Préchargement des polices pour améliorer les performances -->
@@ -23,25 +23,27 @@
     
     <!-- Données structurées Schema.org pour les Rich Snippets Google -->
     <script type="application/ld+json">
+      const jsonLdScript = `
       {
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
-        "name": "Rachel Gervais - Assistante Sociale Indépendante",
-        "image": "/public/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png",
-        "description": "Accompagnement social personnalisé et professionnel. Assistance dans vos démarches administratives, soutien et conseil.",
+        "name": "${siteConfig.title}",
+        "image": "/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png",
+        "description": "${siteConfig.description}",
         "address": {
           "@type": "PostalAddress",
-          "addressRegion": "Normandie",
-          "addressCountry": "FR"
+          "addressRegion": "${siteConfig.contact.region}",
+          "addressCountry": "${siteConfig.contact.country}"
         },
-        "telephone": "06 XX XX XX XX",
-        "url": "https://www.as-independante.fr",
+        "telephone": "${siteConfig.contact.phone}",
+        "url": "${siteConfig.url}",
         "priceRange": "$$",
-        "openingHours": "Mo-Fr 09:00-18:00",
+        "openingHours": "${siteConfig.openingHours}",
         "sameAs": [
-          "https://www.facebook.com/groups/508874659843806"
+          "${siteConfig.social.facebook}"
         ]
       }
+      `;
     </script>
   </head>
   <body>

@@ -1,8 +1,8 @@
-
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { siteConfig } from "@/config/siteConfig";
 
 type FormData = {
   name: string;
@@ -36,7 +36,7 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    console.log("Envoi de devis à: rachel.gervais@as-independante.fr");
+    console.log(`Envoi de devis à: ${siteConfig.contact.email}`);
     console.log("Données du formulaire:", formData);
     
     try {
@@ -47,7 +47,7 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
       const destinationEmail = document.createElement("input");
       destinationEmail.type = "hidden";
       destinationEmail.name = "_to";
-      destinationEmail.value = "rachel.gervais@as-independante.fr";
+      destinationEmail.value = siteConfig.contact.email;
       formElement.appendChild(destinationEmail);
       
       // Élément pour le sujet de l'email
@@ -81,7 +81,7 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
       });
       
       // Définir l'action du formulaire vers FormSubmit
-      formElement.action = "https://formsubmit.co/rachel.gervais@as-independante.fr";
+      formElement.action = `https://formsubmit.co/${siteConfig.contact.email}`;
       formElement.method = "POST";
       
       // Soumettre le formulaire via AJAX pour éviter la redirection
@@ -213,7 +213,7 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
           </div>
           
           <div className="text-xs text-gray-500">
-            En soumettant ce formulaire, vous serez contacté par Rachel Gervais à l'adresse email rachel.gervais@as-independante.fr
+            En soumettant ce formulaire, vous serez contacté par {siteConfig.name} avec l'adresse email {siteConfig.contact.email}
           </div>
           
           <div className="flex justify-end pt-2">

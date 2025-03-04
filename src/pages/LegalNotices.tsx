@@ -14,6 +14,7 @@ import LegalPersonalData from "../components/legal/LegalPersonalData";
 import LegalIncidentNotification from "../components/legal/LegalIncidentNotification";
 import LegalCookies from "../components/legal/LegalCookies";
 import LegalJurisdiction from "../components/legal/LegalJurisdiction";
+import { siteConfig } from "@/config/siteConfig";
 
 const LegalNotices = () => {
   // Scroll to top when component mounts
@@ -24,8 +25,8 @@ const LegalNotices = () => {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>Mentions légales | Rachel Gervais - Assistante Sociale Indépendante</title>
-        <meta name="description" content="Mentions légales de Rachel Gervais, Assistante Sociale Indépendante en Normandie." />
+        <title>Mentions légales | {siteConfig.title}</title>
+        <meta name="description" content={siteConfig.description} />
       </Helmet>
       
       <div className="container mx-auto px-4 py-8">

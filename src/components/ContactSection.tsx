@@ -1,7 +1,8 @@
-
 import { useState } from "react";
-import { Mail, Phone, Facebook } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
+import { SiFacebook } from "@icons-pack/react-simple-icons";
 import { toast } from "@/hooks/use-toast";
+import { siteConfig } from "@/config/siteConfig"; // Ajout de l'import
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const ContactSection = () => {
       const destinationEmail = document.createElement("input");
       destinationEmail.type = "hidden";
       destinationEmail.name = "_to";
-      destinationEmail.value = "rachel.gervais@as-independante.fr";
+      destinationEmail.value = siteConfig.contact.email; // Utilisation de siteConfig
       formElement.appendChild(destinationEmail);
       
       // Élément pour le sujet de l'email
@@ -62,11 +63,11 @@ const ContactSection = () => {
       formElement.appendChild(nextField);
       
       // Log les données avant envoi
-      console.log("Envoi d'email à: rachel.gervais@as-independante.fr");
+      console.log(`Envoi d'email à: ${siteConfig.contact.email}`); // Modifié
       console.log("Données:", formData);
       
       // Définir l'action du formulaire vers FormSubmit
-      formElement.action = "https://formsubmit.co/rachel.gervais@as-independante.fr";
+      formElement.action = `https://formsubmit.co/${siteConfig.contact.email}`; // Utilisation de siteConfig
       formElement.method = "POST";
       
       // Soumettre le formulaire via AJAX pour éviter la redirection
@@ -122,26 +123,26 @@ const ContactSection = () => {
             <h3 className="text-xl font-bold mb-6 text-center">Détails de contact</h3>
             <div className="space-y-4">
               <a 
-                href="mailto:rachel.gervais@as-independante.fr" 
+                href={`mailto:${siteConfig.contact.email}`} // Utilisation de siteConfig
                 className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary hover:bg-primary/10 py-2 px-4 rounded-md transition-all duration-300 group"
               >
                 <Mail className="h-5 w-5 transition-transform group-hover:scale-125 group-hover:rotate-12" />
-                <span className="group-hover:font-medium">rachel.gervais@as-independante.fr</span>
+                <span className="group-hover:font-medium">{siteConfig.contact.email}</span> {/* Utilisation de siteConfig */}
               </a>
               <a 
-                href="tel:0763907845" 
+                href={`tel:${siteConfig.contact.phone.replace(/\s/g, '')}`} // Utilisation de siteConfig avec suppression des espaces
                 className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary hover:bg-primary/10 py-2 px-4 rounded-md transition-all duration-300 group"
               >
                 <Phone className="h-5 w-5 transition-transform group-hover:scale-125 group-hover:rotate-12" />
-                <span className="group-hover:font-medium">07 63 90 78 45</span>
+                <span className="group-hover:font-medium">{siteConfig.contact.phone}</span> {/* Utilisation de siteConfig */}
               </a>
               <a 
-                href="https://www.facebook.com/groups/508874659843806" 
+                href={siteConfig.social.facebook} // Utilisation de siteConfig
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center space-x-3 text-gray-600 hover:text-primary hover:bg-primary/10 py-2 px-4 rounded-md transition-all duration-300 group"
               >
-                <Facebook className="h-5 w-5 transition-transform group-hover:scale-125 group-hover:rotate-12" />
+                <SiFacebook className="h-5 w-5 text-[#1877F2] transition-transform group-hover:scale-125 group-hover:rotate-12" />
                 <span className="group-hover:font-medium">Rejoignez-moi sur Facebook</span>
               </a>
             </div>

@@ -1,6 +1,7 @@
 
 import { ArrowRight, Check } from "lucide-react";
 import OptimizedImage from "./OptimizedImage";
+import { siteConfig } from "@/config/siteConfig";
 
 const AboutSection = () => {
   const advantages = [
@@ -37,7 +38,7 @@ const AboutSection = () => {
             Mon parcours
           </span>
           <h2 className="text-2xl md:text-4xl font-serif font-bold mb-4">
-            Rachel Gervais, Assistante Sociale Indépendante
+            {siteConfig.name}, Assistante Sociale Indépendante
           </h2>
           <p className="text-gray-600">
             Assistante sociale diplômée d'État depuis 2009, avec plus de 10 ans d'expérience.

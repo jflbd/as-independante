@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import SafeLink from "./SafeLink";
+import { siteConfig } from "@/config/siteConfig";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,35 +34,38 @@ const NavBar = () => {
     const handleScroll = () => {
       // Set background effect when scrolled
       if (window.scrollY > 20) {
-        setScrolled(true);
+      setScrolled(true);
       } else {
-        setScrolled(false);
+      setScrolled(false);
       }
       
       if (isScrolling) return; // Don't update during programmatic scrolling
       
-      const sections = navItems.map(item => item.id);
+      const sections = [
+      "accueil", "a-propos", "missions", "temoignages", 
+      "services", "referentiel", "deontologie", "ebook", "pricing", "contact"
+      ];
       
       // Find the current section based on scroll position
       const current = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
+      const element = document.getElementById(section);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        return rect.top <= 100 && rect.bottom >= 100;
+      }
+      return false;
       });
       
       if (current) {
-        setActiveSection(current);
+      setActiveSection(current);
       } else if (window.scrollY <= 100) {
-        setActiveSection("accueil");
+      setActiveSection("accueil");
       }
     };
     
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isScrolling]);
+    }, [isScrolling]);
 
   // Handle body scroll locking when mobile menu is open
   useEffect(() => {
@@ -87,6 +91,7 @@ const NavBar = () => {
     { id: "services", label: "Mes services" },
     { id: "referentiel", label: "Cadre d'intervention" },
     { id: "deontologie", label: "Déontologie" },
+    { id: "ebook", label: "Ebook" },
     { id: "pricing", label: "Tarifs" },
     { id: "contact", label: "Contact" },
   ];
@@ -114,14 +119,14 @@ const NavBar = () => {
             <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-primary/20 p-0.5 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-md">
               <img 
                 src="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
-                alt="Rachel Gervais" 
+                alt={siteConfig.name} 
                 className="h-full w-full rounded-full object-cover"
                 loading="eager"
                 width={48}
                 height={48}
               />
             </div>
-            <span className="text-xl font-serif font-bold text-primary tracking-wider">Rachel Gervais</span>
+            <span className="text-xl font-serif font-bold text-primary tracking-wider">{siteConfig.name}</span>
           </SafeLink>
 
           {/* Desktop Menu */}
