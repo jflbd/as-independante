@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { StripeCardElementChangeEvent } from '@stripe/stripe-js';
 import { Button } from '../ui/button';
-import { Lock, CheckCircle, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Lock, CheckCircle, AlertCircle, ShieldCheck, CreditCard } from 'lucide-react';
 import { ebookConfig } from '@/config/ebookConfig';
 
 // Nous pourrions placer cette clé dans un fichier d'environnement ou de configuration
@@ -42,7 +43,7 @@ const PaymentForm: React.FC<{ onPaymentComplete: (id: string) => void; amount: n
     const [errorMessage, setErrorMessage] = useState('');
     const [cardComplete, setCardComplete] = useState(false);
 
-    const handleCardChange = (event: any) => {
+    const handleCardChange = (event: StripeCardElementChangeEvent) => {
         setCardComplete(event.complete);
         if (event.error) {
             setErrorMessage(event.error.message);
@@ -101,8 +102,8 @@ const PaymentForm: React.FC<{ onPaymentComplete: (id: string) => void; amount: n
             // } else {
             //   throw new Error(result.message || 'Échec du paiement');
             // }
-        } catch (err: any) {
-            setErrorMessage(err.message || 'Une erreur inattendue est survenue');
+        } catch (err: unknown) {
+            setErrorMessage((err as Error).message || 'Une erreur inattendue est survenue');
             setIsProcessing(false);
         }
     };
@@ -164,12 +165,11 @@ const PaymentForm: React.FC<{ onPaymentComplete: (id: string) => void; amount: n
                 ) : `Payer ${amount.toFixed(2)}€ maintenant`}
             </Button>
             
-            <div className="payment-badges flex items-center justify-center gap-4 mt-4">
-
+            <div className="payment-badges flex flex-wrap items-center justify-center gap-4 mt-4">
                 {/* Badge SSL */}
                 <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
                     <Lock className="h-4 w-4 text-green-600 mr-1.5" />
-                    <span className="text-xs font-medium">SSL Secure</span>
+                    <span className="text-xs font-medium">SSL Sécurisé</span>
                 </div>
 
                 {/* Badge de paiement sécurisé */}
@@ -177,8 +177,17 @@ const PaymentForm: React.FC<{ onPaymentComplete: (id: string) => void; amount: n
                     <ShieldCheck className="h-4 w-4 text-green-600 mr-1.5" />
                     <span className="text-xs font-medium">Paiement sécurisé</span>
                 </div>
+                
+                {/* Badges des méthodes de paiement */}
+                <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded border">
+                    <CreditCard className="h-4 w-4 text-blue-600 mr-1.5" />
+                    <span className="text-xs font-medium">Cartes acceptées</span>
+                </div>
             </div>
             
+            <div className="text-center text-xs text-gray-500 mt-2">
+                {ebookConfig.guarantee}
+            </div>
         </form>
     );
 };
