@@ -22,6 +22,19 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Diviser les dépendances en chunks séparés
+          'react-vendor': ['react', 'react-dom'],
+          'ui-vendor': ['lucide-react', 'react-router-dom'],
+          // Ajouter d'autres chunks personnalisés si nécessaire
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000, // Ajuster la limite de taille des chunks si nécessaire
+  },
   define: {
     'process.env': process.env
   }
