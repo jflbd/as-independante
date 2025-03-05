@@ -4,7 +4,7 @@ export const ebookConfig = {
     downloadUrl: "/ebook/guide-demarches-administratives.pdf",
     price: 19.99,
     formattedPrice: "19,99€",
-    coverImage: "/lovable-uploads/ebook-cover.png",
+    coverImage: "/assets/ebook-cover.png",
     description: "Un outil indispensable regroupant toutes les informations et conseils pour vous accompagner efficacement dans vos démarches administratives et l'accès à vos droits.",
     benefits: [
         "Explications détaillées des principales aides sociales",

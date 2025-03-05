@@ -119,9 +119,9 @@ const PaymentForm: React.FC<{ onPaymentComplete: (id: string) => void; amount: n
                 <div className="mb-4 pb-3 border-b flex items-center justify-between">
                     <span className="font-medium">Détails de carte</span>
                     <div className="flex space-x-1">
-                        <img src="/assets/card-visa.svg" alt="Visa" className="h-6" />
-                        <img src="/assets/card-mastercard.svg" alt="Mastercard" className="h-6" />
-                        <img src="/assets/card-amex.svg" alt="American Express" className="h-6" />
+                        <img src="/assets/card/card-visa.svg" alt="Visa" className="h-6" />
+                        <img src="/assets/card/card-mastercard.svg" alt="Mastercard" className="h-6" />
+                        <img src="/assets/card/card-amex.svg" alt="American Express" className="h-6" />
                     </div>
                 </div>
                 
@@ -169,7 +169,7 @@ const PaymentForm: React.FC<{ onPaymentComplete: (id: string) => void; amount: n
                 {/* Badge SSL */}
                 <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
                     <Lock className="h-4 w-4 text-green-600 mr-1.5" />
-                    <span className="text-xs font-medium">SSL Sécurisé</span>
+                    <span className="text-xs font-medium">Connexion SSL sécurisée</span>
                 </div>
 
                 {/* Badge de paiement sécurisé */}
@@ -182,6 +182,18 @@ const PaymentForm: React.FC<{ onPaymentComplete: (id: string) => void; amount: n
                 <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded border">
                     <CreditCard className="h-4 w-4 text-blue-600 mr-1.5" />
                     <span className="text-xs font-medium">Cartes acceptées</span>
+                </div>
+
+                {/* Badge de satisfaction garantie */}
+                <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-1.5" />
+                    <span className="text-xs font-medium">Satisfaction garantie</span>
+                </div>
+
+                {/* Badge de support client */}
+                <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
+                    <AlertCircle className="h-4 w-4 text-green-600 mr-1.5" />
+                    <span className="text-xs font-medium">Support 24/7</span>
                 </div>
             </div>
             

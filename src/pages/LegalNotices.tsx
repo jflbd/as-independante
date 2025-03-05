@@ -30,12 +30,12 @@ const LegalNotices = () => {
       </Helmet>
       
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center mb-8">
+        <div className="back-to-home mb-8">
           <Link 
             to="/" 
-            className="flex items-center text-primary hover:text-primary/80 transition-colors"
+            className="flex items-center text-primary hover:text-primary/80 transition-colors text-lg font-semibold group"
           >
-            <ArrowLeft className="h-5 w-5 mr-2" />
+            <ArrowLeft className="h-6 w-6 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
             Retour à l'accueil
           </Link>
         </div>

@@ -99,14 +99,16 @@ const EbookHero: React.FC = () => {
                                         <Download size={18} />
                                         Obtenir le guide maintenant
                                     </Button>
-                                    <Button 
-                                        variant="outline" 
-                                        className="hidden md:flex items-center gap-2"
-                                        onClick={() => navigate('/ebook')}
-                                    >
-                                        <BookOpen size={18} />
-                                        En savoir plus
-                                    </Button>
+                                    {window.location.pathname !== '/ebook' && (
+                                        <Button 
+                                            variant="outline" 
+                                            className="hidden md:flex items-center gap-2"
+                                            onClick={() => navigate('/ebook')}
+                                        >
+                                            <BookOpen size={18} />
+                                            En savoir plus
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
 
@@ -124,12 +126,12 @@ const EbookHero: React.FC = () => {
                     </div>
                 </div>
             </section>
-
+            
             {/* Modal d'achat */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="sm:max-w-[800px]">
-                    <div className="flex justify-between items-center border-b pb-4 mb-4">
-                        <h2 className="text-xl font-semibold">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+                    <div className="flex justify-between items-center border-b pb-4 mb-4 sticky top-0 bg-white z-10">
+                        <h2 className="text-lg sm:text-xl font-semibold">
                             Achat du ebook
                         </h2>
                         <Button variant="ghost" size="icon" onClick={() => setIsModalOpen(false)}>
@@ -138,9 +140,9 @@ const EbookHero: React.FC = () => {
                     </div>
                     
                     <div className="purchase-modal-content">
-                        <div className="flex border-b mb-6">
+                        <div className="flex border-b mb-4 sm:mb-6 sticky top-14 bg-white z-10 pb-2">
                             <div 
-                                className={`relative px-4 py-3 flex-1 text-center transition-colors ${
+                                className={`relative px-2 sm:px-4 py-2 sm:py-3 flex-1 text-center transition-colors ${
                                     step === 'form' 
                                     ? 'text-primary font-medium' 
                                     : 'text-primary/80 font-medium'
@@ -151,22 +153,23 @@ const EbookHero: React.FC = () => {
                                 role={step === 'payment' ? 'button' : undefined}
                                 title={step === 'payment' ? 'Revenir aux informations' : undefined}
                             >
-                                <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full mr-2 ${
+                                <span className={`inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full mr-1 sm:mr-2 ${
                                     step === 'form' 
                                     ? 'bg-primary text-white' 
                                     : 'bg-primary/20 text-primary'
                                 }`}>1</span>
-                                Informations
+                                <span className="hidden sm:inline">Informations</span>
+                                <span className="sm:hidden">Infos</span>
                                 {step === 'form' && (
                                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>
                                 )}
                             </div>
-                            <div className={`relative px-4 py-3 flex-1 text-center transition-colors ${
+                            <div className={`relative px-2 sm:px-4 py-2 sm:py-3 flex-1 text-center transition-colors ${
                                 step === 'payment' 
                                 ? 'text-primary font-medium' 
                                 : 'text-gray-400'
                             }`}>
-                                <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full mr-2 ${
+                                <span className={`inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full mr-1 sm:mr-2 ${
                                     step === 'payment' 
                                     ? 'bg-primary text-white' 
                                     : 'bg-gray-100 text-gray-400'
@@ -178,8 +181,30 @@ const EbookHero: React.FC = () => {
                             </div>
                         </div>
                         
-                        <div className="purchase-content grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="md:col-span-2">
+                        <div className="purchase-content grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            {/* Sur mobile, afficher d'abord le résumé puis le formulaire */}
+                            <div className="purchase-summary lg:hidden bg-gray-50 p-3 rounded-lg">
+                                <div className="flex items-center space-x-3">
+                                    <img 
+                                        src={ebookConfig.coverImage} 
+                                        alt={ebookConfig.title} 
+                                        className="w-16 h-auto rounded-md shadow-sm"
+                                    />
+                                    <div>
+                                        <h3 className="font-semibold text-sm">{ebookConfig.title}</h3>
+                                        <div className="text-xs text-gray-600">
+                                            Format {ebookConfig.fileFormat} • {ebookConfig.fileSize}
+                                        </div>
+                                        {step === 'form' && (
+                                            <div className="font-medium text-sm mt-1">
+                                                <span>{ebookConfig.formattedPrice}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="lg:col-span-2">
                                 {step === 'form' ? (
                                     <CheckoutForm onSubmit={handleFormSubmit} initialData={customerInfo} />
                                 ) : (
@@ -187,7 +212,8 @@ const EbookHero: React.FC = () => {
                                 )}
                             </div>
                             
-                            <div className="purchase-summary bg-gray-50 p-4 rounded-lg">
+                            {/* Version bureau du résumé */}
+                            <div className="purchase-summary hidden lg:block bg-gray-50 p-4 rounded-lg">
                                 <div className="mb-3">
                                     <img 
                                         src={ebookConfig.coverImage} 
@@ -205,7 +231,7 @@ const EbookHero: React.FC = () => {
                                         <span>{ebookConfig.formattedPrice}</span>
                                     </div>
                                 )}
-
+            
                                 {/* Indicateur de paiement sécurisé SSL */}
                                 {step === 'form' && (
                                     <div className="mt-3 pt-3 border-t border-gray-200">

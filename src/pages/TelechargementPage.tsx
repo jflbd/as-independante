@@ -15,7 +15,7 @@ interface PurchaseInfo {
     timestamp: string;
 }
 
-const DownloadPage: React.FC = () => {
+const TelechargementPage: React.FC = () => {
     const [purchaseInfo, setPurchaseInfo] = useState<PurchaseInfo | null>(null);
     const [hasDownloaded, setHasDownloaded] = useState(false);
     const navigate = useNavigate();
@@ -116,4 +116,4 @@ const DownloadPage: React.FC = () => {
     );
 };
 
-export default DownloadPage;
+export default TelechargementPage;
