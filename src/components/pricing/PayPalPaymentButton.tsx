@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "@/hooks/use-toast";
+import { OrderResponseBody } from "@paypal/paypal-js";
 
 interface PayPalPaymentButtonProps {
   amount: string;
@@ -11,11 +12,12 @@ interface PayPalPaymentButtonProps {
 const PayPalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, description }) => {
   const [isPending, setIsPending] = useState(false);
   
-  const handlePaymentSuccess = (details: any) => {
-    console.log("Transaction completed by " + details.payer.name.given_name);
+  const handlePaymentSuccess = (details: OrderResponseBody) => {
+    const givenName = details.payer?.name?.given_name || "Client";
+    console.log("Transaction completed by " + givenName);
     toast({
       title: "Paiement réussi !",
-      description: `Merci ${details.payer.name.given_name} pour votre paiement de ${amount}€.`,
+      description: `Merci ${givenName} pour votre paiement de ${amount}€.`,
     });
   };
 
@@ -79,6 +81,7 @@ const PayPalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, descr
             title: "Paiement annulé",
             description: "Vous avez annulé le processus de paiement.",
           });
+          setIsPending(false);
         }}
         onClick={() => {
           setIsPending(true);
