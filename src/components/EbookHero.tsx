@@ -114,8 +114,10 @@ const EbookHero: React.FC = () => {
                                             variant="outline" 
                                             className="flex items-center gap-2"
                                             onClick={() => {
-                                                navigate('/ebook');
-                                                window.scrollTo(0, 0);
+                                                navigate('/ebook', { replace: true });
+                                                setTimeout(() => {
+                                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                }, 100);
                                             }}
                                         >
                                             <BookOpen size={18} />
@@ -142,8 +144,8 @@ const EbookHero: React.FC = () => {
             
             {/* Modal d'achat */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-                    <div className="flex justify-between items-center border-b pb-4 mb-4 sticky top-0 bg-white z-10">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-4 sm:p-6 pt-0">
+                    <div className="flex justify-between items-center border-b pb-4 pt-4 mb-4 sticky top-0 bg-white z-10">
                         <h2 className="text-lg sm:text-xl font-semibold">
                             Achat du ebook
                         </h2>
