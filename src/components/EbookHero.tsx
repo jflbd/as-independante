@@ -64,9 +64,9 @@ const EbookHero: React.FC = () => {
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow animate-fade-up max-w-5xl mx-auto">
+                    <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow animate-fade-up max-w-5xl mx-auto overflow-hidden">
                         <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center">
-                            <div className="md:w-1/2">
+                            <div className="md:w-1/2 w-full">
                                 <h3 className="text-xl md:text-2xl font-serif font-bold mb-4 text-primary">
                                     Un outil indispensable pour vos démarches
                                 </h3>
@@ -86,12 +86,22 @@ const EbookHero: React.FC = () => {
                                     </ul>
                                 </div>
 
-                                <div className="flex items-center mb-6">
-                                    <span className="text-2xl font-bold text-primary mr-3">{ebookConfig.formattedPrice}</span>
-                                    <span className="text-sm text-gray-500 italic">{ebookConfig.guarantee}</span>
+                                <div className="mb-6 space-y-2">
+                                    <div className="flex items-center">
+                                        <span className="text-2xl font-bold text-primary mr-3">{ebookConfig.formattedPrice}</span>
+                                        {ebookConfig.formattedPriceAvantPromo && (
+                                            <span className="text-gray-500 line-through text-sm">{ebookConfig.formattedPriceAvantPromo}</span>
+                                        )}
+                                    </div>
+                                    
+                                    {ebookConfig.guarantee && (
+                                        <div className="flex items-center">
+                                            <span className="text-sm text-gray-500 italic">{ebookConfig.guarantee}</span>
+                                        </div>
+                                    )}
                                 </div>
 
-                                <div className="flex space-x-4">
+                                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
                                     <Button 
                                         className="flex items-center gap-2"
                                         onClick={handleOpenModal}
@@ -102,8 +112,11 @@ const EbookHero: React.FC = () => {
                                     {window.location.pathname !== '/ebook' && (
                                         <Button 
                                             variant="outline" 
-                                            className="hidden md:flex items-center gap-2"
-                                            onClick={() => navigate('/ebook')}
+                                            className="flex items-center gap-2"
+                                            onClick={() => {
+                                                navigate('/ebook');
+                                                window.scrollTo(0, 0);
+                                            }}
                                         >
                                             <BookOpen size={18} />
                                             En savoir plus
@@ -112,7 +125,7 @@ const EbookHero: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="md:w-1/2 flex justify-center">
+                            <div className="md:w-1/2 w-full flex justify-center">
                                 <div className="relative">
                                     <div className="absolute inset-0 bg-primary/5 rounded-lg transform rotate-3"></div>
                                     <img 

@@ -21,13 +21,13 @@ const EbookPage: React.FC = () => {
             </Helmet>
             
             {/* Bouton de retour vers la landing page */}            
-            <div className="back-to-home mb-8">
+            <div className="back-to-home py-6 px-4 flex justify-left bg-white">
                 <Link 
                     to="/" 
                     className="flex items-center text-primary hover:text-primary/80 transition-colors text-lg font-semibold group"
                 >
                     <ArrowLeft className="h-6 w-6 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
-                    Retour à l'accueil
+                    Revenir sur le site
                 </Link>
             </div>
             
