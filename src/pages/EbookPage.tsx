@@ -39,7 +39,7 @@ const EbookPage: React.FC = () => {
                 {/* Détails du ebook */}
                 <section className="testimonials-section py-12 bg-gray-50">
                     <div className="container mx-auto px-4">
-                        <h2 className="text-2xl md:text-3xl font-serif font-bold text-center mb-10">Ce que disent nos lecteurs</h2>
+                        <h2 className="text-2xl md:text-3xl font-serif font-bold text-center mb-10">Ce que disent mes lecteurs</h2>
                         
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[
@@ -52,7 +52,7 @@ const EbookPage: React.FC = () => {
                                 },
                                 {
                                     text: "Grâce aux modèles de courrier, j'ai pu compléter mon dossier rapidement et obtenir mon aide en moins de 2 semaines.",
-                                    author: "Thomas D.",
+                                    author: "Jean D.",
                                     rating: 5,
                                     role: "Retraité",
                                     image: "/assets/avisuser/testimonial-2.jpg" // Optionnel
