@@ -9,6 +9,7 @@ dotenv.config();
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: '/as-independante/',
   server: {
     host: "::",
     port: 8080,
