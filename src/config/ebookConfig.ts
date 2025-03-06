@@ -1,17 +1,18 @@
 export const ebookConfig = {
-    title: "Guide complet des démarches administratives",
-    subtitle: "Simplifiez vos procédures sociales et administratives",
-    downloadUrl: "/ebook/guide-demarches-administratives.pdf",
+    title: "Le guide essentiel pour devenir travailleur social en libéral",
+    subtitle: "Toutes les étapes pour réussir votre installation et votre pratique",
+    downloadUrl: "/ebook/guide-travailleur-social-liberal.pdf",
     price: 19.99,
     formattedPrice: "19,99€",
     priceAvantPromo: 29.99,
     formattedPriceAvantPromo: "29,99€",
     coverImage: "/assets/ebook-cover.png",
-    description: "Un outil indispensable regroupant toutes les informations et conseils pour vous accompagner efficacement dans vos démarches administratives et l'accès à vos droits.",
+    accroche: "Votre compagnon indispensable pour réussir en libéral",
+    description: "Un guide complet pour vous accompagner dans votre parcours de travailleur social en libéral, de l'installation à la pratique quotidienne.",
     benefits: [
-        "Explications détaillées des principales aides sociales",
-        "Modèles de courriers et documents prêts à l'emploi",
-        "Conseils d'une assistante sociale professionnelle"
+        "Étapes détaillées pour s'installer en libéral",
+        "Modèles de documents et outils pratiques",
+        "Conseils d'experts pour une pratique réussie"
     ],
     fileFormat: "PDF",
     fileSize: "2.4 Mo",

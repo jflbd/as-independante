@@ -68,7 +68,7 @@ const EbookHero: React.FC = () => {
                         <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center">
                             <div className="md:w-1/2 w-full">
                                 <h3 className="text-xl md:text-2xl font-serif font-bold mb-4 text-primary">
-                                    Un outil indispensable pour vos démarches
+                                    {ebookConfig.accroche}
                                 </h3>
                                 <p className="text-gray-600 mb-6">
                                     {ebookConfig.description}

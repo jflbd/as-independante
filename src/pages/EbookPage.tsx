@@ -11,14 +11,16 @@ import { ebookConfig } from '@/config/ebookConfig';
 const EbookPage: React.FC = () => {
     return (
         <div className="ebook-page">
-            <Helmet>
-                <title>{ebookConfig.title} | {siteConfig.name}</title>
-                <meta name="description" content={`${ebookConfig.subtitle}. Par ${siteConfig.name}, Assistante Sociale Indépendante.`} />
-                <meta property="og:title" content={`${ebookConfig.title} | ${siteConfig.name}`} />
-                <meta property="og:description" content={ebookConfig.description} />
-                <meta property="og:type" content="product" />
-                <meta property="og:url" content={`${siteConfig.url}/ebook`} />
-            </Helmet>
+        <Helmet>
+            <title>{ebookConfig.title} | {siteConfig.name}</title>
+            <meta name="description" content={`${ebookConfig.subtitle}. Par ${siteConfig.name}, Assistante Sociale Indépendante.`} />
+            <meta property="og:title" content={`${ebookConfig.title} | ${siteConfig.name}`} />
+            <meta property="og:description" content={ebookConfig.description} />
+            <meta property="og:type" content="product" />
+            <meta property="og:url" content={`${siteConfig.url}/ebook`} />
+            <meta property="og:image" content={`${siteConfig.url}${ebookConfig.coverImage}`} />
+            <link rel="canonical" href={`${siteConfig.url}/ebook`} />
+        </Helmet>
             
             {/* Bouton de retour vers la landing page */}            
             <div className="back-to-home py-6 px-4 flex justify-left bg-white">
@@ -44,21 +46,21 @@ const EbookPage: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[
                                 {
-                                    text: "Ce guide m'a vraiment aidé à comprendre mes droits et à effectuer mes démarches sans stress. Je recommande vivement !",
+                                    text: "Ce guide m'a vraiment aidé à comprendre les démarches administratives et à structurer mon activité en libéral. Un indispensable !",
                                     author: "Marie L.",
                                     rating: 5,
                                     role: "Mère de famille",
-                                    image: "/assets/avisuser/testimonial-1.jpg" // Optionnel
+                                    image: "/assets/avisuser/testimonial-3.jpg" // Optionnel
                                 },
                                 {
-                                    text: "Grâce aux modèles de courrier, j'ai pu compléter mon dossier rapidement et obtenir mon aide en moins de 2 semaines.",
+                                    text: "Grâce aux conseils pratiques et aux modèles de documents, j'ai pu m'installer en libéral sans stress. Je recommande vivement ce guide.",
                                     author: "Jean D.",
                                     rating: 5,
-                                    role: "Retraité",
+                                    role: "Fonctionnaire",
                                     image: "/assets/avisuser/testimonial-2.jpg" // Optionnel
                                 },
                                 {
-                                    text: "Les explications sont claires et précises. Un vrai gain de temps quand on ne sait pas par où commencer !",
+                                    text: "Les explications sont claires et précises. Ce guide m'a permis de gagner du temps et d'éviter les erreurs courantes lors de l'installation en libéral.",
                                     author: "Sophie M.",
                                     rating: 5,
                                     role: "Étudiante",
