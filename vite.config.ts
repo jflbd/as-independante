@@ -17,7 +17,6 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
-  base: "/as-independante/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
