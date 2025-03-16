@@ -9,7 +9,6 @@ dotenv.config();
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/as-independante",
   server: {
     host: "::",
     port: 8080,
@@ -18,6 +17,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
+  base: "/as-independante/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
