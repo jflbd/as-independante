@@ -1,6 +1,7 @@
-
 import { Star, Quote } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
+import FadeInSection from "./animations/FadeInSection";
+import ParallaxScroll from "./animations/ParallaxScroll";
 
 const TestimonialsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -86,8 +87,16 @@ const TestimonialsSection = () => {
 
   return (
     <section id="temoignages" className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+      <ParallaxScroll strength={0.05} direction="right" className="absolute right-0 top-1/4 w-48 h-48">
+        <div className="bg-primary/5 rounded-full w-full h-full blur-2xl"></div>
+      </ParallaxScroll>
+      
+      <ParallaxScroll strength={0.08} direction="left" className="absolute left-0 bottom-1/4 w-64 h-64">
+        <div className="bg-accent/5 rounded-full w-full h-full blur-2xl"></div>
+      </ParallaxScroll>
+      
       <div className="container px-4 mx-auto">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <FadeInSection type="fade" className="max-w-3xl mx-auto text-center mb-16">
           <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold tracking-wider text-primary bg-primary/10 rounded-full">
             Ils me font confiance
           </span>
@@ -95,9 +104,9 @@ const TestimonialsSection = () => {
           <p className="text-gray-600 max-w-2xl mx-auto">
             Découvrez les retours d'expérience de personnes que j'ai eu le plaisir d'accompagner dans leur parcours.
           </p>
-        </div>
+        </FadeInSection>
         
-        <div className="max-w-5xl mx-auto relative">
+        <FadeInSection type="scale" className="max-w-5xl mx-auto relative">
           {/* Testimonial cards carousel */}
           <div className="relative px-4 py-10">
             <div 
@@ -121,11 +130,11 @@ const TestimonialsSection = () => {
                       </div>
                       
                       <div className="flex items-center mb-6 relative z-10">
-                        <div className="relative mr-4">
+                        <div className="relative mr-4 group">
                           <img 
                             src={testimonial.image} 
                             alt={testimonial.name} 
-                            className="w-20 h-20 rounded-full object-cover border-2 border-primary/20"
+                            className="w-20 h-20 rounded-full object-cover border-2 border-primary/20 transition-transform duration-300 group-hover:scale-105"
                           />
                           <div className="absolute -bottom-1 -right-1 bg-white p-0.5 rounded-full">
                             <div className="bg-green-500 w-3 h-3 rounded-full"></div>
@@ -141,7 +150,7 @@ const TestimonialsSection = () => {
                           </div>
                         </div>
                       </div>
-                      <p className="text-gray-700 italic relative z-10 text-lg">"{testimonial.quote}"</p>
+                      <p className="text-gray-700 italic relative z-10 text-lg leading-relaxed">"{testimonial.quote}"</p>
                     </div>
                   </div>
                 ))}
@@ -151,7 +160,7 @@ const TestimonialsSection = () => {
             {/* Navigation arrows */}
             <button 
               onClick={handlePrevious}
-              className="absolute left-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white shadow-lg hover:bg-primary hover:text-white transition-colors z-20"
+              className="absolute left-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white shadow-lg hover:bg-primary hover:text-white transition-colors z-20 hover:scale-110 active:scale-95 duration-200"
               aria-label="Témoignage précédent"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -160,7 +169,7 @@ const TestimonialsSection = () => {
             </button>
             <button 
               onClick={handleNext}
-              className="absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white shadow-lg hover:bg-primary hover:text-white transition-colors z-20"
+              className="absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white shadow-lg hover:bg-primary hover:text-white transition-colors z-20 hover:scale-110 active:scale-95 duration-200"
               aria-label="Témoignage suivant"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,7 +185,7 @@ const TestimonialsSection = () => {
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === activeIndex ? "bg-primary w-8" : "bg-gray-300"
+                  index === activeIndex ? "bg-primary w-8" : "bg-gray-300 hover:bg-primary/40"
                 }`}
                 aria-label={`Aller au témoignage ${index + 1}`}
               />
@@ -191,12 +200,12 @@ const TestimonialsSection = () => {
                 isAutoPlaying 
                   ? "bg-primary/10 text-primary" 
                   : "bg-gray-200 text-gray-600"
-              }`}
+              } hover:bg-primary/20`}
             >
               {isAutoPlaying ? "Défilement automatique activé" : "Défilement automatique désactivé"}
             </button>
           </div>
-        </div>
+        </FadeInSection>
       </div>
     </section>
   );

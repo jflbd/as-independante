@@ -1,54 +1,70 @@
-
 <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{siteConfig.title} en {siteConfig.contact.region}</title>
-    <meta name="description" content={siteConfig.description} />
-    <meta name="keywords" content={siteConfig.keywords} />
-    <meta name="author" content="AS Indépendante" />
-    <meta property="og:title" content={siteConfig.title} />
-    <meta property="og:description" content={siteConfig.description} />
+    <!-- Balises SEO principales -->
+    <title>%VITE_APP_TITLE%</title>
+    <meta name="description" content="%VITE_APP_DESCRIPTION%" />
+    <meta name="keywords" content="%VITE_APP_KEYWORDS%" />
+    <meta name="author" content="Rachel Gervais" />
+    
+    <!-- Open Graph pour le partage social -->
+    <meta property="og:title" content="%VITE_APP_TITLE%" />
+    <meta property="og:description" content="%VITE_APP_DESCRIPTION%" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" />
-    <meta property="og:url" content={siteConfig.url} />
-    <link rel="canonical" href={siteConfig.url} />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:url" content="%VITE_APP_URL%" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="%VITE_APP_TITLE%">
+    <meta name="twitter:description" content="%VITE_APP_DESCRIPTION%">
+    <meta name="twitter:image" content="/og-image.png">
+    
+    <!-- Liens canoniques et favicon -->
+    <link rel="canonical" href="%VITE_APP_URL%" />
     <link rel="icon" type="image/png" href="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" />
+    <link rel="apple-touch-icon" href="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png">
     <meta name="robots" content="index, follow" />
     
-    <!-- Préchargement des polices pour améliorer les performances -->
+    <!-- Optimisations de performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
+    <!-- Préchargement des ressources critiques -->
+    <link rel="preload" href="/src/index.css" as="style" />
+    
+    <!-- Thème et couleurs pour les navigateurs mobiles -->
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
     <!-- Données structurées Schema.org pour les Rich Snippets Google -->
     <script type="application/ld+json">
-      const jsonLdScript = `
       {
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
-        "name": "${siteConfig.title}",
-        "image": "/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png",
-        "description": "${siteConfig.description}",
+        "name": "%VITE_APP_TITLE%",
+        "image": "/og-image.png",
+        "description": "%VITE_APP_DESCRIPTION%",
         "address": {
           "@type": "PostalAddress",
-          "addressRegion": "${siteConfig.contact.region}",
-          "addressCountry": "${siteConfig.contact.country}"
+          "addressRegion": "%VITE_APP_REGION%",
+          "addressCountry": "%VITE_APP_COUNTRY%"
         },
-        "telephone": "${siteConfig.contact.phone}",
-        "url": "${siteConfig.url}",
+        "telephone": "%VITE_APP_PHONE%",
+        "url": "%VITE_APP_URL%",
         "priceRange": "$$",
-        "openingHours": "${siteConfig.openingHours}",
+        "openingHours": "%VITE_APP_OPENING_HOURS%",
         "sameAs": [
-          "${siteConfig.social.facebook}"
+          "%VITE_APP_FACEBOOK%"
         ]
       }
-      `;
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

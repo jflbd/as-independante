@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import dotenv from "dotenv";
+import { siteConfig } from './src/config/siteConfig';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -37,5 +38,7 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     'process.env': process.env
-  }
+  },
+  // Les variables d'environnement avec préfixe VITE_ sont automatiquement 
+  // disponibles dans le code et remplacées dans le HTML
 }));

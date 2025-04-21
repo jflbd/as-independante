@@ -15,6 +15,9 @@ import OptimizedImage from "@/components/OptimizedImage";
 import EbookHero from "@/components/EbookHero";
 import Footer from "@/components/Footer";
 import { siteConfig } from "@/config/siteConfig";
+import FadeInSection from "@/components/animations/FadeInSection";
+import StaggeredReveal from "@/components/animations/StaggeredReveal";
+import ParallaxScroll from "@/components/animations/ParallaxScroll";
 
 const Index = () => {
   const observerInitialized = useRef(false);
@@ -59,6 +62,43 @@ const Index = () => {
     };
   }, []);
 
+  // Les éléments de la grille de service pour la section d'accueil
+  const serviceCards = [
+    {
+      title: "Écoute & Soutien",
+      description: "Une approche bienveillante et sans jugement pour vous aider à surmonter les difficultés.",
+      icon: <Heart className="h-5 w-5 mr-2 text-primary" aria-hidden="true" />,
+      image: "/lovable-uploads/4cfe563e-2562-487a-aa53-d89205f63aae.png",
+      alt: "Ecoute et soutien",
+      borderColor: "border-primary",
+      gradientFrom: "from-accent/20",
+      decorationIcon: <MessageCircle size={60} />,
+      decorationColor: "text-primary/20"
+    },
+    {
+      title: "Accompagnement",
+      description: "Un suivi personnalisé et adapté à votre situation spécifique, à votre rythme.",
+      icon: <Shield className="h-5 w-5 mr-2 text-secondary" aria-hidden="true" />,
+      image: "/lovable-uploads/90dacb22-981f-4faa-a7ee-750d0c921513.png",
+      alt: "Accompagnement personnalisé",
+      borderColor: "border-secondary",
+      gradientFrom: "from-secondary/20",
+      decorationIcon: <Shield size={60} />,
+      decorationColor: "text-secondary/20"
+    },
+    {
+      title: "Solutions",
+      description: "Des réponses concrètes et des démarches efficaces pour améliorer votre situation.",
+      icon: <Star className="h-5 w-5 mr-2 text-accent" aria-hidden="true" />,
+      image: "/lovable-uploads/7b80847b-ef43-4381-909c-728df9b030e5.png",
+      alt: "Solutions concrètes",
+      borderColor: "border-accent",
+      gradientFrom: "from-highlight/25",
+      decorationIcon: <Star size={60} />,
+      decorationColor: "text-accent/25"
+    }
+  ];
+
   return (
     <>
       <Helmet>
@@ -72,8 +112,12 @@ const Index = () => {
       </Helmet>
       
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/10 blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-secondary/10 blur-3xl"></div>
+        <ParallaxScroll strength={0.05} direction="down" className="absolute top-20 left-10 w-64 h-64">
+          <div className="rounded-full bg-primary/10 blur-3xl h-full w-full"></div>
+        </ParallaxScroll>
+        <ParallaxScroll strength={0.07} direction="up" className="absolute bottom-20 right-10 w-80 h-80">
+          <div className="rounded-full bg-secondary/10 blur-3xl h-full w-full"></div>
+        </ParallaxScroll>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-accent/10 blur-3xl"></div>
       </div>
       
@@ -81,92 +125,66 @@ const Index = () => {
         <NavBar />
         
         <header id="accueil" className="pt-20 pb-12 md:pt-32 md:pb-24 relative bg-gradient-to-b from-white to-section-light">
-          <div className="absolute top-16 right-10 text-primary/40 animate-pulse-gentle">
-            <Sparkles size={40} />
-          </div>
-          <div className="absolute bottom-8 left-10 text-secondary/40 animate-pulse-gentle" style={{ animationDelay: "1s" }}>
-            <Heart size={30} />
-          </div>
+          <ParallaxScroll strength={0.2} direction="right" className="absolute top-16 right-10">
+            <div className="text-primary/40 animate-pulse-gentle">
+              <Sparkles size={40} />
+            </div>
+          </ParallaxScroll>
+          <ParallaxScroll strength={0.1} direction="left" className="absolute bottom-8 left-10">
+            <div className="text-secondary/40 animate-pulse-gentle" style={{ animationDelay: "1s" }}>
+              <Heart size={30} />
+            </div>
+          </ParallaxScroll>
           
           <div className="container px-4 mx-auto">
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="flex-1 text-center mx-auto max-w-2xl">
+                <FadeInSection type="fade" direction="up" className="flex-1 text-center mx-auto max-w-2xl">
                   <span className="inline-block px-3 py-1 text-xs font-medium text-primary bg-primary/20 rounded-full mb-4">
                     <Sparkles className="inline mr-1 h-3 w-3" /> Accompagnement professionnel
                   </span>
-                  <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight animate-fade-up">
+                  <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight">
                     Un accompagnement social personnalisé et professionnel en {siteConfig.contact.region}
                   </h1>
-                  <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600 animate-fade-up">
+                  <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600">
                     Diplômée d'État depuis 2009, je vous accompagne dans vos démarches sociales avec bienveillance et professionnalisme, que vous soyez un particulier ou un professionnel.
                   </p>
                   <SafeLink
                     to="#contact"
-                    className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors animate-fade-up shadow-md hover:shadow-lg"
+                    className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg"
                     aria-label="Me contacter"
                   >
                     Me contacter
                     <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                   </SafeLink>
-                </div>
+                </FadeInSection>
               </div>
-              <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 border-primary">
-                  <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -right-4 -bottom-4 text-primary/20 transform rotate-12 group-hover:scale-110 transition-transform">
-                    <MessageCircle size={60} />
+              
+              <StaggeredReveal staggerDelay={150} initialDelay={300} className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                {serviceCards.map((card, index) => (
+                  <div 
+                    key={index} 
+                    className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 ${card.borderColor}`}
+                  >
+                    <div className={`absolute inset-0 bg-gradient-to-br ${card.gradientFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
+                    <div className={`absolute -right-4 -bottom-4 ${card.decorationColor} transform rotate-12 group-hover:scale-110 transition-transform`}>
+                      {card.decorationIcon}
+                    </div>
+                    <OptimizedImage 
+                      src={card.image} 
+                      alt={card.alt} 
+                      className="w-full h-48 object-cover object-center rounded-md mb-4"
+                      width={600}
+                      height={400}
+                    />
+                    <div className="flex items-center mb-3">
+                      {card.icon}
+                      <h3 className="text-xl font-semibold text-primary">{card.title}</h3>
+                    </div>
+                    <p className="text-gray-600 relative z-10">{card.description}</p>
                   </div>
-                  <OptimizedImage 
-                    src="/lovable-uploads/4cfe563e-2562-487a-aa53-d89205f63aae.png" 
-                    alt="Ecoute et soutien" 
-                    className="w-full h-48 object-cover object-center rounded-md mb-4"
-                    width={600}
-                    height={400}
-                  />
-                  <div className="flex items-center mb-3">
-                    <Heart className="h-5 w-5 mr-2 text-primary" aria-hidden="true" />
-                    <h3 className="text-xl font-semibold text-primary">Écoute & Soutien</h3>
-                  </div>
-                  <p className="text-gray-600 relative z-10">Une approche bienveillante et sans jugement pour vous aider à surmonter les difficultés.</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 border-secondary">
-                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -right-4 -bottom-4 text-secondary/20 transform rotate-12 group-hover:scale-110 transition-transform">
-                    <Shield size={60} />
-                  </div>
-                  <OptimizedImage 
-                    src="/lovable-uploads/90dacb22-981f-4faa-a7ee-750d0c921513.png" 
-                    alt="Accompagnement personnalisé" 
-                    className="w-full h-48 object-cover object-center rounded-md mb-4"
-                    width={600}
-                    height={400}
-                  />
-                  <div className="flex items-center mb-3">
-                    <Shield className="h-5 w-5 mr-2 text-secondary" aria-hidden="true" />
-                    <h3 className="text-xl font-semibold text-primary">Accompagnement</h3>
-                  </div>
-                  <p className="text-gray-600 relative z-10">Un suivi personnalisé et adapté à votre situation spécifique, à votre rythme.</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 border-accent">
-                  <div className="absolute inset-0 bg-gradient-to-br from-highlight/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -right-4 -bottom-4 text-accent/25 transform rotate-12 group-hover:scale-110 transition-transform">
-                    <Star size={60} />
-                  </div>
-                  <OptimizedImage 
-                    src="/lovable-uploads/7b80847b-ef43-4381-909c-728df9b030e5.png" 
-                    alt="Solutions concrètes" 
-                    className="w-full h-48 object-cover rounded-md mb-4"
-                    width={600}
-                    height={400}
-                  />
-                  <div className="flex items-center mb-3">
-                    <Star className="h-5 w-5 mr-2 text-accent" aria-hidden="true" />
-                    <h3 className="text-xl font-semibold text-primary">Solutions</h3>
-                  </div>
-                  <p className="text-gray-600 relative z-10">Des réponses concrètes et des démarches efficaces pour améliorer votre situation.</p>
-                </div>
-              </div>
+                ))}
+              </StaggeredReveal>
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-section-dark to-transparent"></div>
