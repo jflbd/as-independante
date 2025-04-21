@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +7,9 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import LegalNotices from "./pages/LegalNotices";
 import { CookieConsentProvider } from "./contexts/CookieConsentContext";
+import { LegalModalProvider } from "./contexts/LegalModalContext";
 import CookieBanner from "./components/CookieBanner";
+import LegalModalContainer from "./components/legal/LegalModalContainer";
 import CheckoutPage from "./pages/CheckoutPage";
 import TelechargementPage from "./pages/TelechargementPage";
 import EbookPage from "./pages/EbookPage";
@@ -20,18 +21,21 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <CookieConsentProvider>
-        <Toaster />
-        <Sonner />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/mentions-legales" element={<LegalNotices />} />
-          <Route path="/acheter-ebook" element={<CheckoutPage />} />
-          <Route path="/telechargement-ebook" element={<TelechargementPage />} />
-          <Route path="/ebook" element={<EbookPage />} /> 
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <CookieBanner />
+        <LegalModalProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/mentions-legales" element={<LegalNotices />} />
+            <Route path="/acheter-ebook" element={<CheckoutPage />} />
+            <Route path="/telechargement-ebook" element={<TelechargementPage />} />
+            <Route path="/ebook" element={<EbookPage />} /> 
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <CookieBanner />
+          <LegalModalContainer />
+        </LegalModalProvider>
       </CookieConsentProvider>
     </TooltipProvider>
   </QueryClientProvider>
