@@ -1,6 +1,6 @@
 import { ArrowRight, Sparkles, Heart, MessageCircle, Shield, Clock, Star } from "lucide-react";
 import NavBar from "@/components/NavBar";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import ServicesSection from "@/components/ServicesSection";
 import PricingSection from "@/components/PricingSection";
 import ContactSection from "@/components/ContactSection";
@@ -68,7 +68,7 @@ const Index = () => {
       title: "Écoute & Soutien",
       description: "Une approche bienveillante et sans jugement pour vous aider à surmonter les difficultés.",
       icon: <Heart className="h-5 w-5 mr-2 text-primary" aria-hidden="true" />,
-      image: "/lovable-uploads/4cfe563e-2562-487a-aa53-d89205f63aae.png",
+      image: "/assets/images/section1-ecoutesoutien.png",
       alt: "Ecoute et soutien",
       borderColor: "border-primary",
       gradientFrom: "from-accent/20",
@@ -79,7 +79,7 @@ const Index = () => {
       title: "Accompagnement",
       description: "Un suivi personnalisé et adapté à votre situation spécifique, à votre rythme.",
       icon: <Shield className="h-5 w-5 mr-2 text-secondary" aria-hidden="true" />,
-      image: "/lovable-uploads/90dacb22-981f-4faa-a7ee-750d0c921513.png",
+      image: "/assets/images/section1-accompagnement.png",
       alt: "Accompagnement personnalisé",
       borderColor: "border-secondary",
       gradientFrom: "from-secondary/20",
@@ -90,7 +90,7 @@ const Index = () => {
       title: "Solutions",
       description: "Des réponses concrètes et des démarches efficaces pour améliorer votre situation.",
       icon: <Star className="h-5 w-5 mr-2 text-accent" aria-hidden="true" />,
-      image: "/lovable-uploads/7b80847b-ef43-4381-909c-728df9b030e5.png",
+      image: "/assets/images/section1-solutions.png",
       alt: "Solutions concrètes",
       borderColor: "border-accent",
       gradientFrom: "from-highlight/25",
@@ -151,7 +151,7 @@ const Index = () => {
                   </p>
                   <SafeLink
                     to="#contact"
-                    className="inline-flex items-center px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg"
+                    className="inline-flex items-center px-6 py-3 text-white bg-primary" style={{ borderRadius: '0.5rem' }}
                     aria-label="Me contacter"
                   >
                     Me contacter
@@ -164,7 +164,7 @@ const Index = () => {
                 {serviceCards.map((card, index) => (
                   <div 
                     key={index} 
-                    className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 ${card.borderColor}`}
+                    className={`bg-white p-6 shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 ${card.borderColor}`} style={{ borderRadius: '0.5rem' }}
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${card.gradientFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
                     <div className={`absolute -right-4 -bottom-4 ${card.decorationColor} transform rotate-12 group-hover:scale-110 transition-transform`}>

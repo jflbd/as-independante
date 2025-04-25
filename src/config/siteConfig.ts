@@ -7,12 +7,25 @@ export const siteConfig = {
     keywords: "assistante sociale, Normandie, Rachel Gervais, accompagnement social, démarches administratives, CCAS, aide sociale, aide financière, aide juridique, aide administrative, aide sociale, aide à domicile, aide aux personnes âgées, aide aux personnes handicapées, aide aux personnes en difficulté, aide aux personnes en situation de handicap, aide aux personnes en situation de précarité, aide aux personnes en situation de vulnérabilité, aide aux personnes en situation de handicap, aide aux personnes en situation de précarité, aide aux personnes en situation de vulnérabilité, aide aux personnes en situation de handicap, aide aux personnes en situation de précarité, aide aux personnes en situation de vulnérabilité, aide aux personnes en situation de handicap, aide aux personnes en situation de précarité, aide aux personnes en situation de vulnérabilité, aide aux personnes en situation de handicap, aide aux personnes en situation de précarité, aide aux personnes en situation de vulnérabilité",
     freelance: "JFL",
     
+    // UI configuration
+    ui: {
+        font: "Aptos, Arial, sans-serif",
+        logo: "/assets/logo/logo-rachel-gervais2.png",
+        colors: {
+            primary: "#0D8496", // Couleur de la bannière turquoise du logo
+            secondary: "#065964", // Version plus foncée pour les accents
+            accent: "#30B4C8", // Version plus claire pour les accents
+            text: "#333333",
+            background: "#ffffff"
+        }
+    },
+    
     // Coordonnées de contact
     contact: {
         email: "rachel.gervais@as-independante.fr",
         phone: "07 63 90 78 45",
         region: "Normandie",
-        country: "FR"
+        country: "France"
     },
     
     // Réseaux sociaux
@@ -25,6 +38,6 @@ export const siteConfig = {
 
     // Siret et autres informations légales
     legal: {
-        siret: "000 000 000 00000",
+        siret: "En cours d'immatriculation",
     }
 };

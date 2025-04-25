@@ -15,7 +15,7 @@ const FooterSchemaOrgScript: React.FC = () => (
         "name": siteConfig.name,
         "description": "Assistante Sociale Indépendante",
         "url": siteConfig.url,
-        "logo": `${siteConfig.url}/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png`,
+        "logo": `${siteConfig.url}${siteConfig.ui.logo}`,
         "address": {
           "@type": "PostalAddress",
           "addressRegion": siteConfig.contact.region,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet'; 
+import { Helmet } from 'react-helmet-async'; 
 import { Link } from 'react-router-dom';
 import { ChevronLeft, CheckCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -68,7 +68,7 @@ const EbookPage: React.FC = () => {
                                 }
                             ].map((testimonial, index) => (
                                 <div 
-                                    className="testimonial-card bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow relative"
+                                    className="testimonial-card bg-white" style={{ borderRadius: '0.5rem' }}
                                     key={index}
                                 >
                                     {/* Guillemet décoratif */}

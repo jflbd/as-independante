@@ -1,11 +1,14 @@
-import CheckoutForm from '@/components/checkout/CheckoutForm';
-import CheckoutSummary from '@/components/checkout/CheckoutSummary';
-import PaymentOptions from '@/components/checkout/PaymentOptions';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ebookConfig } from '@/config/ebookConfig';
-import { Helmet } from 'react-helmet';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, ShoppingBag, CheckCircle, ChevronRight } from "lucide-react";
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import CheckoutForm from "@/components/checkout/CheckoutForm";
+import PaymentOptions from "@/components/checkout/PaymentOptions";
+import CheckoutSummary from "@/components/checkout/CheckoutSummary";
+import { Helmet } from 'react-helmet-async';
 import { siteConfig } from '@/config/siteConfig';
+import { ebookConfig } from "@/config/ebookConfig";
 
 const CheckoutPage: React.FC = () => {
     const [step, setStep] = useState<'form' | 'payment'>('form');

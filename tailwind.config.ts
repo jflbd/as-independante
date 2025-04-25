@@ -1,8 +1,8 @@
-
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
-  darkMode: ["class"],
+  darkMode: ["class", "dark"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -18,18 +18,37 @@ export default {
         "2xl": "1400px",
       },
     },
+    // Assurez-vous que les couleurs de base sont directement dans le thème et non dans extend
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      black: '#000',
+      white: '#fff',
+      gray: {
+        50: '#f9fafb',
+        100: '#f3f4f6',
+        200: '#e5e7eb',
+        300: '#d1d5db',
+        400: '#9ca3af',
+        500: '#6b7280',
+        600: '#4b5563',
+        700: '#374151',
+        800: '#1f2937',
+        900: '#111827',
+      },
+    },
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#2A5674", // Bleu pétrole plus foncé
+          DEFAULT: "#0D8496", // Couleur turquoise de votre logo
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#5A8A8B", // Bleu-vert plus intense
+          DEFAULT: "#065964", // Version plus foncée pour les accents
           foreground: "#FFFFFF",
         },
         accent: {
-          DEFAULT: "#8BB8B8", // Bleu pastel plus intense
+          DEFAULT: "#30B4C8", // Version plus claire pour les accents
           foreground: "#333333",
         },
         highlight: {
@@ -52,7 +71,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Montserrat", "sans-serif"],
+        sans: ["Aptos", "Arial", "sans-serif"],
         serif: ["Lora", "serif"],
       },
       keyframes: {
@@ -111,7 +130,14 @@ export default {
         "pulse-gentle": "pulse-gentle 2.5s ease-in-out infinite",
         "button-press": "button-press 0.3s ease-out",
       },
+      inset: {
+        '0': '0',
+        '1/2': '50%',
+        'full': '100%',
+        'auto': 'auto',
+        '-full': '-100%',
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

@@ -18,7 +18,7 @@ const MissionsSection = () => {
   const valueItems = values.map((value, index) => (
     <div 
       key={index} 
-      className="bg-white border border-gray-100 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow text-center flex flex-col items-center justify-center"
+      className="bg-white p-4 shadow-sm hover:shadow-md transition-shadow text-center flex flex-col items-center justify-center" style={{ border: '1px solid #f3f4f6', borderRadius: '0.5rem' }}
     >
       <div className="mb-3 bg-primary/10 p-3 rounded-full">
         {value.icon}
@@ -44,7 +44,7 @@ const MissionsSection = () => {
 
         <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto mb-12">
           <FadeInSection type="slide" direction="left">
-            <div className="bg-gray-50 p-6 md:p-8 rounded-lg shadow-md">
+            <div className="bg-gray-50 p-6 md:p-8 shadow-md" style={{ borderRadius: '0.5rem' }}>
               <p className="text-gray-700 mb-4">
                 Mes champs d'intervention sont très larges : la famille, la santé, le logement, le budget, le travail, le handicap, l'accès aux droits…
               </p>
@@ -71,9 +71,9 @@ const MissionsSection = () => {
               <ParallaxScroll strength={0.1} direction="left" className="absolute -bottom-4 -left-4 w-16 h-16">
                 <div className="bg-primary/10 rounded-full w-full h-full z-0"></div>
               </ParallaxScroll>
-              <div className="aspect-square w-full max-w-md relative z-10 overflow-hidden rounded-lg shadow-lg">
+              <div className="aspect-square w-full max-w-md relative z-10 overflow-hidden shadow-lg" style={{ borderRadius: '0.5rem' }}>
                 <OptimizedImage 
-                  src="/lovable-uploads/76256a4b-071d-489c-8415-c7a0582c6483.png"
+                  src="/assets/images/section3-missions.png"
                   alt="Accompagnement familial protecteur" 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   width={600}

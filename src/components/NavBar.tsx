@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, ChevronUp, User, Building } from "lucide-react";
 import SafeLink from "./SafeLink";
+import OptimizedImage from "./OptimizedImage";
 import { siteConfig } from "@/config/siteConfig";
 
 const NavBar = () => {
@@ -170,13 +171,14 @@ const NavBar = () => {
           : "bg-transparent py-4"
       }`}
       aria-label="Navigation principale"
+      style={{ fontFamily: 'var(--font-primary)' }}
     >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Logo and Name */}
           <SafeLink 
             to="#accueil" 
-            className="flex items-center space-x-3 transition-all duration-300 hover:scale-105 group"
+            className="transition-all duration-300 hover:scale-105 group"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -185,17 +187,16 @@ const NavBar = () => {
             }}
             aria-label="Retour à l'accueil"
           >
-            <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-primary/20 p-0.5 shadow-sm transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-md">
-              <img 
-                src="/lovable-uploads/afb2d7e4-424f-4531-a659-f56373a4175d.png" 
-                alt={siteConfig.name} 
-                className="h-full w-full rounded-full object-cover"
+            <div className="relative h-16 md:h-20 w-auto overflow-hidden rounded-md shadow-md transition-all duration-300 group-hover:shadow-lg">
+              <OptimizedImage 
+                src={siteConfig.ui.logo}
+                alt={`${siteConfig.name} - Assistante Sociale Indépendante`}
+                className="h-full w-auto object-contain"
                 loading="eager"
-                width={48}
-                height={48}
+                width={240}
+                height={80}
               />
             </div>
-            <span className="text-xl font-serif font-bold text-primary tracking-wider">{siteConfig.name}</span>
           </SafeLink>
 
           {/* Desktop Menu */}
