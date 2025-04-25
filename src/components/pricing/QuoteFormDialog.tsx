@@ -141,10 +141,10 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
         {/* Bouton de fermeture */}
         <button
           onClick={() => setIsOpen(false)}
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="absolute right-4 top-4 rounded-full p-2 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           type="button"
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" />
           <span className="sr-only">Fermer</span>
         </button>
         
@@ -253,7 +253,7 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-md transition-all duration-300 hover:bg-red-600 hover:text-white hover:border-red-600 focus:bg-red-600 focus:text-white focus:border-red-600 focus-visible:outline-none"
+                  className="px-4 py-2 bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:bg-red-700 focus:bg-red-700 focus-visible:outline-none"
                   disabled={isSubmitting}
                   style={{ minWidth: "100px" }}
                 >
