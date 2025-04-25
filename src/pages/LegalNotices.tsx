@@ -270,13 +270,15 @@ const LegalNotices = () => {
                   // Ajout d'un attribut data-schema pour le SEO
                   data-schema={section.schema || ""}
                 >
-                  <h2 className="group flex items-center">
+                  <h2 className="group flex items-center text-2xl font-serif font-bold mb-4">
                     {section.title}
                     <a href={`#${section.id}`} className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <span className="text-primary">#</span>
                     </a>
                   </h2>
-                  {section.component}
+                  <div className="legal-content">
+                    {section.component}
+                  </div>
                   
                   {/* Ajout de liens contextuels pour certaines sections importantes */}
                   {section.id === "personal-data" && (

@@ -1,6 +1,5 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { siteConfig } from "@/config/siteConfig";
 
@@ -17,7 +16,7 @@ type QuoteFormDialogProps = {
   setIsOpen: (isOpen: boolean) => void;
 };
 
-const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
+const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     company: "",
@@ -26,6 +25,10 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formStatus, setFormStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,8 +38,9 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormStatus({ type: null, message: '' });
     
-    console.log(`Envoi de devis à: ${siteConfig.contact.email}`);
+    console.log(`Envoi de demande d'accompagnement à: ${siteConfig.contact.email}`);
     console.log("Données du formulaire:", formData);
     
     try {
@@ -54,7 +58,7 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
       const subjectField = document.createElement("input");
       subjectField.type = "hidden";
       subjectField.name = "_subject";
-      subjectField.value = `Demande de devis de ${formData.name} - ${formData.company}`;
+      subjectField.value = `Demande d'accompagnement de ${formData.name} - ${formData.company}`;
       formElement.appendChild(subjectField);
       
       // Désactiver le captcha
@@ -64,7 +68,7 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
       captchaField.value = "false";
       formElement.appendChild(captchaField);
       
-      // Comportement après envoi - afficher un toast puis fermer le modal
+      // Comportement après envoi
       const redirectField = document.createElement("input");
       redirectField.type = "hidden";
       redirectField.name = "_next";
@@ -95,34 +99,36 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
       });
       
       if (response.ok) {
-        toast.success("J'ai bien reçu votre demande de devis ! Je vous contacterai rapidement.", {
-          duration: 5000,
-          style: {
-            backgroundColor: "white",
-            color: "black",
-            border: "1px solid #e2e8f0",
-            padding: "16px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            zIndex: 1000,
-          }
+        setFormStatus({
+          type: 'success',
+          message: "J'ai bien reçu votre demande d'accompagnement ! Je vous contacterai rapidement."
         });
         
-        setIsOpen(false);
-        
-        setFormData({
-          name: "",
-          company: "",
-          email: "",
-          phone: "",
-          message: ""
-        });
+        // Réinitialiser le formulaire après 3 secondes
+        setTimeout(() => {
+          setIsOpen(false);
+          
+          setFormData({
+            name: "",
+            company: "",
+            email: "",
+            phone: "",
+            message: ""
+          });
+          
+          // Effacer le message après fermeture
+          setTimeout(() => {
+            setFormStatus({ type: null, message: '' });
+          }, 300);
+        }, 3000);
       } else {
         throw new Error("Échec de l'envoi du formulaire");
       }
     } catch (error) {
-      console.error("Erreur lors de l'envoi du devis:", error);
-      toast.error("Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.", {
-        duration: 5000
+      console.error("Erreur lors de l'envoi de la demande:", error);
+      setFormStatus({
+        type: 'error',
+        message: "Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer."
       });
     } finally {
       setIsSubmitting(false);
@@ -132,118 +138,158 @@ const QuoteFormDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[500px] z-50">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Demande de devis professionnel</DialogTitle>
-          <DialogDescription>
-            Remplissez ce formulaire pour recevoir un devis personnalisé pour votre entreprise ou organisation.
-          </DialogDescription>
-        </DialogHeader>
+        {/* Bouton de fermeture */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          type="button"
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Fermer</span>
+        </button>
         
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">Nom et prénom</label>
-              <input 
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-                disabled={isSubmitting}
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="company" className="text-sm font-medium">Entreprise / Organisation</label>
-              <input 
-                id="company"
-                name="company"
-                type="text"
-                value={formData.company}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-                disabled={isSubmitting}
-              />
-            </div>
+        {formStatus.type ? (
+          <div className={`p-8 rounded-lg flex flex-col items-center justify-center gap-4 text-center
+            ${formStatus.type === 'success' ? 'bg-green-50' : 'bg-red-50'}`}>
+            {formStatus.type === 'success' ? 
+              <CheckCircle2 className="h-12 w-12 text-green-600 flex-shrink-0" /> : 
+              <AlertCircle className="h-12 w-12 text-red-600 flex-shrink-0" />
+            }
+            <h3 className={`text-lg font-bold ${formStatus.type === 'success' ? 'text-green-700' : 'text-red-700'}`}>
+              {formStatus.type === 'success' ? 'Demande envoyée' : 'Erreur'}
+            </h3>
+            <p className={`${formStatus.type === 'success' ? 'text-green-800' : 'text-red-800'}`}>
+              {formStatus.message}
+            </p>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">Email</label>
-              <input 
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-                disabled={isSubmitting}
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="phone" className="text-sm font-medium">Téléphone</label>
-              <input 
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-                disabled={isSubmitting}
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <label htmlFor="message" className="text-sm font-medium">Votre besoin</label>
-            <textarea 
-              id="message"
-              name="message"
-              rows={4}
-              value={formData.message}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
-              required
-              disabled={isSubmitting}
-            ></textarea>
-          </div>
-          
-          <div className="text-xs text-gray-500">
-            En soumettant ce formulaire, vous serez contacté par {siteConfig.name} avec l'adresse email {siteConfig.contact.email}
-          </div>
-          
-          <div className="flex justify-end pt-2">
-            <button 
-              type="submit"
-              className="btn-primary py-3 px-6 relative w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-              <>
-                <span className="opacity-0">Envoyer ma demande</span>
-                <span className="absolute inset-0 flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                </span>
-              </>
-              ) : (
-              <>
-                Envoyer ma demande
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </>
-              )}
-            </button>
-          </div>
-        </form>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">Demande d'accompagnement professionnel</DialogTitle>
+              <DialogDescription>
+                Remplissez ce formulaire pour recevoir une proposition d'accompagnement personnalisée pour votre entreprise ou organisation.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="text-sm font-medium">Nom et prénom</label>
+                  <input 
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="company" className="text-sm font-medium">Entreprise / Organisation</label>
+                  <input 
+                    id="company"
+                    name="company"
+                    type="text"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-medium">Email</label>
+                  <input 
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="phone" className="text-sm font-medium">Téléphone</label>
+                  <input 
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="message" className="text-sm font-medium">Votre besoin d'accompagnement</label>
+                <textarea 
+                  id="message"
+                  name="message"
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                  required
+                  disabled={isSubmitting}
+                  placeholder="Décrivez brièvement votre situation et vos attentes..."
+                ></textarea>
+              </div>
+              
+              <div className="text-xs text-gray-500">
+                En soumettant ce formulaire, vous serez contacté par {siteConfig.name} avec l'adresse email {siteConfig.contact.email}
+              </div>
+              
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-md transition-all duration-300 hover:bg-red-600 hover:text-white hover:border-red-600 focus:bg-red-600 focus:text-white focus:border-red-600 focus-visible:outline-none"
+                  disabled={isSubmitting}
+                  style={{ minWidth: "100px" }}
+                >
+                  Annuler
+                </button>
+                <button 
+                  type="submit"
+                  className="bg-[#0d8496] hover:bg-[#065964] text-white font-medium px-6 py-2 rounded-md flex items-center justify-center transition-all duration-300 hover:shadow-md focus-visible:outline-none focus:ring-2 focus:ring-[#0d8496]/50"
+                  disabled={isSubmitting}
+                  style={{ minWidth: "180px" }}
+                >
+                  {isSubmitting ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-pulse mr-2">
+                      <span className="sr-only">Envoi en cours...</span>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </div>
+                    <span>Envoi en cours...</span>
+                  </div>
+                  ) : (
+                  <>
+                    Envoyer ma demande
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
 };
 
-export default QuoteFormDialog;
+export default DemandeAccompagnementDialog;

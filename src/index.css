@@ -802,3 +802,9 @@ section::before {
 .purchase-summary {
   height: fit-content;
 }
+
+/* Style pour les sections légales - éviter la duplication des titres */
+.legal-content > h2:first-child,
+.legal-content > h3:first-child {
+  display: none; /* Masque les titres en double dans les composants */
+}

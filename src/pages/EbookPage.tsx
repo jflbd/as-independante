@@ -1,45 +1,270 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async'; 
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, CheckCircle, ArrowLeft } from 'lucide-react';
+import { 
+  ArrowLeft, CheckCircle, FileText, Download, 
+  CheckCheck, BookOpen, List, ShieldCheck, Award,
+  Mail, Share2, ChevronRight
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import EbookHero from '@/components/EbookHero';
 import Footer from '@/components/Footer';
+import OptimizedImage from '@/components/OptimizedImage';
+import ContactButton from '@/components/ContactButton';
 import { siteConfig } from '@/config/siteConfig';
 import { ebookConfig } from '@/config/ebookConfig';
 
 const EbookPage: React.FC = () => {
+    // Table des matières de l'ebook
+    const tableOfContents = [
+        "Introduction à l'exercice en libéral",
+        "Cadre législatif et réglementaire",
+        "Démarches administratives et statuts juridiques",
+        "Gestion financière et comptable",
+        "Développer son activité et sa clientèle",
+        "Travailler en collaboration avec les institutions",
+        "Conseils pratiques pour démarrer sereinement",
+        "Modèles de documents et ressources utiles"
+    ];
+
+    // Bénéfices de l'ebook
+    const benefits = [
+        {
+            icon: <FileText className="h-6 w-6 text-primary" />,
+            title: "Guide complet",
+            description: "Un document exhaustif couvrant tous les aspects de l'installation en libéral"
+        },
+        {
+            icon: <BookOpen className="h-6 w-6 text-primary" />,
+            title: "Facile à lire",
+            description: "Écrit dans un langage clair et accessible, sans jargon technique inutile"
+        },
+        {
+            icon: <List className="h-6 w-6 text-primary" />,
+            title: "Ressources pratiques",
+            description: "Modèles de documents, check-lists et liens utiles inclus"
+        },
+        {
+            icon: <ShieldCheck className="h-6 w-6 text-primary" />,
+            title: "Conseils d'experte",
+            description: "Basé sur plus de 10 ans d'expérience professionnelle"
+        }
+    ];
+
+    // FAQ concernant l'ebook
+    const faqItems = [
+        {
+            question: "Quel format de fichier vais-je recevoir ?",
+            answer: "Vous recevrez un fichier PDF de haute qualité, optimisé pour une lecture à l'écran et l'impression."
+        },
+        {
+            question: "Comment accéder à mon ebook après l'achat ?",
+            answer: "Après votre achat, vous recevrez immédiatement un lien de téléchargement par email, et vous pourrez aussi télécharger l'ebook directement sur notre site."
+        },
+        {
+            question: "Puis-je obtenir un remboursement si je ne suis pas satisfait ?",
+            answer: "Oui, nous offrons une garantie satisfait ou remboursé de 30 jours. Contactez-nous simplement si l'ebook ne répond pas à vos attentes."
+        },
+        {
+            question: "L'ebook est-il mis à jour régulièrement ?",
+            answer: "Oui, le contenu est régulièrement mis à jour pour refléter les changements législatifs et réglementaires. Les mises à jour sont gratuites pour les acheteurs."
+        }
+    ];
+
+    // Structure du JSON-LD pour le SEO
+    const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": ebookConfig.title,
+        "description": ebookConfig.description,
+        "image": `${siteConfig.url}${ebookConfig.coverImage}`,
+        "sku": "EBOOK001",
+        "offers": {
+            "@type": "Offer",
+            "url": `${siteConfig.url}/ebook`,
+            "priceCurrency": "EUR",
+            "price": ebookConfig.price,
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "Person",
+                "name": siteConfig.name
+            }
+        },
+        "author": {
+            "@type": "Person",
+            "name": siteConfig.name
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": siteConfig.name,
+            "logo": {
+                "@type": "ImageObject",
+                "url": `${siteConfig.url}${siteConfig.ui.logo}`
+            }
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "ratingCount": "12"
+        }
+    };
+
     return (
-        <div className="ebook-page">
+        <div className="ebook-page bg-gray-50">
         <Helmet>
             <title>{ebookConfig.title} | {siteConfig.name}</title>
-            <meta name="description" content={`${ebookConfig.subtitle}. Par ${siteConfig.name}, Assistante Sociale Indépendante.`} />
+            <meta name="description" content={`${ebookConfig.subtitle}. Guide complet par ${siteConfig.name}, Assistante Sociale Indépendante avec plus de 10 ans d'expérience.`} />
             <meta property="og:title" content={`${ebookConfig.title} | ${siteConfig.name}`} />
-            <meta property="og:description" content={ebookConfig.description} />
+            <meta property="og:description" content={`${ebookConfig.subtitle}. Guide complet pour vous accompagner dans votre installation.`} />
             <meta property="og:type" content="product" />
             <meta property="og:url" content={`${siteConfig.url}/ebook`} />
             <meta property="og:image" content={`${siteConfig.url}${ebookConfig.coverImage}`} />
+            <meta property="og:price:amount" content={ebookConfig.price.toString()} />
+            <meta property="og:price:currency" content="EUR" />
+            <meta property="product:price:amount" content={ebookConfig.price.toString()} />
+            <meta property="product:price:currency" content="EUR" />
+            <meta property="product:availability" content="in stock" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={`${ebookConfig.title} | ${siteConfig.name}`} />
+            <meta name="twitter:description" content={`${ebookConfig.subtitle}. Guide complet pour vous accompagner dans votre installation.`} />
+            <meta name="twitter:image" content={`${siteConfig.url}${ebookConfig.coverImage}`} />
             <link rel="canonical" href={`${siteConfig.url}/ebook`} />
+            <script type="application/ld+json">
+                {JSON.stringify(productSchema)}
+            </script>
         </Helmet>
             
-            {/* Bouton de retour vers la landing page */}            
-            <div className="back-to-home py-6 px-4 flex justify-left bg-white">
-                <Link 
-                    to="/" 
-                    className="flex items-center text-primary hover:text-primary/80 transition-colors text-lg font-semibold group"
-                >
-                    <ArrowLeft className="h-6 w-6 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
-                    Revenir sur le site
-                </Link>
+            {/* Navigation et fil d'ariane */}
+            <div className="bg-white shadow-sm">
+                <div className="container mx-auto px-4">
+                    {/* Fil d'ariane */}
+                    <nav className="py-4 flex items-center text-sm text-gray-500" aria-label="Breadcrumb">
+                        <ol className="inline-flex items-center space-x-1 md:space-x-3">
+                            <li className="inline-flex items-center">
+                                <Link to="/" className="hover:text-primary transition-colors">
+                                    Accueil
+                                </Link>
+                            </li>
+                            <li>
+                                <div className="flex items-center">
+                                    <ChevronRight className="w-4 h-4 mx-1" />
+                                    <span className="text-gray-800 font-medium">Ebook</span>
+                                </div>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
             </div>
             
             {/* Contenu principal */}
-            <main className="ebook-main">
-                {/* Utilisation du composant EbookHero existant */}
+            <main className="pb-16">
+                {/* Section héro avec présentation de l'ebook */}
                 <EbookHero />
                 
-                {/* Détails du ebook */}
-                <section className="testimonials-section py-12 bg-gray-50">
+                {/* Section contenu et table des matières */}
+                <section className="py-16 bg-white">
+                    <div className="container mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div className="md:col-span-2">
+                                <h2 className="text-2xl md:text-3xl font-serif font-bold mb-8">À propos de cet ebook</h2>
+                                
+                                <div className="prose prose-lg max-w-none">
+                                    <p>
+                                        Dans ce guide complet, je partage mon expertise et mon expérience de plus de 10 ans en tant qu'assistante sociale pour vous aider à réussir votre installation en libéral. Que vous soyez déjà professionnel ou en reconversion, ce guide vous accompagne pas à pas dans toutes les étapes nécessaires.
+                                    </p>
+                                    
+                                    <p>
+                                        <strong>Ce guide est fait pour vous si :</strong>
+                                    </p>
+                                    
+                                    <ul>
+                                        <li>Vous êtes assistant(e) social(e) et souhaitez vous installer en libéral</li>
+                                        <li>Vous cherchez à comprendre les aspects administratifs et juridiques</li>
+                                        <li>Vous avez besoin de conseils pratiques et d'exemples concrets</li>
+                                        <li>Vous désirez des modèles de documents pour démarrer rapidement</li>
+                                    </ul>
+                                    
+                                    <div className="my-8 flex flex-col sm:flex-row items-center gap-6 p-6 bg-primary/5 rounded-lg border border-primary/10">
+                                        <div className="flex-shrink-0">
+                                            <OptimizedImage
+                                                src={ebookConfig.coverImage}
+                                                alt={ebookConfig.title}
+                                                className="w-48 rounded-md shadow-lg"
+                                                width={200}
+                                                height={300}
+                                            />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-2">{ebookConfig.title}</h3>
+                                            <p className="text-gray-600 mb-4">{ebookConfig.subtitle}</p>
+                                            <div className="flex items-center mb-4">
+                                                <div className="text-2xl font-bold text-primary mr-3">{ebookConfig.price} €</div>
+                                                <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">Format PDF</span>
+                                            </div>
+                                            <Link to="/acheter-ebook">
+                                                <Button className="bg-primary hover:bg-primary/90 text-white flex items-center gap-2">
+                                                    <Download size={18} />
+                                                    Acheter et télécharger
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Bénéfices de l'ebook */}
+                                <div className="mt-12">
+                                    <h3 className="text-xl font-semibold mb-6">Ce que vous obtiendrez</h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        {benefits.map((benefit, index) => (
+                                            <div key={index} className="flex items-start p-4 bg-gray-50 rounded-lg">
+                                                <div className="mr-4 mt-1">{benefit.icon}</div>
+                                                <div>
+                                                    <h4 className="font-semibold text-lg">{benefit.title}</h4>
+                                                    <p className="text-gray-600">{benefit.description}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Sidebar avec table des matières */}
+                            <div className="md:col-span-1">
+                                <div className="bg-gray-50 p-6 rounded-lg sticky top-24">
+                                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                                        <List className="h-5 w-5 mr-2 text-primary" />
+                                        Table des matières
+                                    </h3>
+                                    <ol className="list-decimal ml-5 space-y-2">
+                                        {tableOfContents.map((item, index) => (
+                                            <li key={index} className="text-gray-700">{item}</li>
+                                        ))}
+                                    </ol>
+                                    <div className="mt-6 pt-4 border-t border-gray-200">
+                                        <div className="flex items-center text-primary">
+                                            <FileText className="h-5 w-5 mr-2" />
+                                            <span className="font-medium">Format PDF</span>
+                                        </div>
+                                        <div className="flex items-center mt-2 text-primary">
+                                            <Download className="h-5 w-5 mr-2" />
+                                            <span className="font-medium">Téléchargement immédiat</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 text-center">
+                                        <Link to="/acheter-ebook">
+                                            <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+                                                Obtenir l'ebook ({ebookConfig.price} €)
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                {/* Section témoignages */}
+                <section className="py-16 bg-gray-50">
                     <div className="container mx-auto px-4">
                         <h2 className="text-2xl md:text-3xl font-serif font-bold text-center mb-10">Ce que disent mes lecteurs</h2>
                         
@@ -49,26 +274,26 @@ const EbookPage: React.FC = () => {
                                     text: "Ce guide m'a vraiment aidé à comprendre les démarches administratives et à structurer mon activité en libéral. Un indispensable !",
                                     author: "Marie L.",
                                     rating: 5,
-                                    role: "Mère de famille",
-                                    image: "/assets/avisuser/testimonial-3.jpg" // Optionnel
+                                    role: "Assistante sociale",
+                                    image: "/assets/avisuser/testimonial-3.jpg"
                                 },
                                 {
                                     text: "Grâce aux conseils pratiques et aux modèles de documents, j'ai pu m'installer en libéral sans stress. Je recommande vivement ce guide.",
                                     author: "Jean D.",
                                     rating: 5,
-                                    role: "Fonctionnaire",
-                                    image: "/assets/avisuser/testimonial-2.jpg" // Optionnel
+                                    role: "Assistant social",
+                                    image: "/assets/avisuser/testimonial-2.jpg"
                                 },
                                 {
                                     text: "Les explications sont claires et précises. Ce guide m'a permis de gagner du temps et d'éviter les erreurs courantes lors de l'installation en libéral.",
                                     author: "Sophie M.",
                                     rating: 5,
-                                    role: "Étudiante",
-                                    image: "/assets/avisuser/testimonial-3.jpg" // Optionnel
+                                    role: "Étudiante en travail social",
+                                    image: "/assets/avisuser/testimonial-3.jpg"
                                 }
                             ].map((testimonial, index) => (
                                 <div 
-                                    className="testimonial-card bg-white" style={{ borderRadius: '0.5rem' }}
+                                    className="testimonial-card bg-white p-6 relative rounded-lg shadow-sm"
                                     key={index}
                                 >
                                     {/* Guillemet décoratif */}
@@ -97,10 +322,12 @@ const EbookPage: React.FC = () => {
                                     {/* Auteur */}
                                     <div className="flex items-center">
                                         {testimonial.image ? (
-                                            <img 
+                                            <OptimizedImage 
                                                 src={testimonial.image} 
                                                 alt={testimonial.author} 
                                                 className="w-12 h-12 rounded-full object-cover mr-4"
+                                                width={48}
+                                                height={48}
                                             />
                                         ) : (
                                             <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold mr-4">
@@ -118,13 +345,78 @@ const EbookPage: React.FC = () => {
                             ))}
                         </div>
                         
-                        {/* Badge de confiance */}
-                        <div className="mt-12 text-center">
-                            <div className="inline-flex items-center bg-white px-4 py-2 rounded-full shadow-sm">
-                                <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                                <span className="text-sm font-medium">100% des lecteurs satisfaits</span>
+                        {/* Badge de confiance et garantie */}
+                        <div className="mt-12">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12">
+                                <div className="bg-white px-6 py-3 rounded-full shadow-sm flex items-center">
+                                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                                    <span className="font-medium">Satisfaction garantie</span>
+                                </div>
+                                
+                                <div className="bg-white px-6 py-3 rounded-full shadow-sm flex items-center">
+                                    <Award className="h-5 w-5 text-primary mr-2" />
+                                    <span className="font-medium">Expertise vérifiée</span>
+                                </div>
+                                
+                                <div className="bg-white px-6 py-3 rounded-full shadow-sm flex items-center">
+                                    <CheckCheck className="h-5 w-5 text-blue-500 mr-2" />
+                                    <span className="font-medium">Mise à jour régulière</span>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </section>
+                
+                {/* FAQ Section */}
+                <section className="py-16 bg-white">
+                    <div className="container mx-auto px-4">
+                        <h2 className="text-2xl md:text-3xl font-serif font-bold text-center mb-10">Questions fréquentes</h2>
+                        
+                        <div className="max-w-3xl mx-auto">
+                            <div className="space-y-6">
+                                {faqItems.map((item, index) => (
+                                    <div key={index} className="bg-gray-50 rounded-lg p-6">
+                                        <h3 className="text-lg font-semibold mb-2">{item.question}</h3>
+                                        <p className="text-gray-700">{item.answer}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <div className="mt-10 text-center">
+                                <p className="mb-6 text-gray-700">
+                                    Vous avez d'autres questions ? N'hésitez pas à me contacter.
+                                </p>
+                                <div className="flex flex-wrap justify-center gap-4">
+                                    <ContactButton />
+                                    <Link to="/acheter-ebook">
+                                        <Button className="bg-primary hover:bg-primary/90 text-white flex items-center gap-2">
+                                            <Download size={16} />
+                                            Acheter maintenant
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                {/* CTA final */}
+                <section className="py-12 bg-primary/10">
+                    <div className="container mx-auto px-4 text-center">
+                        <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">
+                            Prêt(e) à vous lancer dans l'aventure du libéral ?
+                        </h2>
+                        <p className="text-lg mb-8 max-w-2xl mx-auto">
+                            Cet ebook contient toutes les informations dont vous avez besoin pour réussir votre installation en tant qu'assistant(e) social(e) indépendant(e).
+                        </p>
+                        <Link to="/acheter-ebook">
+                            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg">
+                                Obtenir mon guide pour {ebookConfig.price} €
+                            </Button>
+                        </Link>
+                        <p className="mt-4 text-sm text-gray-600">
+                            Téléchargement immédiat après paiement • Format PDF • Garantie satisfait ou remboursé 30 jours
+                        </p>
                     </div>
                 </section>
             </main>

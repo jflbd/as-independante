@@ -1,47 +1,23 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import LegalNotices from "./pages/LegalNotices";
-import { CookieConsentProvider } from "./contexts/CookieConsentContext";
-import { LegalModalProvider } from "./contexts/LegalModalContext";
-import CookieBanner from "./components/CookieBanner";
-import LegalModalContainer from "./components/legal/LegalModalContainer";
-import CheckoutPage from "./pages/CheckoutPage";
-import TelechargementPage from "./pages/TelechargementPage";
-import EbookPage from "./pages/EbookPage";
+import { Routes, Route } from 'react-router-dom';
+import Index from './pages/Index';
+import LegalNotices from './pages/LegalNotices';
+import EbookPage from './pages/EbookPage';
+import CheckoutPage from './pages/CheckoutPage';
+import TelechargementPage from './pages/TelechargementPage';
+import NotFound from './pages/NotFound';
+import './App.css';
 
-// Create a new query client instance
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-      <TooltipProvider>
-        <CookieConsentProvider>
-          <LegalModalProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/mentions-legales" element={<LegalNotices />} />
-              <Route path="/acheter-ebook" element={<CheckoutPage />} />
-              <Route path="/telechargement-ebook" element={<TelechargementPage />} />
-              <Route path="/ebook" element={<EbookPage />} /> 
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <CookieBanner />
-            <LegalModalContainer />
-          </LegalModalProvider>
-        </CookieConsentProvider>
-      </TooltipProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/mentions-legales" element={<LegalNotices />} />
+      <Route path="/ebook" element={<EbookPage />} />
+      <Route path="/acheter-ebook" element={<CheckoutPage />} />
+      <Route path="/telechargement-ebook" element={<TelechargementPage />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
 
 export default App;

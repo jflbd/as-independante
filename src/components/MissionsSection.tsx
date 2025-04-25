@@ -18,7 +18,7 @@ const MissionsSection = () => {
   const valueItems = values.map((value, index) => (
     <div 
       key={index} 
-      className="bg-white p-4 shadow-sm hover:shadow-md transition-shadow text-center flex flex-col items-center justify-center" style={{ border: '1px solid #f3f4f6', borderRadius: '0.5rem' }}
+      className="bg-white p-4 shadow-sm hover:shadow-md transition-shadow text-center flex flex-col items-center justify-center h-32 sm:h-40" style={{ border: '1px solid #f3f4f6', borderRadius: '0.5rem' }}
     >
       <div className="mb-3 bg-primary/10 p-3 rounded-full">
         {value.icon}

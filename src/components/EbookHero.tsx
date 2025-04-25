@@ -3,9 +3,10 @@ import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Download, BookOpen, X } from 'lucide-react';
 import { ebookConfig } from '@/config/ebookConfig';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import CheckoutForm from './checkout/CheckoutForm';
 import PaymentOptions from './checkout/PaymentOptions';
+import ContactButton from './ContactButton';
 
 const EbookHero: React.FC = () => {
     const navigate = useNavigate();

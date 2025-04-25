@@ -1,9 +1,11 @@
-
-import { ArrowRight } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Check, FileText } from "lucide-react";
+import QuoteButton from "./QuoteButton";
+import DemandeAccompagnementDialog from "./pricing/QuoteFormDialog";
+import OptimizedImage from "./OptimizedImage";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import PricingCard from "./pricing/PricingCard";
-import QuoteFormDialog from "./pricing/QuoteFormDialog";
 import PayPalPaymentButton from "./pricing/PayPalPaymentButton";
 
 const PricingSection = () => {
@@ -54,10 +56,10 @@ const PricingSection = () => {
               <Dialog>
                 <DialogTrigger asChild onClick={() => setIsDialogOpen(true)}>
                   <button
-                    className="btn-primary w-full justify-center py-3 px-6"
+                    className="bg-[#0d8496] hover:bg-[#065964] text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center w-full transition-all duration-300 hover:shadow-lg"
                   >
+                    <FileText className="mr-2 h-5 w-5" />
                     Demander un devis
-                    <ArrowRight className="ml-2 h-5 w-5" />
                   </button>
                 </DialogTrigger>
               </Dialog>
@@ -66,7 +68,7 @@ const PricingSection = () => {
         </div>
       </div>
       
-      <QuoteFormDialog isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+      <DemandeAccompagnementDialog isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
     </section>
   );
 };

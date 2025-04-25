@@ -2,6 +2,7 @@ import { ArrowRight, Check, Heart, Home, FileText, DollarSign, Users, User, Brie
 import FadeInSection from "./animations/FadeInSection";
 import StaggeredReveal from "./animations/StaggeredReveal";
 import ParallaxScroll from "./animations/ParallaxScroll";
+import QuoteButton from "./QuoteButton";
 
 export const services = [
   {
@@ -196,6 +197,9 @@ const ServicesSection = () => {
                     <div className="bg-primary/10 p-4 md:p-6 rounded-lg text-center">
                       <p className="font-bold text-lg">{services[1].interventions[0]}</p>
                       <p className="mt-2 text-gray-700">{services[1].description}</p>
+                      <div className="mt-6 flex justify-center">
+                        <QuoteButton variant="secondary" size="lg" className="shadow-md hover:shadow-lg" />
+                      </div>
                     </div>
                   </FadeInSection>
                 </div>

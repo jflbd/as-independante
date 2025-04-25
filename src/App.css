@@ -1,10 +1,13 @@
+/* Reset des styles par défaut de Vite pour le site */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
+/* Le reste du CSS peut être conservé pour d'autres composants spécifiques si nécessaire */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -39,4 +42,17 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Styles pour assurer que la navbar est bien positionnée en haut */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Assurer que le contenu principal prend l'espace disponible */
+main {
+  flex: 1;
 }

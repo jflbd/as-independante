@@ -49,6 +49,13 @@ const Footer: React.FC = () => {
       { name: "Services", url: "#services", id: "footer-services" },
       { name: "Témoignages", url: "#temoignages", id: "footer-testimonials" },
       { name: "Contact", url: "#contact", id: "footer-contact" },
+      { 
+        name: "Ebook", 
+        url: "/ebook", 
+        id: "footer-ebook", 
+        highlight: true, 
+        icon: <Book className="h-4 w-4 mr-1" /> 
+      },
     ];
 
     // Liens vers les informations légales dans les modales
@@ -88,9 +95,12 @@ const Footer: React.FC = () => {
                       <li key={link.id}>
                         <SafeLink 
                           to={link.url} 
-                          className="text-sm text-gray-600 hover:text-primary transition-colors hover:underline"
+                          className={`text-sm ${link.highlight 
+                            ? 'text-primary font-semibold hover:text-accent' 
+                            : 'text-gray-600 hover:text-primary'} transition-colors hover:underline flex items-center`}
                           id={link.id}
                         >
+                          {link.icon && link.icon}
                           {link.name}
                         </SafeLink>
                       </li>
