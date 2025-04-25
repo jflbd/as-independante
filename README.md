@@ -21,10 +21,10 @@ Ce projet est un site web professionnel pour Rachel Gervais, assistante sociale 
 - **Vite** - Build tool rapide pour le développement
 - **Tailwind CSS** - Framework CSS utilitaire pour un design sur mesure
 - **RadixUI** - Composants accessibles et personnalisables
-- **React Router** - Gestion des routes et navigation
+- **React Router v6** - Gestion des routes et navigation avec support des futures fonctionnalités v7
 - **React Hook Form** - Gestion des formulaires
 - **PayPal API** - Intégration des paiements sécurisés
-- **React Helmet** - Gestion du SEO et méta-données
+- **React Helmet Async** - Gestion du SEO et méta-données compatible avec le Concurrent Mode
 - **Sharp** - Optimisation et transformation d'images
 - **PostCSS** - Traitement CSS avancé avec support pour le nesting et autres fonctionnalités modernes
 
@@ -103,6 +103,8 @@ src/
   ├── components/     # Composants React réutilisables
   │   ├── animations/ # Composants d'animation
   │   ├── ui/         # Composants d'interface utilisateur
+  │   ├── checkout/   # Composants pour le processus d'achat
+  │   ├── legal/      # Composants pour les mentions légales
   │   └── ...         # Autres composants spécifiques
   ├── config/         # Fichiers de configuration
   ├── contexts/       # Contexts React pour l'état global
@@ -122,6 +124,14 @@ Pour modifier le contenu du site :
 ### Mise à jour des images
 
 Pour remplacer une image existante, placez simplement votre nouveau fichier dans le répertoire correspondant sous `public/assets/`. Lors du prochain build, l'image sera automatiquement optimisée et convertie au format WebP.
+
+### Mise à jour du logo
+
+Le logo principal se trouve dans `public/assets/logo/` et est référencé dans `src/config/siteConfig.ts`. Pour mettre à jour le logo :
+
+1. Placez votre nouveau logo dans le dossier
+2. Mettez à jour le chemin dans la configuration si nécessaire
+3. Le composant OptimizedImage gère automatiquement le format WebP et les fallbacks
 
 ### Mise à jour du favicon
 
@@ -151,6 +161,14 @@ Le projet intègre plusieurs optimisations pour une expérience utilisateur opti
 - **Code splitting** : Division du code pour ne charger que ce qui est nécessaire
 - **Responsive design** : Adaptation à toutes les tailles d'écran avec des optimisations spécifiques
 - **SEO optimisé** : Métadonnées appropriées, schema.org et balises OpenGraph
+- **Compatibilité PWA** : Support des applications web progressives avec balises meta appropriées
+
+## 🔄 Mises à jour récentes
+
+- Migration de React Helmet vers React Helmet Async pour améliorer la compatibilité avec le Concurrent Mode
+- Activation des fonctionnalités futures de React Router v7 avec le flag `v7_startTransition`
+- Optimisation de l'affichage du logo dans la navigation
+- Correction des méta-données pour les applications web mobiles
 
 ## 📜 Licence
 
