@@ -182,10 +182,11 @@ const NavBar = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-2">
-          {/* Logo */}
+          {/* Logo - Correction de l'affichage pour mobile */}
           <Link to="/" className="flex items-center">
             <div className="flex items-center justify-center relative">
-              <div className="relative w-auto h-10 sm:h-12 md:h-16 -mb-3 z-10">
+              <div className="relative w-auto h-10 sm:h-12 md:h-16 z-10">
+                {/* Suppression de la classe -mb-3 qui causait le problème d'affichage sur mobile */}
                 <OptimizedImage
                   src="/assets/logo/logo-rachel-gervais.png"
                   alt="logo Assistante Sociale indépendante"
@@ -307,18 +308,19 @@ const NavBar = () => {
           </div>
         </div>
 
-        {/* Menu mobile */}
+        {/* Menu mobile - Correction du défilement */}
         {isOpen && (
           <div
             className="fixed inset-0 z-40 bg-white/80 backdrop-blur-sm md:hidden"
             onClick={() => setIsOpen(false)}
           >
             <div 
-              className="fixed inset-x-0 top-0 pt-16 bottom-0 z-50 overflow-y-auto bg-white shadow-lg"
+              className="fixed inset-x-0 top-0 bottom-0 z-50 overflow-y-auto bg-white shadow-lg"
               onClick={(e) => e.stopPropagation()}
               style={{ 
                 top: navRef.current ? `${navRef.current.offsetHeight}px` : '56px',
-                height: navRef.current ? `calc(100vh - ${navRef.current.offsetHeight}px)` : 'calc(100vh - 56px)'
+                // Suppression de la hauteur fixe qui empêchait le défilement
+                maxHeight: navRef.current ? `calc(100vh - ${navRef.current.offsetHeight}px)` : 'calc(100vh - 56px)'
               }}
             >
               <div className="py-6 px-4 flex flex-col space-y-4">
@@ -388,6 +390,8 @@ const NavBar = () => {
                 <div className="pt-6 mt-4 border-t border-gray-200 flex flex-col space-y-4">
                   <ContactButton variant="default" className="w-full justify-center" />
                   <QuoteButton variant="outline" className="w-full justify-center" />
+                  {/* Ajout d'un espace en bas pour améliorer le défilement sur mobile */}
+                  <div className="h-4"></div>
                 </div>
               </div>
             </div>
