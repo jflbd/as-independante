@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import LegalModal from '../legal/LegalModal';
 import { useLegalModal } from '@/contexts/LegalModalContext';
 import DemandeAccompagnementDialog from '../pricing/QuoteFormDialog';
@@ -15,8 +15,10 @@ const ModalManager: React.FC = () => {
       {/* Modale de Contact */}
       <Dialog open={activeModal === 'contact'} onOpenChange={(open) => !open && closeModal()}>
         <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Contactez-moi</DialogTitle>
+          </DialogHeader>
           <div className="flex flex-col space-y-4">
-            <h2 className="text-xl font-semibold">Contactez-moi</h2>
             <ContactForm onSuccess={closeModal} />
           </div>
         </DialogContent>

@@ -18,6 +18,7 @@ const NavBar = () => {
   const [showMobileServiceDropdown, setShowMobileServiceDropdown] = useState(false);
   const serviceDropdownRef = useRef<HTMLDivElement>(null);
   const serviceButtonRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   
   // Pour accessibilité - contrôle du menu par clavier
   const handleEscapeKey = (e: KeyboardEvent) => {
@@ -56,11 +57,12 @@ const NavBar = () => {
       setIsScrolling(true);
       setIsOpen(false); // Close mobile menu before scrolling
       setShowServiceDropdown(false); // Close service dropdown
+      setShowMobileServiceDropdown(false); // Ensure mobile dropdown is closed too
       
       // Use setTimeout to allow menu to close before scrolling
       setTimeout(() => {
-        const navHeight = document.querySelector('nav')?.offsetHeight || 0;
-        const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
+        const navHeight = navRef.current?.offsetHeight || 0;
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         
         // Scroll avec offset pour la hauteur du menu fixe
         window.scrollTo({
@@ -90,7 +92,7 @@ const NavBar = () => {
       
       if (isScrolling) return; // Don't update during programmatic scrolling
       
-      const navHeight = document.querySelector('nav')?.offsetHeight || 0;
+      const navHeight = navRef.current?.offsetHeight || 0;
       const sections = [
         "accueil", "a-propos", "missions", "temoignages", 
         "services", "referentiel", "deontologie", "pricing", "contact"
@@ -169,6 +171,7 @@ const NavBar = () => {
 
   return (
     <nav 
+      ref={navRef}
       className={`fixed w-full z-50 transition-all duration-500 ${
         scrolled || isOpen
           ? "bg-white/95 backdrop-blur-md shadow-lg py-2"
@@ -244,8 +247,8 @@ const NavBar = () => {
                                 const articles = document.querySelectorAll('#services article');
                                 if (articles && articles.length >= 2) {
                                   const targetSection = idx === 0 ? articles[0] : articles[1];
-                                  const navHeight = document.querySelector('nav')?.offsetHeight || 0;
-                                  const sectionTop = targetSection.getBoundingClientRect().top + window.pageYOffset;
+                                  const navHeight = navRef.current?.offsetHeight || 0;
+                                  const sectionTop = targetSection.getBoundingClientRect().top + window.scrollY;
                                   
                                   window.scrollTo({
                                     top: sectionTop - navHeight - 20,
@@ -307,12 +310,16 @@ const NavBar = () => {
         {/* Menu mobile */}
         {isOpen && (
           <div
-            className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-white/80 backdrop-blur-sm md:hidden"
             onClick={() => setIsOpen(false)}
           >
             <div 
-              className="fixed top-[56px] left-0 right-0 bottom-0 z-50 overflow-y-auto bg-background border-t border-border"
+              className="fixed inset-x-0 top-0 pt-16 bottom-0 z-50 overflow-y-auto bg-white shadow-lg"
               onClick={(e) => e.stopPropagation()}
+              style={{ 
+                top: navRef.current ? `${navRef.current.offsetHeight}px` : '56px',
+                height: navRef.current ? `calc(100vh - ${navRef.current.offsetHeight}px)` : 'calc(100vh - 56px)'
+              }}
             >
               <div className="py-6 px-4 flex flex-col space-y-4">
                 {mainNavItems.map((item) => (
@@ -331,13 +338,27 @@ const NavBar = () => {
                       
                       {showMobileServiceDropdown && (
                         <div className="pl-4 flex flex-col space-y-2 mt-2">
-                          {item.dropdownItems?.map((subItem) => (
+                          {item.dropdownItems?.map((subItem, idx) => (
                             <button
                               key={subItem.id}
                               className="text-md flex items-center transition-colors hover:text-primary py-2"
                               onClick={() => {
-                                scrollToSection(item.id);
-                                setIsOpen(false);
+                                scrollToSection("services");
+                                // Ajout d'un délai pour permettre au scrollToSection de finir
+                                setTimeout(() => {
+                                  // Sélection des articles dans la section services (particuliers ou professionnels)
+                                  const articles = document.querySelectorAll('#services article');
+                                  if (articles && articles.length >= 2) {
+                                    const targetSection = idx === 0 ? articles[0] : articles[1];
+                                    const navHeight = navRef.current?.offsetHeight || 0;
+                                    const sectionTop = targetSection.getBoundingClientRect().top + window.scrollY;
+                                    
+                                    window.scrollTo({
+                                      top: sectionTop - navHeight - 20,
+                                      behavior: "smooth"
+                                    });
+                                  }
+                                }, 300);
                               }}
                             >
                               {subItem.icon}
@@ -351,12 +372,9 @@ const NavBar = () => {
                     <SafeLink
                       key={item.id}
                       to={`#${item.id}`}
-                      className={cn(
-                        "text-lg font-medium transition-colors hover:text-primary py-2",
-                        activeSection === item.id
-                          ? "text-primary font-semibold"
-                          : "text-muted-foreground"
-                      )}
+                      className={`text-lg font-medium transition-colors hover:text-primary py-2 ${
+                        activeSection === item.id ? "text-primary font-semibold" : "text-gray-600"
+                      }`}
                       onClick={(e) => {
                         e.preventDefault();
                         scrollToSection(item.id);
@@ -367,7 +385,7 @@ const NavBar = () => {
                   )
                 ))}
                 
-                <div className="pt-6 mt-4 border-t border-border flex flex-col space-y-4">
+                <div className="pt-6 mt-4 border-t border-gray-200 flex flex-col space-y-4">
                   <ContactButton variant="default" className="w-full justify-center" />
                   <QuoteButton variant="outline" className="w-full justify-center" />
                 </div>

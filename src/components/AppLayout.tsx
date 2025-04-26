@@ -6,6 +6,7 @@ import { CookieConsentProvider } from '@/contexts/CookieConsentContext';
 import CookieBanner from './CookieBanner';
 import ModalManager from './ui/ModalManager';
 import LegalModalContainer from './legal/LegalModalContainer';
+import ScrollButtons from './ScrollButtons';
 import NavBar from './NavBar';
 
 interface AppLayoutProps {
@@ -25,6 +26,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <CookieBanner />
               <ModalManager />
               <LegalModalContainer />
+              <ScrollButtons />
             </div>
           </ModalProvider>
         </LegalModalProvider>
