@@ -116,7 +116,7 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
             </TabsTrigger>
             <TabsTrigger value="paypal" className="flex items-center gap-2">
               <OptimizedImage 
-                src="/assets/card/paypal-logo.png" 
+                src="/assets/card/paypal-logo.svg" 
                 alt="PayPal" 
                 className="h-4" 
                 width={20} 
@@ -128,27 +128,36 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
 
           <TabsContent value="card" className="w-full">
             <div className="flex flex-wrap gap-2 justify-center mb-4">
-              <OptimizedImage 
-                src="/assets/card/card-visa.svg" 
-                alt="Visa" 
-                className="h-8" 
-                width={48} 
-                height={32} 
-              />
-              <OptimizedImage 
-                src="/assets/card/card-mastercard.svg" 
-                alt="Mastercard" 
-                className="h-8" 
-                width={48} 
-                height={32} 
-              />
-              <OptimizedImage 
-                src="/assets/card/card-amex.svg" 
-                alt="American Express" 
-                className="h-8" 
-                width={48} 
-                height={32} 
-              />
+              <div className="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center shadow-sm">
+                <img 
+                  src="assets/card/card-visa.svg" 
+                  alt="Visa" 
+                  className="h-8 w-auto" 
+                  width={48} 
+                  height={32} 
+                  loading="lazy"
+                />
+              </div>
+              <div className="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center shadow-sm">
+                <img 
+                  src="assets/card/card-mastercard.svg" 
+                  alt="Mastercard" 
+                  className="h-8 w-auto" 
+                  width={48} 
+                  height={32} 
+                  loading="lazy"
+                />
+              </div>
+              <div className="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center shadow-sm">
+                <img 
+                  src="assets/card/card-amex.svg" 
+                  alt="American Express" 
+                  className="h-8 w-auto" 
+                  width={48} 
+                  height={32} 
+                  loading="lazy"
+                />
+              </div>
             </div>
 
             <Form {...cardForm}>
@@ -282,12 +291,12 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
 
           <TabsContent value="paypal" className="w-full">
             <div className="text-center mb-6">
-              <OptimizedImage 
-                src="/assets/card/paypal-logo.png" 
+              <img 
+                src="/assets/card/paypal-logo-nom.svg" 
                 alt="PayPal" 
-                className="h-12 mx-auto mb-4" 
+                className="max-w-[120px] h-auto mx-auto mb-4" 
                 width={120} 
-                height={48} 
+                height={48}
               />
               <p className="text-gray-600">
                 Vous allez être redirigé(e) vers PayPal pour finaliser votre paiement de {amount.toFixed(2).replace('.', ',')}€

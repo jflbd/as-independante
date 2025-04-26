@@ -8,6 +8,7 @@ interface OptimizedImageProps {
   className?: string;
   priority?: boolean;
   loading?: 'lazy' | 'eager';
+  objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
 }
 
 export function OptimizedImage({
@@ -18,6 +19,7 @@ export function OptimizedImage({
   className = '',
   priority = false,
   loading = 'lazy',
+  objectFit = 'contain',  // Changé de 'cover' à 'contain' par défaut
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   
@@ -42,7 +44,7 @@ export function OptimizedImage({
   }, [src, priority]);
 
   return (
-    <picture className={`overflow-hidden ${className}`}>
+    <picture className="overflow-hidden">
       {isWebP && (
         <source srcSet={src} type="image/webp" />
       )}
@@ -53,8 +55,8 @@ export function OptimizedImage({
         height={height}
         loading={priority ? 'eager' : loading}
         onLoad={() => setIsLoaded(true)}
-        className={`w-full h-auto object-cover ${blurClass} ${className}`}
-        style={aspectRatio}
+        className={`${blurClass} ${className}`}
+        style={{...aspectRatio, objectFit}}
       />
     </picture>
   );

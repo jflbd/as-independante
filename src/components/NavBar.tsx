@@ -197,11 +197,11 @@ const NavBar = () => {
           {/* Logo - Correction de l'affichage pour mobile */}
           <Link to="/" className="flex items-center">
             <div className="flex items-center justify-center relative">
-              <div className="relative w-auto h-10 sm:h-12 md:h-16 z-10">
+              <div className="relative w-auto h-auto z-10">
                 <OptimizedImage
                   src="/assets/logo/logo-rachel-gervais.png"
                   alt="logo Assistante Sociale indépendante"
-                  className="h-full w-auto object-contain"
+                  className="w-auto h-auto object-contain"
                   width={180}
                   height={60}
                   priority
@@ -330,11 +330,19 @@ const NavBar = () => {
               onClick={(e) => e.stopPropagation()}
               style={{ 
                 top: navRef.current ? `${navRef.current.offsetHeight}px` : '56px',
-                maxHeight: '85vh', // Limitation à 85% de la hauteur de la fenêtre
-                height: 'auto',   // Hauteur automatique basée sur le contenu
-                overscrollBehavior: 'contain' // Empêcher le scroll de se propager au body
+                maxHeight: '85vh',
+                height: 'auto',
+                overscrollBehavior: 'contain'
               }}
             >
+              {/* Bouton de fermeture en haut à droite */}
+              <button
+                className="absolute top-4 right-4 p-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all z-50"
+                onClick={() => setIsOpen(false)}
+                aria-label="Fermer le menu"
+              >
+                <X size={28} />
+              </button>
               <div className="py-6 px-4 flex flex-col space-y-4">
                 {mainNavItems.map((item) => (
                   item.hasDropdown ? (

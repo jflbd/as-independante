@@ -129,12 +129,13 @@ const EbookHero: React.FC = () => {
                             </div>
 
                             <div className="md:w-1/2 w-full flex justify-center">
-                                <div className="relative">
+                                <div className="relative w-full max-w-[300px] mx-auto">
                                     <div className="absolute inset-0 bg-primary/5 rounded-lg transform rotate-3"></div>
                                     <img 
                                         src={ebookConfig.coverImage}
                                         alt={ebookConfig.title} 
-                                        className="relative z-10 rounded-lg shadow-lg max-w-full h-auto transform hover:scale-105 transition-transform duration-300"
+                                        className="relative z-10 rounded-lg shadow-lg w-full h-auto object-contain transform hover:scale-105 transition-transform duration-300"
+                                        style={{ maxHeight: "450px" }}
                                     />
                                 </div>
                             </div>
@@ -202,7 +203,7 @@ const EbookHero: React.FC = () => {
                                     <img 
                                         src={ebookConfig.coverImage} 
                                         alt={ebookConfig.title} 
-                                        className="w-16 h-auto rounded-md shadow-sm"
+                                        className="w-16 h-auto max-h-[80px] object-contain rounded-md shadow-sm"
                                     />
                                     <div>
                                         <h3 className="font-semibold text-sm">{ebookConfig.title}</h3>
@@ -232,7 +233,7 @@ const EbookHero: React.FC = () => {
                                     <img 
                                         src={ebookConfig.coverImage} 
                                         alt={ebookConfig.title} 
-                                        className="max-w-full rounded-md shadow-sm"
+                                        className="w-full max-w-[230px] mx-auto h-auto max-h-[300px] rounded-md shadow-sm object-contain"
                                     />
                                 </div>
                                 <h3 className="font-semibold mb-1">{ebookConfig.title}</h3>

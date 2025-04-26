@@ -290,11 +290,11 @@ const EbookPage: React.FC = () => {
                                     </ul>
                                     
                                     <div className="my-8 flex flex-col sm:flex-row items-center gap-6 p-6 bg-primary/5 rounded-lg border border-primary/10">
-                                        <div className="flex-shrink-0">
+                                        <div className="flex-shrink-0 w-48 max-w-full">
                                             <OptimizedImage
                                                 src={ebookConfig.coverImage}
                                                 alt={ebookConfig.title}
-                                                className="w-48 rounded-md shadow-lg hover:shadow-xl transition-shadow"
+                                                className="w-full h-auto rounded-md shadow-lg hover:shadow-xl transition-shadow object-contain max-h-[300px]"
                                                 width={200}
                                                 height={300}
                                                 priority

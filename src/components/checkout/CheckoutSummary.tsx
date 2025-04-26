@@ -2,7 +2,6 @@ import React from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { CheckCircle, Shield } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { OptimizedImage } from "../OptimizedImage";
 import { ebookConfig } from "@/config/ebookConfig";
 
 interface CheckoutSummaryProps {
@@ -27,10 +26,10 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({ customerInfo }) => {
         {/* Produit */}
         <div className="flex gap-4">
           <div className="flex-shrink-0">
-            <OptimizedImage
+            <img
               src={ebookConfig.coverImage}
               alt={ebookConfig.title}
-              className="w-20 h-auto rounded-md shadow-sm"
+              className="w-20 max-w-full h-auto rounded-md shadow-sm"
               width={80}
               height={120}
             />
