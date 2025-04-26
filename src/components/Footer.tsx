@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import SafeLink from '@/components/SafeLink';
 import { siteConfig } from '@/config/siteConfig';
 import { SiFacebook } from '@icons-pack/react-simple-icons';
@@ -37,18 +38,38 @@ const FooterSchemaOrgScript: React.FC = () => (
 
 const Footer: React.FC = () => {
     const { openLegalModal } = useLegalModal();
+    const location = useLocation();
     const currentYear = new Date().getFullYear();
     const startYear = 2023; // Année de création du site
     const copyrightYears = startYear === currentYear 
       ? currentYear 
       : `${startYear} - ${currentYear}`;
     
+    // Déterminer si nous sommes sur la page d'accueil ou une autre page
+    const isHomePage = location.pathname === '/';
+    
     // Données structurées pour les liens de navigation du footer
     const footerNavLinks = [
-      { name: "Accueil", url: "#accueil", id: "footer-home" },
-      { name: "Services", url: "#services", id: "footer-services" },
-      { name: "Témoignages", url: "#temoignages", id: "footer-testimonials" },
-      { name: "Contact", url: "#contact", id: "footer-contact" },
+      { 
+        name: "Accueil", 
+        url: isHomePage ? "#accueil" : "/", 
+        id: "footer-home" 
+      },
+      { 
+        name: "Services", 
+        url: isHomePage ? "#services" : "/#services", 
+        id: "footer-services" 
+      },
+      { 
+        name: "Témoignages", 
+        url: isHomePage ? "#temoignages" : "/#temoignages", 
+        id: "footer-testimonials" 
+      },
+      { 
+        name: "Contact", 
+        url: isHomePage ? "#contact" : "/#contact", 
+        id: "footer-contact" 
+      },
       { 
         name: "Ebook", 
         url: "/ebook", 

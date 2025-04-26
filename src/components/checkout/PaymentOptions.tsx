@@ -1,291 +1,370 @@
-import React, { useState, useEffect } from 'react';
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { Button } from '../ui/button';
-import { Lock, CheckCircle, AlertCircle, ShieldCheck, CreditCard } from 'lucide-react';
-import { ebookConfig } from '@/config/ebookConfig';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { ArrowLeft, ArrowRight, CreditCard, Lock, CheckCircle, ChevronRight } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Input } from "../ui/input";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { OptimizedImage } from "../OptimizedImage";
+
+// Schéma de validation pour le formulaire de carte bancaire
+const cardFormSchema = z.object({
+  cardNumber: z.string()
+    .min(1, "Numéro de carte requis")
+    .regex(/^[0-9]{16}$/, "Le numéro de carte doit contenir 16 chiffres"),
+  cardHolder: z.string()
+    .min(1, "Nom du titulaire requis"),
+  expiryDate: z.string()
+    .min(1, "Date d'expiration requise")
+    .regex(/^(0[1-9]|1[0-2])\/[0-9]{2}$/, "Format MM/YY requis"),
+  cvv: z.string()
+    .min(1, "Code de sécurité requis")
+    .regex(/^[0-9]{3,4}$/, "Le code de sécurité doit contenir 3 ou 4 chiffres"),
+});
+
+// Schéma de validation pour PayPal (simplifié car l'authentification se fait via PayPal)
+const paypalFormSchema = z.object({
+  acceptTerms: z.boolean()
+    .refine((val) => val === true, {
+      message: "Vous devez accepter les conditions générales",
+    }),
+});
 
 interface PaymentOptionsProps {
-    onPaymentComplete: (paymentId: string) => void;
-    amount: number;
+  onPaymentComplete: (paymentId: string) => void;
+  onGoBack?: () => void;
+  amount: number;
 }
 
-// Définir une interface pour la réponse PayPal
-interface PayPalOrderDetails {
-    // L'id est facultatif dans l'interface de PayPal mais nous vérifions sa présence dans handlePaymentSuccess
-    id?: string;
-    create_time?: string;
-    update_time?: string;
-    payer?: {
-        name?: {
-            given_name?: string;
-            surname?: string;
-        };
-        email_address?: string;
-    };
-    status?: string;
-    payment_source?: Record<string, unknown>;
-    purchase_units?: Array<Record<string, unknown>>;
-    [key: string]: unknown;
-}
+const PaymentOptions: React.FC<PaymentOptionsProps> = ({
+  onPaymentComplete,
+  onGoBack,
+  amount,
+}) => {
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal">("card");
+  const [isProcessing, setIsProcessing] = useState(false);
 
-const PayPalPaymentButton: React.FC<PaymentOptionsProps> = ({ onPaymentComplete, amount }) => {
-    const [isPending, setIsPending] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [paypalSdkReady, setPaypalSdkReady] = useState(false);
-    const [sdkLoaded, setSdkLoaded] = useState(false);
+  // Formulaire pour carte bancaire
+  const cardForm = useForm<z.infer<typeof cardFormSchema>>({
+    resolver: zodResolver(cardFormSchema),
+    defaultValues: {
+      cardNumber: "",
+      cardHolder: "",
+      expiryDate: "",
+      cvv: "",
+    },
+  });
 
-    // Utiliser un ID client sandbox valide par défaut
-    // Remarque: En production, il faut absolument utiliser la variable d'env VITE_PAYPAL_CLIENT_ID
-    const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || "sb";
+  // Formulaire pour PayPal
+  const paypalForm = useForm<z.infer<typeof paypalFormSchema>>({
+    resolver: zodResolver(paypalFormSchema),
+    defaultValues: {
+      acceptTerms: false,
+    },
+  });
 
-    useEffect(() => {
-        // Log de débogage
-        console.log("Configuration PayPal :", {
-            clientId: clientId === "sb" ? "Utilisation du bac à sable PayPal par défaut" : "Client ID configuré",
-            amount: amount.toFixed(2),
-            environment: import.meta.env.MODE || "development",
-            sdkLoaded: sdkLoaded,
-            paypalSdkReady: paypalSdkReady
-        });
-        
-        // Avertissement si nous utilisons l'ID client sandbox par défaut
-        if (clientId === "sb") {
-            console.warn("⚠️ Utilisation de l'ID client sandbox PayPal par défaut. Pour la production, assurez-vous de définir VITE_PAYPAL_CLIENT_ID dans votre fichier .env");
-        }
-    }, [amount, clientId, sdkLoaded, paypalSdkReady]);
+  // Gestionnaire pour le paiement par carte bancaire
+  const handleCardPayment = (values: z.infer<typeof cardFormSchema>) => {
+    setIsProcessing(true);
+    // Simulation d'une requête API pour le paiement
+    setTimeout(() => {
+      // Dans une application réelle, ceci serait remplacé par un appel à votre API de paiement
+      const paymentId = "card_" + Math.random().toString(36).substring(2, 15);
+      setIsProcessing(false);
+      onPaymentComplete(paymentId);
+    }, 2000);
+  };
 
-    const handlePaymentSuccess = (details: PayPalOrderDetails) => {
-        try {
-            console.log("Transaction réussie:", details);
-            
-            // Vérifier que l'ID de transaction est présent
-            if (!details || !details.id) {
-                throw new Error("Réponse PayPal invalide: ID de transaction manquant");
-            }
-            
-            const givenName = details?.payer?.name?.given_name || "Client";
-            console.log("Transaction réussie par " + givenName);
-            onPaymentComplete(details.id);
-        } catch (error) {
-            console.error("Erreur lors du traitement du succès de paiement:", error);
-            setErrorMessage("Le paiement a été effectué, mais une erreur est survenue lors de la finalisation. Veuillez nous contacter.");
-        }
-    };
+  // Gestionnaire pour le paiement PayPal
+  const handlePaypalPayment = (values: z.infer<typeof paypalFormSchema>) => {
+    setIsProcessing(true);
+    // Simulation d'une requête API pour le paiement
+    setTimeout(() => {
+      // Dans une application réelle, ceci serait remplacé par un appel à l'API PayPal
+      const paymentId = "paypal_" + Math.random().toString(36).substring(2, 15);
+      setIsProcessing(false);
+      onPaymentComplete(paymentId);
+    }, 2000);
+  };
 
-    const handleError = (error: unknown) => {
-        console.error("Erreur PayPal:", error);
-        
-        let message = "Une erreur est survenue lors du traitement de votre paiement. Veuillez réessayer.";
-        
-        if (error instanceof Error) {
-            console.error("Message d'erreur:", error.message);
-            console.error("Stack trace:", error.stack);
-            
-            // Analyse plus précise des erreurs courantes
-            if (error.message.includes("canceled")) {
-                message = "Le paiement a été annulé. Vous pouvez réessayer quand vous le souhaitez.";
-            } else if (error.message.includes("network")) {
-                message = "Problème de connexion internet. Veuillez vérifier votre connexion et réessayer.";
-            } else if (error.message.includes("popup")) {
-                message = "Le popup de paiement PayPal a été bloqué. Veuillez autoriser les popups pour ce site.";
-            }
-        }
-        
-        setErrorMessage(message);
-        setIsPending(false);
-    };
+  return (
+    <Card className="w-full shadow-md">
+      <CardHeader>
+        <CardTitle className="text-2xl font-serif">Moyen de paiement</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Tabs 
+          defaultValue="card" 
+          onValueChange={(value) => setPaymentMethod(value as "card" | "paypal")}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="card" className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4" />
+              <span>Carte bancaire</span>
+            </TabsTrigger>
+            <TabsTrigger value="paypal" className="flex items-center gap-2">
+              <OptimizedImage 
+                src="/assets/card/paypal-logo.png" 
+                alt="PayPal" 
+                className="h-4" 
+                width={20} 
+                height={16} 
+              />
+              <span>PayPal</span>
+            </TabsTrigger>
+          </TabsList>
 
-    return (
-        <div>
-            {errorMessage && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-                    <div className="flex items-center">
-                        <AlertCircle className="h-5 w-5 mr-2" />
-                        <p>{errorMessage}</p>
-                    </div>
-                </div>
-            )}
-
-            <div className="paypal-container">
-                {/* Wrapper de sécurité avec try-catch pour PayPalScriptProvider */}
-                <div>
-                    <PayPalScriptProvider options={{ 
-                        clientId: clientId, 
-                        currency: "EUR",
-                        intent: "capture",
-                        components: "buttons",
-                        onInit: () => {
-                            console.log("PayPal SDK initialisé avec succès");
-                            setSdkLoaded(true);
-                            setPaypalSdkReady(true);
-                        },
-                        onError: (err) => {
-                            console.error("Erreur SDK PayPal:", err);
-                            setErrorMessage("Impossible de charger PayPal. Veuillez rafraîchir la page ou nous contacter.");
-                        }
-                    }}>
-                        {isPending && (
-                            <div className="text-center py-2">
-                                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                                <span className="ml-2 text-sm text-gray-600">Chargement de PayPal...</span>
-                            </div>
-                        )}
-                        
-                        {/* Error boundary pour les boutons PayPal */}
-                        <div>
-                            <PayPalButtons
-                                fundingSource="paypal"
-                                style={{ 
-                                    layout: "horizontal",
-                                    color: "blue",
-                                    shape: "rect",
-                                    label: "pay"
-                                }}
-                                createOrder={(data, actions) => {
-                                    console.log("Création de la commande PayPal");
-                                    try {
-                                        if (!actions.order) {
-                                            throw new Error("actions.order n'est pas disponible");
-                                        }
-                                        
-                                        return actions.order.create({
-                                            intent: "CAPTURE",
-                                            purchase_units: [
-                                                {
-                                                    amount: {
-                                                        value: amount.toFixed(2),
-                                                        currency_code: "EUR"
-                                                    },
-                                                    description: ebookConfig.title
-                                                }
-                                            ]
-                                        });
-                                    } catch (error) {
-                                        console.error("Erreur lors de la création de la commande:", error);
-                                        handleError(error);
-                                        return Promise.reject(error);
-                                    }
-                                }}
-                                onApprove={(data, actions) => {
-                                    console.log("Commande approuvée:", data);
-                                    if (!actions.order) {
-                                        console.error("actions.order est undefined");
-                                        setErrorMessage("Une erreur technique est survenue. Veuillez réessayer.");
-                                        return Promise.reject("actions.order is undefined");
-                                    }
-                                    
-                                    try {
-                                        return actions.order.capture().then(handlePaymentSuccess);
-                                    } catch (error) {
-                                        console.error("Erreur lors de la capture:", error);
-                                        handleError(error);
-                                        return Promise.reject(error);
-                                    }
-                                }}
-                                onError={handleError}
-                                onInit={() => {
-                                    console.log("Boutons PayPal initialisés");
-                                    setIsPending(false);
-                                }}
-                                onCancel={() => {
-                                    console.log("Paiement annulé par l'utilisateur");
-                                    setIsPending(false);
-                                }}
-                                onClick={() => {
-                                    setIsPending(true);
-                                    setErrorMessage('');
-                                }}
-                            />
-                        </div>
-
-                        {!paypalSdkReady && !errorMessage && (
-                            <div className="text-center py-4">
-                                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-gray-300 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                                <p className="text-gray-500 mt-2">Chargement des options de paiement...</p>
-                            </div>
-                        )}
-                    </PayPalScriptProvider>
-                </div>
+          <TabsContent value="card" className="w-full">
+            <div className="flex flex-wrap gap-2 justify-center mb-4">
+              <OptimizedImage 
+                src="/assets/card/card-visa.svg" 
+                alt="Visa" 
+                className="h-8" 
+                width={48} 
+                height={32} 
+              />
+              <OptimizedImage 
+                src="/assets/card/card-mastercard.svg" 
+                alt="Mastercard" 
+                className="h-8" 
+                width={48} 
+                height={32} 
+              />
+              <OptimizedImage 
+                src="/assets/card/card-amex.svg" 
+                alt="American Express" 
+                className="h-8" 
+                width={48} 
+                height={32} 
+              />
             </div>
-            
-            {/* Bouton de secours pour contacter le support */}
-            {errorMessage && (
-                <div className="text-center mt-4">
-                    <p className="text-sm text-gray-600 mb-2">Si le problème persiste, vous pouvez nous contacter :</p>
-                    <a
-                        href={`mailto:${ebookConfig.supportEmail || 'contact@example.com'}?subject=Problème de paiement pour ${ebookConfig.title}`}
-                        className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+
+            <Form {...cardForm}>
+              <form onSubmit={cardForm.handleSubmit(handleCardPayment)} className="space-y-4">
+                <FormField
+                  control={cardForm.control}
+                  name="cardNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Numéro de carte</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="1234 5678 9012 3456"
+                          {...field}
+                          onChange={(e) => {
+                            // Ne garder que les chiffres
+                            const value = e.target.value.replace(/\D/g, '');
+                            // Limiter à 16 chiffres
+                            if (value.length <= 16) {
+                              field.onChange(value);
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={cardForm.control}
+                  name="cardHolder"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom du titulaire</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nom du titulaire" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={cardForm.control}
+                    name="expiryDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Date d'expiration</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="MM/YY" 
+                            {...field} 
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              if (value.length <= 4) {
+                                let formattedValue = value;
+                                if (value.length > 2) {
+                                  formattedValue = value.slice(0, 2) + '/' + value.slice(2);
+                                }
+                                field.onChange(formattedValue);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={cardForm.control}
+                    name="cvv"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Code de sécurité (CVV)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="123" 
+                            {...field} 
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              if (value.length <= 4) {
+                                field.onChange(value);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="pt-4 flex flex-col md:flex-row justify-between gap-4">
+                  {onGoBack && (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={onGoBack}
+                      className="flex items-center"
+                      disabled={isProcessing}
                     >
-                        Contacter le support
-                    </a>
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Modifier mes informations
+                    </Button>
+                  )}
+                  <Button 
+                    type="submit" 
+                    className="bg-primary hover:bg-primary/90"
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent rounded-full"></div>
+                        Traitement en cours...
+                      </>
+                    ) : (
+                      <>
+                        <span>Payer {amount.toFixed(2).replace('.', ',')}€</span>
+                        <Lock className="ml-2 h-4 w-4" />
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
                 </div>
-            )}
+              </form>
+            </Form>
+          </TabsContent>
+
+          <TabsContent value="paypal" className="w-full">
+            <div className="text-center mb-6">
+              <OptimizedImage 
+                src="/assets/card/paypal-logo.png" 
+                alt="PayPal" 
+                className="h-12 mx-auto mb-4" 
+                width={120} 
+                height={48} 
+              />
+              <p className="text-gray-600">
+                Vous allez être redirigé(e) vers PayPal pour finaliser votre paiement de {amount.toFixed(2).replace('.', ',')}€
+              </p>
+            </div>
+
+            <Form {...paypalForm}>
+              <form onSubmit={paypalForm.handleSubmit(handlePaypalPayment)} className="space-y-4">
+                <FormField
+                  control={paypalForm.control}
+                  name="acceptTerms"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-md">
+                      <FormControl>
+                        <RadioGroup 
+                          onValueChange={(value) => field.onChange(value === "true")} 
+                          defaultValue={field.value ? "true" : "false"}
+                          className="flex"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="true" id="accept-terms" />
+                            <FormLabel htmlFor="accept-terms" className="font-normal">
+                              J'accepte les conditions générales de vente et la politique de confidentialité
+                            </FormLabel>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="pt-4 flex flex-col md:flex-row justify-between gap-4">
+                  {onGoBack && (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={onGoBack}
+                      className="flex items-center"
+                      disabled={isProcessing}
+                    >
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Modifier mes informations
+                    </Button>
+                  )}
+                  <Button 
+                    type="submit" 
+                    className="bg-[#0070ba] hover:bg-[#005ea6] text-white"
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent rounded-full"></div>
+                        Redirection en cours...
+                      </>
+                    ) : (
+                      <>
+                        <span>Continuer vers PayPal</span>
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-6 flex items-center justify-center">
+          <div className="flex items-center text-gray-600 text-sm">
+            <Lock className="h-4 w-4 mr-1 text-green-500" />
+            <span>Paiement 100% sécurisé</span>
+          </div>
         </div>
-    );
-};
-
-const PaymentOptions: React.FC<PaymentOptionsProps> = (props) => {
-    return (
-        <div className="payment-options">
-            <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Votre paiement</h2>
-                <p className="text-gray-600">Complétez votre achat en toute sécurité</p>
-            </div>
-            <div className="purchase-summary bg-gray-50 p-4 rounded-lg mb-4">
-                
-                <div className="order-summary bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium mb-3">Résumé de la commande</h3>
-                    <div className="flex justify-between text-sm mb-2">
-                        <span>1x {ebookConfig.title}</span>
-                        <span>{props.amount.toFixed(2)}€</span>
-                    </div>
-                    <div className="border-t pt-2 mt-2 flex justify-between font-medium">
-                        <span>Total</span>
-                        <span>{props.amount.toFixed(2)}€</span>
-                    </div>
-                </div>
-            </div>
-
-            <PayPalPaymentButton {...props} />
-            
-            <div className="payment-badges flex flex-wrap items-center justify-center gap-4 mt-4">
-
-                {/* Badge SSL */}
-                <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
-                    <Lock className="h-4 w-4 text-green-600 mr-1.5" />
-                    <span className="text-xs font-medium">Connexion SSL sécurisée</span>
-                </div>
-
-                {/* Badge de paiement sécurisé */}
-                <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
-                    <ShieldCheck className="h-4 w-4 text-green-600 mr-1.5" />
-                    <span className="text-xs font-medium">Paiement sécurisé</span>
-                </div>
-                
-                {/* Badges des méthodes de paiement */}
-                <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded border">
-                    <CreditCard className="h-4 w-4 text-blue-600 mr-1.5" />
-                    <span className="text-xs font-medium">Cartes acceptées</span>
-                </div>
-
-                {/* Badge de satisfaction garantie */}
-                <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
-                    <CheckCircle className="h-4 w-4 text-green-600 mr-1.5" />
-                    <span className="text-xs font-medium">Satisfaction garantie</span>
-                </div>
-
-                {/* Badge de support client */}
-                <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded border">
-                    <AlertCircle className="h-4 w-4 text-green-600 mr-1.5" />
-                    <span className="text-xs font-medium">Support 24/7</span>
-                </div>
-            </div>
-            
-            <div className="text-center text-xs text-gray-500 mt-2">
-                {ebookConfig.guarantee}
-            </div>
-        </div>
-    );
+      </CardContent>
+    </Card>
+  );
 };
 
 export default PaymentOptions;

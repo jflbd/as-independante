@@ -19,6 +19,7 @@ const NavBar = () => {
   const serviceDropdownRef = useRef<HTMLDivElement>(null);
   const serviceButtonRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
+  const location = useLocation();
   
   // Pour accessibilité - contrôle du menu par clavier
   const handleEscapeKey = (e: KeyboardEvent) => {
@@ -51,31 +52,42 @@ const NavBar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showServiceDropdown]);
 
+  // Fermer le menu mobile quand on change de page
+  useEffect(() => {
+    setIsOpen(false);
+    setShowServiceDropdown(false);
+    setShowMobileServiceDropdown(false);
+  }, [location.pathname]);
+
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
       setIsScrolling(true);
-      setIsOpen(false); // Close mobile menu before scrolling
-      setShowServiceDropdown(false); // Close service dropdown
-      setShowMobileServiceDropdown(false); // Ensure mobile dropdown is closed too
       
-      // Use setTimeout to allow menu to close before scrolling
+      // Fermer les menus avant de défiler
       setTimeout(() => {
-        const navHeight = navRef.current?.offsetHeight || 0;
-        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-        
-        // Scroll avec offset pour la hauteur du menu fixe
-        window.scrollTo({
-          top: sectionTop - navHeight - 20, // 20px additional padding
-          behavior: "smooth"
-        });
-        
-        setActiveSection(sectionId);
-        
-        // Reset scrolling state after animation completes
+        setIsOpen(false);
+        setShowServiceDropdown(false);
+        setShowMobileServiceDropdown(false);
+      
+        // Attendre que les animations de fermeture soient terminées
         setTimeout(() => {
-          setIsScrolling(false);
-        }, 1000);
+          const navHeight = navRef.current?.offsetHeight || 0;
+          const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+          
+          // Scroll avec offset pour la hauteur du menu fixe
+          window.scrollTo({
+            top: sectionTop - navHeight - 20, // 20px additional padding
+            behavior: "smooth"
+          });
+          
+          setActiveSection(sectionId);
+          
+          // Reset scrolling state after animation completes
+          setTimeout(() => {
+            setIsScrolling(false);
+          }, 1000);
+        }, 150);
       }, 50);
     }
   };
@@ -186,7 +198,6 @@ const NavBar = () => {
           <Link to="/" className="flex items-center">
             <div className="flex items-center justify-center relative">
               <div className="relative w-auto h-10 sm:h-12 md:h-16 z-10">
-                {/* Suppression de la classe -mb-3 qui causait le problème d'affichage sur mobile */}
                 <OptimizedImage
                   src="/assets/logo/logo-rachel-gervais.png"
                   alt="logo Assistante Sociale indépendante"
@@ -315,12 +326,13 @@ const NavBar = () => {
             onClick={() => setIsOpen(false)}
           >
             <div 
-              className="fixed inset-x-0 top-0 bottom-0 z-50 overflow-y-auto bg-white shadow-lg"
+              className="fixed inset-x-0 top-0 z-50 overflow-y-auto bg-white shadow-lg"
               onClick={(e) => e.stopPropagation()}
               style={{ 
                 top: navRef.current ? `${navRef.current.offsetHeight}px` : '56px',
-                // Suppression de la hauteur fixe qui empêchait le défilement
-                maxHeight: navRef.current ? `calc(100vh - ${navRef.current.offsetHeight}px)` : 'calc(100vh - 56px)'
+                maxHeight: '85vh', // Limitation à 85% de la hauteur de la fenêtre
+                height: 'auto',   // Hauteur automatique basée sur le contenu
+                overscrollBehavior: 'contain' // Empêcher le scroll de se propager au body
               }}
             >
               <div className="py-6 px-4 flex flex-col space-y-4">
@@ -343,7 +355,7 @@ const NavBar = () => {
                           {item.dropdownItems?.map((subItem, idx) => (
                             <button
                               key={subItem.id}
-                              className="text-md flex items-center transition-colors hover:text-primary py-2"
+                              className="text-md flex items-center transition-colors hover:text-primary py-2 active:bg-gray-50 w-full text-left"
                               onClick={() => {
                                 scrollToSection("services");
                                 // Ajout d'un délai pour permettre au scrollToSection de finir
@@ -374,7 +386,7 @@ const NavBar = () => {
                     <SafeLink
                       key={item.id}
                       to={`#${item.id}`}
-                      className={`text-lg font-medium transition-colors hover:text-primary py-2 ${
+                      className={`text-lg font-medium transition-colors hover:text-primary py-2 active:bg-gray-50 block w-full ${
                         activeSection === item.id ? "text-primary font-semibold" : "text-gray-600"
                       }`}
                       onClick={(e) => {
@@ -391,7 +403,7 @@ const NavBar = () => {
                   <ContactButton variant="default" className="w-full justify-center" />
                   <QuoteButton variant="outline" className="w-full justify-center" />
                   {/* Ajout d'un espace en bas pour améliorer le défilement sur mobile */}
-                  <div className="h-4"></div>
+                  <div className="h-12"></div>
                 </div>
               </div>
             </div>

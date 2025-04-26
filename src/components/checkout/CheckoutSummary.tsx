@@ -1,75 +1,116 @@
-import React from 'react';
-import { ebookConfig } from '@/config/ebookConfig';
-import { siteConfig } from '@/config/siteConfig';
-import { Shield, Clock, SmilePlus } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { CheckCircle, Shield } from "lucide-react";
+import { Separator } from "../ui/separator";
+import { OptimizedImage } from "../OptimizedImage";
+import { ebookConfig } from "@/config/ebookConfig";
 
 interface CheckoutSummaryProps {
-    customerInfo: {
-        email: string;
-        firstName: string;
-        lastName: string;
-    };
+  customerInfo: {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+  };
 }
 
-const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({ 
-    customerInfo 
-}) => {
-    return (
-        <div className="summary-container">
-            <h2>Résumé de votre commande</h2>
-            
-            <div className="summary-product">
-                <div className="product-image">
-                    <img src={ebookConfig.coverImage} alt={`Couverture de ${ebookConfig.title}`} />
-                </div>
-                <div className="product-details">
-                    <h3>{ebookConfig.title}</h3>
-                    <p className="product-format">Format {ebookConfig.fileFormat} • {ebookConfig.fileSize} • Livraison instantanée</p>
-                </div>
+const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({ customerInfo }) => {
+  // Calculer le sous-total et le total
+  const subTotal = ebookConfig.price;
+  const total = subTotal; // Pas de frais supplémentaires pour un produit numérique
+  
+  return (
+    <Card className="w-full shadow-md">
+      <CardHeader>
+        <CardTitle className="text-xl font-serif">Récapitulatif de votre commande</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Produit */}
+        <div className="flex gap-4">
+          <div className="flex-shrink-0">
+            <OptimizedImage
+              src={ebookConfig.coverImage}
+              alt={ebookConfig.title}
+              className="w-20 h-auto rounded-md shadow-sm"
+              width={80}
+              height={120}
+            />
+          </div>
+          <div className="flex-grow">
+            <h3 className="font-medium">{ebookConfig.title}</h3>
+            <p className="text-sm text-gray-600">{ebookConfig.subtitle}</p>
+            <div className="flex items-center mt-2">
+              <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded">
+                Format {ebookConfig.fileFormat}
+              </span>
+              <span className="text-sm text-gray-500 ml-2">{ebookConfig.fileSize}</span>
             </div>
-
-            <div className="summary-pricing">
-                <div className="pricing-row">
-                    <span>Prix</span>
-                    <span>{ebookConfig.formattedPrice}</span>
-                </div>
-                <div className="pricing-row total">
-                    <span>Total</span>
-                    <span>{ebookConfig.formattedPrice}</span>
-                </div>
-            </div>
-            
-            {customerInfo.email && (
-                <div className="summary-customer">
-                    <h3>Vos informations</h3>
-                    <p>
-                        {customerInfo.firstName} {customerInfo.lastName}<br />
-                        {customerInfo.email}
-                    </p>
-                </div>
-            )}
-            
-            <div className="summary-features">
-                <div className="feature">
-                    <Shield size={18} className="feature-icon" />
-                    <span>Paiement sécurisé</span>
-                </div>
-                <div className="feature">
-                    <Clock size={18} className="feature-icon" />
-                    <span>Accès immédiat</span>
-                </div>
-                <div className="feature">
-                    <SmilePlus size={18} className="feature-icon" />
-                    <span>{ebookConfig.guarantee.split(' ')[0]} garantie</span>
-                </div>
-            </div>
-            
-            <div className="summary-help">
-                <p>Besoin d'aide ?</p>
-                <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>
-            </div>
+          </div>
         </div>
-    );
+
+        <Separator />
+
+        {/* Prix */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Prix</span>
+            <span>{ebookConfig.formattedPrice}</span>
+          </div>
+          {ebookConfig.priceAvantPromo && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Prix normal</span>
+              <span className="text-gray-500 line-through">{ebookConfig.formattedPriceAvantPromo}</span>
+            </div>
+          )}
+        </div>
+
+        <Separator />
+
+        {/* Total */}
+        <div className="flex justify-between items-center font-medium text-lg">
+          <span>Total</span>
+          <span className="text-primary">{ebookConfig.formattedPrice}</span>
+        </div>
+
+        {/* Informations client si disponibles */}
+        {(customerInfo.email || customerInfo.firstName) && (
+          <>
+            <Separator />
+            <div className="space-y-2">
+              <h3 className="font-medium">Informations personnelles</h3>
+              {customerInfo.firstName && customerInfo.lastName && (
+                <div className="text-sm">
+                  <span className="text-gray-600">Nom :</span>{" "}
+                  {customerInfo.firstName} {customerInfo.lastName}
+                </div>
+              )}
+              {customerInfo.email && (
+                <div className="text-sm">
+                  <span className="text-gray-600">Email :</span>{" "}
+                  {customerInfo.email}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Garanties */}
+        <div className="mt-4 space-y-2 pt-4">
+          <div className="flex items-center">
+            <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+            <span className="text-sm">Téléchargement immédiat</span>
+          </div>
+          <div className="flex items-center">
+            <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+            <span className="text-sm">{ebookConfig.guarantee}</span>
+          </div>
+          <div className="flex items-center">
+            <Shield className="h-4 w-4 text-green-500 mr-2" />
+            <span className="text-sm">Paiement 100% sécurisé</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
 export default CheckoutSummary;
