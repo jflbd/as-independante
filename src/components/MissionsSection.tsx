@@ -1,5 +1,5 @@
 import { ShieldCheck, Users, Lightbulb, Headphones, MessageSquare, Home } from "lucide-react";
-import OptimizedImage from "./OptimizedImage";
+import { OptimizedImage } from "./OptimizedImage";
 import FadeInSection from "./animations/FadeInSection";
 import StaggeredReveal from "./animations/StaggeredReveal";
 import ParallaxScroll from "./animations/ParallaxScroll";

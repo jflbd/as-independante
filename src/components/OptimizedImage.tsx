@@ -1,87 +1,61 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface OptimizedImageProps {
   src: string;
   alt: string;
-  className?: string;
   width?: number;
   height?: number;
+  className?: string;
+  priority?: boolean;
   loading?: 'lazy' | 'eager';
 }
 
-const OptimizedImage = ({ 
-  src, 
-  alt, 
-  className = '', 
-  width, 
+export function OptimizedImage({
+  src,
+  alt,
+  width,
   height,
-  loading = 'lazy' 
-}: OptimizedImageProps) => {
-  const [imageError, setImageError] = useState(false);
+  className = '',
+  priority = false,
+  loading = 'lazy',
+}: OptimizedImageProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
   
-  // Fonction pour obtenir le chemin de l'image WebP
-  const getWebPPath = (imagePath: string) => {
-    // Si c'est déjà un WebP, on ne change rien
-    if (imagePath.endsWith('.webp')) return imagePath;
-    
-    // Si c'est une image externe comme Unsplash, on utilise les paramètres d'URL
-    if (imagePath.includes('unsplash.com')) {
-      return `${imagePath}${imagePath.includes('?') ? '&' : '?'}auto=format&fit=crop&w=${width || 800}&fm=webp&q=80`;
+  // Déterminer si l'image est au format WebP
+  const isWebP = src.endsWith('.webp');
+  
+  // Créer une source fallback pour les navigateurs qui ne supportent pas WebP
+  const fallbackSrc = isWebP ? src.replace('.webp', '.jpg') || src.replace('.webp', '.png') : src;
+  
+  // Support pour le chargement progressif
+  const blurClass = !isLoaded && !priority ? 'blur-sm transition-all duration-300' : '';
+  
+  // Calculer l'aspect ratio si largeur et hauteur sont fournies
+  const aspectRatio = width && height ? { aspectRatio: `${width} / ${height}` } : {};
+  
+  useEffect(() => {
+    // Précharger l'image si elle est prioritaire
+    if (priority) {
+      const img = new Image();
+      img.src = src;
     }
-    
-    // Pour les images locales, on change l'extension
-    const basePath = imagePath.substring(0, imagePath.lastIndexOf('.')) || imagePath;
-    return `${basePath}.webp`;
-  };
-  
-  // Traitement spécifique pour Unsplash
-  const optimizedSrc = src.includes('unsplash.com') 
-    ? `${src}${src.includes('?') ? '&' : '?'}auto=format&fit=crop&w=${width || 800}&q=75` 
-    : src;
-  
-  // Image WebP
-  const webpSrc = getWebPPath(src);
-  
-  // Image de secours en cas d'erreur
-  const fallbackSrc = '/placeholder.svg'; // Corrigé pour retirer /public/
-  
-  const handleError = () => {
-    console.error(`Erreur de chargement de l'image: ${src}`);
-    setImageError(true);
-  };
+  }, [src, priority]);
 
-  // Si l'image a déjà généré une erreur, on utilise le fallback
-  if (imageError) {
-    return (
-      <img 
-        src={fallbackSrc}
-        alt={alt}
-        className={className}
-        width={width}
-        height={height}
-        loading={loading}
-        decoding="async"
-      />
-    );
-  }
-
-  // Utiliser la balise picture pour fournir des alternatives WebP avec fallback
   return (
-    <picture>
-      <source srcSet={webpSrc} type="image/webp" />
-      <source srcSet={optimizedSrc} type="image/jpeg" />
+    <picture className={`overflow-hidden ${className}`}>
+      {isWebP && (
+        <source srcSet={src} type="image/webp" />
+      )}
       <img 
-        src={optimizedSrc}
+        src={isWebP ? fallbackSrc : src}
         alt={alt}
-        className={className}
         width={width}
         height={height}
-        loading={loading}
-        decoding="async"
-        onError={handleError}
+        loading={priority ? 'eager' : loading}
+        onLoad={() => setIsLoaded(true)}
+        className={`w-full h-auto object-cover ${blurClass} ${className}`}
+        style={aspectRatio}
       />
     </picture>
   );
-};
-
-export default OptimizedImage;
+}

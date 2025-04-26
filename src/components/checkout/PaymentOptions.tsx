@@ -9,23 +9,60 @@ interface PaymentOptionsProps {
     amount: number;
 }
 
+// Définir une interface pour la réponse PayPal
+interface PayPalOrderDetails {
+    // L'id est facultatif dans l'interface de PayPal mais nous vérifions sa présence dans handlePaymentSuccess
+    id?: string;
+    create_time?: string;
+    update_time?: string;
+    payer?: {
+        name?: {
+            given_name?: string;
+            surname?: string;
+        };
+        email_address?: string;
+    };
+    status?: string;
+    payment_source?: Record<string, unknown>;
+    purchase_units?: Array<Record<string, unknown>>;
+    [key: string]: unknown;
+}
+
 const PayPalPaymentButton: React.FC<PaymentOptionsProps> = ({ onPaymentComplete, amount }) => {
     const [isPending, setIsPending] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [paypalSdkReady, setPaypalSdkReady] = useState(false);
+    const [sdkLoaded, setSdkLoaded] = useState(false);
 
+    // Utiliser un ID client sandbox valide par défaut
+    // Remarque: En production, il faut absolument utiliser la variable d'env VITE_PAYPAL_CLIENT_ID
     const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || "sb";
 
     useEffect(() => {
-        // Afficher un message dans la console pour déboguer
+        // Log de débogage
         console.log("Configuration PayPal :", {
-            clientId: clientId === "sb" ? "Using Sandbox" : "Client ID configuré",
-            amount: amount.toFixed(2)
+            clientId: clientId === "sb" ? "Utilisation du bac à sable PayPal par défaut" : "Client ID configuré",
+            amount: amount.toFixed(2),
+            environment: import.meta.env.MODE || "development",
+            sdkLoaded: sdkLoaded,
+            paypalSdkReady: paypalSdkReady
         });
-    }, [amount, clientId]);
+        
+        // Avertissement si nous utilisons l'ID client sandbox par défaut
+        if (clientId === "sb") {
+            console.warn("⚠️ Utilisation de l'ID client sandbox PayPal par défaut. Pour la production, assurez-vous de définir VITE_PAYPAL_CLIENT_ID dans votre fichier .env");
+        }
+    }, [amount, clientId, sdkLoaded, paypalSdkReady]);
 
-    const handlePaymentSuccess = (details: { id: string; payer: { name?: { given_name?: string } } }) => {
+    const handlePaymentSuccess = (details: PayPalOrderDetails) => {
         try {
+            console.log("Transaction réussie:", details);
+            
+            // Vérifier que l'ID de transaction est présent
+            if (!details || !details.id) {
+                throw new Error("Réponse PayPal invalide: ID de transaction manquant");
+            }
+            
             const givenName = details?.payer?.name?.given_name || "Client";
             console.log("Transaction réussie par " + givenName);
             onPaymentComplete(details.id);
@@ -37,7 +74,24 @@ const PayPalPaymentButton: React.FC<PaymentOptionsProps> = ({ onPaymentComplete,
 
     const handleError = (error: unknown) => {
         console.error("Erreur PayPal:", error);
-        setErrorMessage("Une erreur est survenue lors du traitement de votre paiement. Veuillez réessayer ou utiliser un autre mode de paiement.");
+        
+        let message = "Une erreur est survenue lors du traitement de votre paiement. Veuillez réessayer.";
+        
+        if (error instanceof Error) {
+            console.error("Message d'erreur:", error.message);
+            console.error("Stack trace:", error.stack);
+            
+            // Analyse plus précise des erreurs courantes
+            if (error.message.includes("canceled")) {
+                message = "Le paiement a été annulé. Vous pouvez réessayer quand vous le souhaitez.";
+            } else if (error.message.includes("network")) {
+                message = "Problème de connexion internet. Veuillez vérifier votre connexion et réessayer.";
+            } else if (error.message.includes("popup")) {
+                message = "Le popup de paiement PayPal a été bloqué. Veuillez autoriser les popups pour ce site.";
+            }
+        }
+        
+        setErrorMessage(message);
         setIsPending(false);
     };
 
@@ -52,75 +106,120 @@ const PayPalPaymentButton: React.FC<PaymentOptionsProps> = ({ onPaymentComplete,
                 </div>
             )}
 
-            <PayPalScriptProvider options={{ 
-                clientId: clientId, 
-                currency: "EUR",
-                intent: "capture",
-                components: "buttons",
-                onInit: () => setPaypalSdkReady(true),
-                onError: (err) => {
-                    console.error("Erreur SDK PayPal:", err);
-                    setErrorMessage("Impossible de charger PayPal. Veuillez rafraîchir la page ou nous contacter.");
-                }
-            }}>
-                {isPending && (
-                    <div className="text-center py-2">
-                        <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                        <span className="ml-2 text-sm text-gray-600">Chargement de PayPal...</span>
-                    </div>
-                )}
-                
-                <PayPalButtons
-                    fundingSource="paypal"
-                    style={{ 
-                        layout: "horizontal",
-                        color: "blue",
-                        shape: "rect",
-                        label: "pay"
-                    }}
-                    createOrder={(data, actions) => {
-                        return actions.order.create({
-                            intent: "CAPTURE",
-                            purchase_units: [
-                                {
-                                    amount: {
-                                        value: amount.toFixed(2),
-                                        currency_code: "EUR"
-                                    },
-                                    description: ebookConfig.title
-                                }
-                            ]
-                        });
-                    }}
-                    onApprove={(data, actions) => {
-                        if (!actions.order) {
-                            console.error("actions.order est undefined");
-                            setErrorMessage("Une erreur technique est survenue. Veuillez réessayer.");
-                            return Promise.reject("actions.order is undefined");
+            <div className="paypal-container">
+                {/* Wrapper de sécurité avec try-catch pour PayPalScriptProvider */}
+                <div>
+                    <PayPalScriptProvider options={{ 
+                        clientId: clientId, 
+                        currency: "EUR",
+                        intent: "capture",
+                        components: "buttons",
+                        onInit: () => {
+                            console.log("PayPal SDK initialisé avec succès");
+                            setSdkLoaded(true);
+                            setPaypalSdkReady(true);
+                        },
+                        onError: (err) => {
+                            console.error("Erreur SDK PayPal:", err);
+                            setErrorMessage("Impossible de charger PayPal. Veuillez rafraîchir la page ou nous contacter.");
                         }
-                        return actions.order.capture().then(handlePaymentSuccess);
-                    }}
-                    onError={handleError}
-                    onInit={() => {
-                        setIsPending(false);
-                    }}
-                    onCancel={() => {
-                        console.log("Paiement annulé par l'utilisateur");
-                        setIsPending(false);
-                    }}
-                    onClick={() => {
-                        setIsPending(true);
-                        setErrorMessage('');
-                    }}
-                />
+                    }}>
+                        {isPending && (
+                            <div className="text-center py-2">
+                                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                                <span className="ml-2 text-sm text-gray-600">Chargement de PayPal...</span>
+                            </div>
+                        )}
+                        
+                        {/* Error boundary pour les boutons PayPal */}
+                        <div>
+                            <PayPalButtons
+                                fundingSource="paypal"
+                                style={{ 
+                                    layout: "horizontal",
+                                    color: "blue",
+                                    shape: "rect",
+                                    label: "pay"
+                                }}
+                                createOrder={(data, actions) => {
+                                    console.log("Création de la commande PayPal");
+                                    try {
+                                        if (!actions.order) {
+                                            throw new Error("actions.order n'est pas disponible");
+                                        }
+                                        
+                                        return actions.order.create({
+                                            intent: "CAPTURE",
+                                            purchase_units: [
+                                                {
+                                                    amount: {
+                                                        value: amount.toFixed(2),
+                                                        currency_code: "EUR"
+                                                    },
+                                                    description: ebookConfig.title
+                                                }
+                                            ]
+                                        });
+                                    } catch (error) {
+                                        console.error("Erreur lors de la création de la commande:", error);
+                                        handleError(error);
+                                        return Promise.reject(error);
+                                    }
+                                }}
+                                onApprove={(data, actions) => {
+                                    console.log("Commande approuvée:", data);
+                                    if (!actions.order) {
+                                        console.error("actions.order est undefined");
+                                        setErrorMessage("Une erreur technique est survenue. Veuillez réessayer.");
+                                        return Promise.reject("actions.order is undefined");
+                                    }
+                                    
+                                    try {
+                                        return actions.order.capture().then(handlePaymentSuccess);
+                                    } catch (error) {
+                                        console.error("Erreur lors de la capture:", error);
+                                        handleError(error);
+                                        return Promise.reject(error);
+                                    }
+                                }}
+                                onError={handleError}
+                                onInit={() => {
+                                    console.log("Boutons PayPal initialisés");
+                                    setIsPending(false);
+                                }}
+                                onCancel={() => {
+                                    console.log("Paiement annulé par l'utilisateur");
+                                    setIsPending(false);
+                                }}
+                                onClick={() => {
+                                    setIsPending(true);
+                                    setErrorMessage('');
+                                }}
+                            />
+                        </div>
 
-                {!paypalSdkReady && !errorMessage && (
-                    <div className="text-center py-4">
-                        <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-gray-300 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                        <p className="text-gray-500 mt-2">Chargement des options de paiement...</p>
-                    </div>
-                )}
-            </PayPalScriptProvider>
+                        {!paypalSdkReady && !errorMessage && (
+                            <div className="text-center py-4">
+                                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-gray-300 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                                <p className="text-gray-500 mt-2">Chargement des options de paiement...</p>
+                            </div>
+                        )}
+                    </PayPalScriptProvider>
+                </div>
+            </div>
+            
+            {/* Bouton de secours pour contacter le support */}
+            {errorMessage && (
+                <div className="text-center mt-4">
+                    <p className="text-sm text-gray-600 mb-2">Si le problème persiste, vous pouvez nous contacter :</p>
+                    <a
+                        href={`mailto:${ebookConfig.supportEmail || 'contact@example.com'}?subject=Problème de paiement pour ${ebookConfig.title}`}
+                        className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    >
+                        Contacter le support
+                    </a>
+                </div>
+            )}
         </div>
     );
 };

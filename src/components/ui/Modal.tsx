@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import CloseButton from './CloseButton';
 
 interface ModalProps {
   isOpen: boolean;
@@ -66,13 +66,7 @@ const Modal: React.FC<ModalProps> = ({
       >
         <div className="flex items-center justify-between p-4 border-b">
           <h2 id="modal-title" className="text-xl font-semibold text-gray-800">{title}</h2>
-          <button 
-            onClick={onClose}
-            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-            aria-label="Fermer"
-          >
-            <X className="h-6 w-6" />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         
         <div className="overflow-y-auto max-h-[calc(90vh-8rem)] p-6">

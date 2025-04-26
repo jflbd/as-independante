@@ -1,12 +1,14 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Check, FileText } from "lucide-react";
-import QuoteButton from "./QuoteButton";
-import DemandeAccompagnementDialog from "./pricing/QuoteFormDialog";
-import OptimizedImage from "./OptimizedImage";
+import { ArrowRight, Check, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useModal } from "@/hooks/use-modal";
+import { siteConfig } from "@/config/siteConfig";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
+import { OptimizedImage } from "./OptimizedImage";
+import FadeInSection from "./animations/FadeInSection";
 import PricingCard from "./pricing/PricingCard";
 import PayPalPaymentButton from "./pricing/PayPalPaymentButton";
+import DemandeAccompagnementDialog from "./pricing/QuoteFormDialog";
 
 const PricingSection = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

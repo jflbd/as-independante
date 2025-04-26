@@ -1,5 +1,5 @@
 import { ArrowRight, Check } from "lucide-react";
-import OptimizedImage from "./OptimizedImage";
+import { OptimizedImage } from "./OptimizedImage";
 import { siteConfig } from "@/config/siteConfig";
 import FadeInSection from "./animations/FadeInSection";
 import StaggeredReveal from "./animations/StaggeredReveal";

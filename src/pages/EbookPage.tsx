@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import EbookHero from '@/components/EbookHero';
 import Footer from '@/components/Footer';
-import OptimizedImage from '@/components/OptimizedImage';
+import { OptimizedImage } from '@/components/OptimizedImage';
 import ContactButton from '@/components/ContactButton';
 import { siteConfig } from '@/config/siteConfig';
 import { ebookConfig } from '@/config/ebookConfig';

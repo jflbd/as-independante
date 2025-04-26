@@ -69,26 +69,23 @@
     <meta name="msapplication-TileImage" content="/favicons/apple-touch-icon-144x144.png">
     <meta name="msapplication-TileColor" content="#0D8496">
     
-    <!-- Données structurées Schema.org pour les Rich Snippets Google -->
+    <!-- Données structurées JSON-LD pour SEO -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
         "name": "%VITE_APP_TITLE%",
-        "image": "/og-image.png",
         "description": "%VITE_APP_DESCRIPTION%",
+        "url": "%VITE_APP_URL%",
+        "image": "%VITE_APP_URL%/og-image.png",
         "address": {
           "@type": "PostalAddress",
-          "addressRegion": "%VITE_APP_REGION%",
-          "addressCountry": "%VITE_APP_COUNTRY%"
+          "addressCountry": "FR"
         },
-        "telephone": "%VITE_APP_PHONE%",
-        "url": "%VITE_APP_URL%",
-        "priceRange": "$$",
-        "openingHours": "%VITE_APP_OPENING_HOURS%",
-        "sameAs": [
-          "%VITE_APP_FACEBOOK%"
-        ]
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "EUR"
+        }
       }
     </script>
   </head>

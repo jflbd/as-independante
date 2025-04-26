@@ -253,7 +253,7 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:bg-red-700 focus:bg-red-700 focus-visible:outline-none"
+                  className="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md transition-all duration-300 hover:bg-gray-300 focus:bg-gray-300 focus-visible:outline-none border border-gray-400 shadow-sm"
                   disabled={isSubmitting}
                   style={{ minWidth: "100px" }}
                 >

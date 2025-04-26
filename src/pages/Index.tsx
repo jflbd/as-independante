@@ -11,7 +11,7 @@ import DeontologieSection from "@/components/DeontologieSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import { useEffect, useRef } from "react";
 import SafeLink from "@/components/SafeLink";
-import OptimizedImage from "@/components/OptimizedImage";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import EbookHero from "@/components/EbookHero";
 import Footer from "@/components/Footer";
 import { siteConfig } from "@/config/siteConfig";

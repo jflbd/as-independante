@@ -17,4 +17,6 @@ export const ebookConfig = {
     fileFormat: "PDF",
     fileSize: "2.4 Mo",
     guarantee: "Satisfaction garantie ou remboursé pendant 30 jours",
+    supportEmail: "rachel.gervais@as-independante.fr",
+    supportPhone: "07 63 90 78 45",
 };

@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, ChevronUp, User, Building } from "lucide-react";
 import SafeLink from "./SafeLink";
-import OptimizedImage from "./OptimizedImage";
+import { OptimizedImage } from "./OptimizedImage";
 import { siteConfig } from "@/config/siteConfig";
+import { Link } from "react-router-dom";
+import ContactButton from "./ContactButton";
+import QuoteButton from "./QuoteButton";
+import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -173,30 +178,22 @@ const NavBar = () => {
       style={{ fontFamily: 'var(--font-primary)' }}
     >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center min-h-[56px] md:min-h-[64px]">
-          {/* Logo and Name */}
-          <SafeLink 
-            to="#accueil" 
-            className="transition-all duration-300 hover:scale-105 group mr-2 flex items-center min-w-0"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-              setActiveSection("accueil");
-              setIsOpen(false);
-            }}
-            aria-label="Retour à l'accueil"
-          >
-            <div className="relative h-10 sm:h-12 md:h-14 w-auto max-w-[160px] md:max-w-[200px] flex items-center overflow-hidden rounded-md shadow-sm md:shadow-md transition-all duration-300 group-hover:shadow-lg bg-white">
-              <OptimizedImage 
-                src={siteConfig.ui.logo}
-                alt={`${siteConfig.name} - Assistante Sociale Indépendante`}
-                className="h-full w-auto object-contain max-h-10 sm:max-h-12 md:max-h-14"
-                loading="eager"
-                width={200}
-                height={64}
-              />
+        <div className="flex items-center justify-between py-2">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <div className="flex items-center justify-center relative">
+              <div className="relative w-auto h-10 sm:h-12 md:h-16 -mb-3 z-10">
+                <OptimizedImage
+                  src="/assets/logo/logo-rachel-gervais.png"
+                  alt="logo Assistante Sociale indépendante"
+                  className="h-full w-auto object-contain"
+                  width={180}
+                  height={60}
+                  priority
+                />
+              </div>
             </div>
-          </SafeLink>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center">
@@ -307,94 +304,73 @@ const NavBar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Menu mobile */}
         {isOpen && (
-          <div className="md:hidden py-4 animate-fade-in fixed inset-x-0 top-[56px] sm:top-[64px] overflow-y-auto bg-white/95 backdrop-blur-lg shadow-xl max-h-[calc(100vh-56px)] z-50">
-            <div className="container mx-auto px-4">
-              <div className="flex flex-col space-y-1 p-4 rounded-xl">
+          <div
+            className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+            onClick={() => setIsOpen(false)}
+          >
+            <div 
+              className="fixed top-[56px] left-0 right-0 bottom-0 z-50 overflow-y-auto bg-background border-t border-border"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="py-6 px-4 flex flex-col space-y-4">
                 {mainNavItems.map((item) => (
-                  <div key={item.id}>
-                    {item.hasDropdown ? (
-                      <>
-                        <button
-                          className={`
-                            flex items-center justify-between w-full px-4 py-3 rounded-lg transition-all duration-300 
-                            ${activeSection === item.id 
-                              ? "text-white font-semibold bg-primary border-l-4 border-primary/60" 
-                              : "text-gray-600 hover:text-primary hover:bg-primary/5 border-l-4 border-transparent"}
-                          `}
-                          onClick={() => setShowMobileServiceDropdown(!showMobileServiceDropdown)}
-                          aria-expanded={showMobileServiceDropdown}
-                        >
-                          <span>{item.label}</span>
-                          {showMobileServiceDropdown ? 
-                            <ChevronUp size={18} className="transition-transform" /> : 
-                            <ChevronDown size={18} className="transition-transform" />
-                          }
-                        </button>
-                        
-                        {showMobileServiceDropdown && (
-                          <div className="pl-4 mt-1 mb-2 space-y-1 animate-fade-in">
-                            {item.dropdownItems?.map((subItem, idx) => (
-                              <button
-                                key={subItem.id}
-                                className="w-full text-left px-4 py-3 flex items-center text-gray-600 hover:bg-primary/5 hover:text-primary transition-colors rounded-lg"
-                                onClick={() => {
-                                  scrollToSection("services");
-                                  // Fermer le menu mobile
-                                  setIsOpen(false);
-                                  
-                                  // Ajouter un délai pour permettre au scrollToSection de finir
-                                  setTimeout(() => {
-                                    // Sélection des articles dans la section services (particuliers ou professionnels)
-                                    const articles = document.querySelectorAll('#services article');
-                                    if (articles && articles.length >= 2) {
-                                      const targetSection = idx === 0 ? articles[0] : articles[1];
-                                      const navHeight = document.querySelector('nav')?.offsetHeight || 0;
-                                      const sectionTop = targetSection.getBoundingClientRect().top + window.pageYOffset;
-                                      
-                                      window.scrollTo({
-                                        top: sectionTop - navHeight - 20,
-                                        behavior: "smooth"
-                                      });
-                                    }
-                                  }, 200);
-                                }}
-                              >
-                                {subItem.icon}
-                                <span>{subItem.label}</span>
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <SafeLink
-                        to={`#${item.id}`}
-                        className={`
-                          flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 
-                          ${activeSection === item.id 
-                            ? "text-white font-semibold bg-primary border-l-4 border-primary/60" 
-                            : "text-gray-600 hover:text-primary hover:bg-primary/5 border-l-4 border-transparent"}
-                        `}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToSection(item.id);
-                        }}
-                        aria-label={`Naviguer vers la section ${item.label}`}
-                        aria-current={activeSection === item.id ? "page" : undefined}
+                  item.hasDropdown ? (
+                    <div key={item.id} className="flex flex-col">
+                      <button
+                        onClick={() => setShowMobileServiceDropdown(!showMobileServiceDropdown)}
+                        className="text-lg font-medium transition-colors hover:text-primary py-2 flex items-center justify-between"
                       >
-                        <ChevronDown 
-                          size={16} 
-                          className={`transform transition-transform duration-300 ${
-                            activeSection === item.id ? "rotate-180 text-white" : ""
-                          }`} 
-                        />
                         <span>{item.label}</span>
-                      </SafeLink>
-                    )}
-                  </div>
+                        {showMobileServiceDropdown ? 
+                          <ChevronUp size={16} className="transition-transform" /> : 
+                          <ChevronDown size={16} className="transition-transform" />
+                        }
+                      </button>
+                      
+                      {showMobileServiceDropdown && (
+                        <div className="pl-4 flex flex-col space-y-2 mt-2">
+                          {item.dropdownItems?.map((subItem) => (
+                            <button
+                              key={subItem.id}
+                              className="text-md flex items-center transition-colors hover:text-primary py-2"
+                              onClick={() => {
+                                scrollToSection(item.id);
+                                setIsOpen(false);
+                              }}
+                            >
+                              {subItem.icon}
+                              <span>{subItem.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <SafeLink
+                      key={item.id}
+                      to={`#${item.id}`}
+                      className={cn(
+                        "text-lg font-medium transition-colors hover:text-primary py-2",
+                        activeSection === item.id
+                          ? "text-primary font-semibold"
+                          : "text-muted-foreground"
+                      )}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection(item.id);
+                      }}
+                    >
+                      {item.label}
+                    </SafeLink>
+                  )
                 ))}
+                
+                <div className="pt-6 mt-4 border-t border-border flex flex-col space-y-4">
+                  <ContactButton variant="default" className="w-full justify-center" />
+                  <QuoteButton variant="outline" className="w-full justify-center" />
+                </div>
               </div>
             </div>
           </div>
