@@ -187,21 +187,21 @@ const NavBar = () => {
       className={`fixed w-full z-50 transition-all duration-500 ${
         scrolled || isOpen
           ? "bg-white/95 backdrop-blur-md shadow-lg py-2"
-          : "bg-transparent py-4"
+          : "bg-transparent py-6"
       }`}
       aria-label="Navigation principale"
       style={{ fontFamily: 'var(--font-primary)' }}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-2">
-          {/* Logo - Correction de l'affichage pour mobile */}
-          <Link to="/" className="flex items-center">
-            <div className="flex items-center justify-center relative">
-              <div className="relative w-auto h-auto z-10">
+          {/* Logo - Correction pour affichage sur iOS avec meilleur espacement */}
+          <Link to="/" className="flex items-center z-[60] relative">
+            <div className="flex items-center justify-center">
+              <div className="w-auto h-auto relative bg-white rounded-md p-1 my-1">
                 <OptimizedImage
                   src="/assets/logo/logo-rachel-gervais.png"
                   alt="logo Assistante Sociale indépendante"
-                  className="w-auto h-auto object-contain"
+                  className="w-auto h-auto object-contain max-h-[50px] opacity-100"
                   width={180}
                   height={60}
                   priority
@@ -303,8 +303,8 @@ const NavBar = () => {
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile Menu Button - Z-index augmenté pour iOS */}
+          <div className="md:hidden flex items-center z-[60]">
             <button
               className="rounded-full p-2 bg-primary/10 text-primary transition-all duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
               onClick={() => setIsOpen(!isOpen)}
@@ -319,30 +319,27 @@ const NavBar = () => {
           </div>
         </div>
 
-        {/* Menu mobile - Correction du défilement */}
+        {/* Menu mobile - Structure optimisée pour iOS */}
         {isOpen && (
           <div
-            className="fixed inset-0 z-40 bg-white/80 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-[55] md:hidden"
             onClick={() => setIsOpen(false)}
           >
+            {/* Fond opaque au lieu de semi-transparent */}
+            <div className="absolute inset-0 bg-white opacity-100"></div>
+            
+            {/* Zone de contenu du menu - ajustée pour commencer directement après la navbar */}
             <div 
-              className="fixed inset-x-0 top-0 z-50 overflow-y-auto bg-white shadow-lg"
+              className="fixed inset-x-0 overflow-y-auto shadow-lg bg-white"
               onClick={(e) => e.stopPropagation()}
               style={{ 
-                top: navRef.current ? `${navRef.current.offsetHeight}px` : '56px',
-                maxHeight: '85vh',
+                top: navRef.current?.offsetHeight || '70px',
+                maxHeight: `calc(100vh - ${navRef.current?.offsetHeight || '70px'}px)`,
                 height: 'auto',
-                overscrollBehavior: 'contain'
+                overscrollBehavior: 'contain',
+                WebkitOverflowScrolling: 'touch' // Améliore le défilement sur iOS
               }}
             >
-              {/* Bouton de fermeture en haut à droite */}
-              <button
-                className="absolute top-4 right-4 p-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all z-50"
-                onClick={() => setIsOpen(false)}
-                aria-label="Fermer le menu"
-              >
-                <X size={28} />
-              </button>
               <div className="py-6 px-4 flex flex-col space-y-4">
                 {mainNavItems.map((item) => (
                   item.hasDropdown ? (
