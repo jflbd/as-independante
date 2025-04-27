@@ -2,7 +2,7 @@
 
 // Vérifier si la clé API est manquante ou utilise la valeur par défaut
 const stripeKeyWarning = () => {
-  const defaultKey = process.env.STRIPE_SECRET_KEY!;
+  const defaultKey = 'pk_test_dummy_key_for_development';
   const currentKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || defaultKey;
   
   if (currentKey === defaultKey) {
