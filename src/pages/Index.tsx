@@ -18,9 +18,11 @@ import { siteConfig } from "@/config/siteConfig";
 import FadeInSection from "@/components/animations/FadeInSection";
 import StaggeredReveal from "@/components/animations/StaggeredReveal";
 import ParallaxScroll from "@/components/animations/ParallaxScroll";
+import { useLocation } from "react-router-dom";
 
 const Index = () => {
   const observerInitialized = useRef(false);
+  const location = useLocation();
   
   useEffect(() => {
     if (observerInitialized.current) return;
@@ -61,6 +63,22 @@ const Index = () => {
       }
     };
   }, []);
+
+  // Gestion du défilement vers les sections via les paramètres d'URL
+  useEffect(() => {
+    // Extraire le paramètre scrollTo de l'URL
+    const params = new URLSearchParams(location.search);
+    const scrollTarget = params.get('scrollTo');
+    
+    if (scrollTarget) {
+      setTimeout(() => {
+        const element = document.getElementById(scrollTarget);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500); // Délai pour s'assurer que la page est complètement chargée
+    }
+  }, [location]);
 
   // Les éléments de la grille de service pour la section d'accueil
   const serviceCards = [

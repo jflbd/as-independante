@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { ArrowLeft, ArrowRight, CreditCard, Lock, CheckCircle, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, CreditCard, Lock } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -14,24 +14,11 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { OptimizedImage } from "../OptimizedImage";
-
-// Schéma de validation pour le formulaire de carte bancaire
-const cardFormSchema = z.object({
-  cardNumber: z.string()
-    .min(1, "Numéro de carte requis")
-    .regex(/^[0-9]{16}$/, "Le numéro de carte doit contenir 16 chiffres"),
-  cardHolder: z.string()
-    .min(1, "Nom du titulaire requis"),
-  expiryDate: z.string()
-    .min(1, "Date d'expiration requise")
-    .regex(/^(0[1-9]|1[0-2])\/[0-9]{2}$/, "Format MM/YY requis"),
-  cvv: z.string()
-    .min(1, "Code de sécurité requis")
-    .regex(/^[0-9]{3,4}$/, "Le code de sécurité doit contenir 3 ou 4 chiffres"),
-});
+import StripePayment from "./StripePayment";
+import PayPalPaymentButton from "../pricing/PayPalPaymentButton";
+import { useToast } from "@/hooks/use-toast";
 
 // Schéma de validation pour PayPal (simplifié car l'authentification se fait via PayPal)
 const paypalFormSchema = z.object({
@@ -54,17 +41,7 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
 }) => {
   const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal">("card");
   const [isProcessing, setIsProcessing] = useState(false);
-
-  // Formulaire pour carte bancaire
-  const cardForm = useForm<z.infer<typeof cardFormSchema>>({
-    resolver: zodResolver(cardFormSchema),
-    defaultValues: {
-      cardNumber: "",
-      cardHolder: "",
-      expiryDate: "",
-      cvv: "",
-    },
-  });
+  const { toast } = useToast();
 
   // Formulaire pour PayPal
   const paypalForm = useForm<z.infer<typeof paypalFormSchema>>({
@@ -74,28 +51,25 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
     },
   });
 
-  // Gestionnaire pour le paiement par carte bancaire
-  const handleCardPayment = (values: z.infer<typeof cardFormSchema>) => {
+  // Gestionnaire pour le paiement PayPal
+  const handlePaypalPayment = (values: z.infer<typeof paypalFormSchema>) => {
     setIsProcessing(true);
-    // Simulation d'une requête API pour le paiement
+    // En mode test, on simule un paiement PayPal
     setTimeout(() => {
-      // Dans une application réelle, ceci serait remplacé par un appel à votre API de paiement
-      const paymentId = "card_" + Math.random().toString(36).substring(2, 15);
+      const paymentId = "paypal_" + Math.random().toString(36).substring(2, 15);
       setIsProcessing(false);
+      toast({
+        title: "Paiement PayPal accepté",
+        description: "Votre paiement a été traité avec succès.",
+      });
       onPaymentComplete(paymentId);
     }, 2000);
   };
 
-  // Gestionnaire pour le paiement PayPal
-  const handlePaypalPayment = (values: z.infer<typeof paypalFormSchema>) => {
-    setIsProcessing(true);
-    // Simulation d'une requête API pour le paiement
-    setTimeout(() => {
-      // Dans une application réelle, ceci serait remplacé par un appel à l'API PayPal
-      const paymentId = "paypal_" + Math.random().toString(36).substring(2, 15);
-      setIsProcessing(false);
-      onPaymentComplete(paymentId);
-    }, 2000);
+  // On peut également utiliser directement le composant PayPalPaymentButton
+  const handlePayPalSuccess = () => {
+    const paymentId = "paypal_" + Math.random().toString(36).substring(2, 15);
+    onPaymentComplete(paymentId);
   };
 
   return (
@@ -160,133 +134,12 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
               </div>
             </div>
 
-            <Form {...cardForm}>
-              <form onSubmit={cardForm.handleSubmit(handleCardPayment)} className="space-y-4">
-                <FormField
-                  control={cardForm.control}
-                  name="cardNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Numéro de carte</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="1234 5678 9012 3456"
-                          {...field}
-                          onChange={(e) => {
-                            // Ne garder que les chiffres
-                            const value = e.target.value.replace(/\D/g, '');
-                            // Limiter à 16 chiffres
-                            if (value.length <= 16) {
-                              field.onChange(value);
-                            }
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={cardForm.control}
-                  name="cardHolder"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nom du titulaire</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Nom du titulaire" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={cardForm.control}
-                    name="expiryDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Date d'expiration</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="MM/YY" 
-                            {...field} 
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, '');
-                              if (value.length <= 4) {
-                                let formattedValue = value;
-                                if (value.length > 2) {
-                                  formattedValue = value.slice(0, 2) + '/' + value.slice(2);
-                                }
-                                field.onChange(formattedValue);
-                              }
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={cardForm.control}
-                    name="cvv"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Code de sécurité (CVV)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="123" 
-                            {...field} 
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, '');
-                              if (value.length <= 4) {
-                                field.onChange(value);
-                              }
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="pt-4 flex flex-col md:flex-row justify-between gap-4">
-                  {onGoBack && (
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={onGoBack}
-                      className="flex items-center"
-                      disabled={isProcessing}
-                    >
-                      <ArrowLeft className="mr-2 h-4 w-4" />
-                      Modifier mes informations
-                    </Button>
-                  )}
-                  <Button 
-                    type="submit" 
-                    className="bg-primary hover:bg-primary/90"
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <>
-                        <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent rounded-full"></div>
-                        Traitement en cours...
-                      </>
-                    ) : (
-                      <>
-                        <span>Payer {amount.toFixed(2).replace('.', ',')}€</span>
-                        <Lock className="ml-2 h-4 w-4" />
-                        <ChevronRight className="ml-1 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
+            {/* Intégration de Stripe pour le paiement par carte */}
+            <StripePayment 
+              onGoBack={onGoBack}
+              amount={amount}
+              onPaymentComplete={onPaymentComplete}
+            />
           </TabsContent>
 
           <TabsContent value="paypal" className="w-full">

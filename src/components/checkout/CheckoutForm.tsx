@@ -15,8 +15,9 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { cn } from "@/lib/utils";
 
-// Schéma de validation du formulaire
+// Schéma de validation du formulaire avec messages d'erreur qui s'afficheront en rouge
 const formSchema = z.object({
   email: z
     .string()
@@ -31,6 +32,23 @@ const formSchema = z.object({
     .min(1, "Le nom est requis")
     .max(50, "Le nom ne peut pas dépasser 50 caractères"),
 });
+
+// Composant personnalisé pour les messages d'erreur en rouge
+const RedFormMessage = React.forwardRef<
+  HTMLParagraphElement,
+  React.ComponentPropsWithoutRef<typeof FormMessage>
+>(({ className, children, ...props }, ref) => {
+  return (
+    <FormMessage
+      ref={ref}
+      className={cn("text-red-500 font-medium", className)}
+      {...props}
+    >
+      {children}
+    </FormMessage>
+  );
+});
+RedFormMessage.displayName = "RedFormMessage";
 
 interface CheckoutFormProps {
   initialData: {
@@ -83,7 +101,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     <Info className="h-3 w-3 mr-1" />
                     Vous recevrez votre ebook à cette adresse
                   </FormDescription>
-                  <FormMessage />
+                  <RedFormMessage />
                 </FormItem>
               )}
             />
@@ -104,7 +122,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         autoComplete="given-name"
                       />
                     </FormControl>
-                    <FormMessage />
+                    <RedFormMessage />
                   </FormItem>
                 )}
               />
@@ -124,7 +142,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         autoComplete="family-name"
                       />
                     </FormControl>
-                    <FormMessage />
+                    <RedFormMessage />
                   </FormItem>
                 )}
               />

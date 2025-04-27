@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { X, Cookie, Info } from "lucide-react";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
@@ -29,8 +28,11 @@ const CookieBanner = () => {
             <X size={20} />
           </button>
           
-          <div className="flex-shrink-0 bg-primary/20 p-3 rounded-full">
-            <Cookie className="h-6 w-6 text-primary" />
+          {/* Centrer l'icône de cookie horizontalement */}
+          <div className="w-full flex justify-center md:block md:w-auto">
+            <div className="flex-shrink-0 bg-primary/20 p-3 rounded-full w-[48px] h-[48px] flex items-center justify-center">
+              <Cookie className="h-6 w-6 text-primary" />
+            </div>
           </div>
           
           <div className="flex-1">
@@ -93,13 +95,13 @@ const CookieBanner = () => {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setConsent("accepted")}
-                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors font-medium"
+                className="w-full md:w-auto flex-1 min-w-[180px] bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors font-medium"
               >
                 Accepter les cookies
               </button>
               <button
                 onClick={() => setConsent("rejected")}
-                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors font-medium"
+                className="w-full md:w-auto flex-1 min-w-[180px] bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors font-medium"
               >
                 Refuser les cookies non-essentiels
               </button>

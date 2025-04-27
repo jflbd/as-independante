@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import SafeLink from '@/components/SafeLink';
 import { siteConfig } from '@/config/siteConfig';
 import { SiFacebook } from '@icons-pack/react-simple-icons';
@@ -36,11 +36,58 @@ const FooterSchemaOrgScript: React.FC = () => (
   />
 );
 
+// Composant pour gérer le défilement vers les sections depuis n'importe quelle page
+const SmoothScrollLink: React.FC<{
+  to: string;
+  className: string;
+  id?: string;
+  children: React.ReactNode;
+}> = ({ to, className, id, children }) => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const isEbookPage = location.pathname === '/ebook';
+  
+  // Si le lien pointe vers une ancre et nous ne sommes pas sur la page d'accueil
+  if (to.startsWith('#') && !isHomePage) {
+    // Naviguer vers la page d'accueil puis faire défiler vers l'ancre
+    return (
+      <Link 
+        to="/" 
+        onClick={(e) => {
+          // Si on est déjà sur la page d'accueil, juste faire défiler
+          if (isHomePage) {
+            e.preventDefault();
+            const targetElement = document.getElementById(to.substring(1));
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+          } else {
+            // Sinon, naviguer vers la page d'accueil puis faire défiler
+            setTimeout(() => {
+              const targetElement = document.getElementById(to.substring(1));
+              if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+              }
+            }, 100);
+          }
+        }}
+        className={className}
+        id={id}
+      >
+        {children}
+      </Link>
+    );
+  }
+  
+  // Si c'est une URL normale ou nous sommes déjà sur la page d'accueil
+  return <SafeLink to={to} className={className} id={id}>{children}</SafeLink>;
+};
+
 const Footer: React.FC = () => {
     const { openLegalModal } = useLegalModal();
     const location = useLocation();
     const currentYear = new Date().getFullYear();
-    const startYear = 2023; // Année de création du site
+    const startYear = 2019; // Année de création du site
     const copyrightYears = startYear === currentYear 
       ? currentYear 
       : `${startYear} - ${currentYear}`;
@@ -114,7 +161,7 @@ const Footer: React.FC = () => {
                   <ul className="space-y-2 mb-4">
                     {footerNavLinks.map((link) => (
                       <li key={link.id}>
-                        <SafeLink 
+                        <SmoothScrollLink 
                           to={link.url} 
                           className={`text-sm ${link.highlight 
                             ? 'text-primary font-semibold hover:text-accent' 
@@ -123,7 +170,7 @@ const Footer: React.FC = () => {
                         >
                           {link.icon && link.icon}
                           {link.name}
-                        </SafeLink>
+                        </SmoothScrollLink>
                       </li>
                     ))}
                   </ul>

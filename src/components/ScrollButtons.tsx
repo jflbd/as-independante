@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Home } from 'lucide-react';
 
-const ScrollButtons: React.FC = () => {
+interface ScrollButtonsProps {
+  includeHomeButton?: boolean;
+  onHomeClick?: () => void;
+}
+
+const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false, onHomeClick }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [documentHeight, setDocumentHeight] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -62,11 +67,32 @@ const ScrollButtons: React.FC = () => {
   
   // Ne pas afficher les boutons de défilement si la hauteur du document est inférieure à 2 fois la hauteur de la fenêtre
   if (documentHeight < viewportHeight * 1.5) {
-    return null;
+    return includeHomeButton ? (
+      <div className="fixed bottom-6 right-6 z-40">
+        <button 
+          onClick={onHomeClick}
+          className="flex items-center justify-center w-12 h-12 bg-primary/90 hover:bg-primary text-white rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          aria-label="Retour à l'accueil"
+        >
+          <Home size={20} />
+        </button>
+      </div>
+    ) : null;
   }
   
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-2">
+      {/* Bouton d'accueil si demandé */}
+      {includeHomeButton && (
+        <button 
+          onClick={onHomeClick}
+          className="flex items-center justify-center w-12 h-12 bg-primary/90 hover:bg-primary text-white rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          aria-label="Retour à l'accueil"
+        >
+          <Home size={20} />
+        </button>
+      )}
+      
       {/* Afficher uniquement au milieu ou en bas de la page */}
       {!isAtTop && (
         <button 

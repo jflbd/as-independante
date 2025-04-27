@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "@/hooks/use-toast";
@@ -39,7 +38,7 @@ const PayPalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, descr
       currency: "EUR",
       intent: "capture",
       components: "buttons"
-    }}>
+    }}>      
       {isPending && (
         <div className="text-center py-2">
           <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>

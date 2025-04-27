@@ -86,7 +86,15 @@ const NotFound = () => {
         
         {/* Bande de contact en bas */}
         <div className="p-4 bg-gradient-to-r from-primary via-accent to-secondary text-white text-center">
-          <p>Besoin d'aide pour retrouver votre chemin ? <a href="/contact" className="font-medium underline hover:text-white/80">Contactez-moi</a></p>
+          <p>Besoin d'aide pour retrouver votre chemin ? <Link to="/" onClick={(e) => {
+            // Naviguer vers la page d'accueil, puis faire défiler jusqu'à la section contact
+            setTimeout(() => {
+              const contactSection = document.getElementById('contact');
+              if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }, 100);
+          }} className="font-medium underline hover:text-white/80">Contactez-moi</Link></p>
         </div>
       </div>
     </div>
