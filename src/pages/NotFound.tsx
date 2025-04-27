@@ -23,8 +23,8 @@ const NotFound = () => {
             {/* Logo du site */}
             <div className="mb-6 w-32 h-auto">
               <OptimizedImage
-                src="/assets/logo/logo-rachel-gervais.png"
-                alt={`${siteConfig.name} - Logo`}
+                src={siteConfig.ui.logo}
+                alt="logo Assistante Sociale indépendante"
                 width={180}
                 height={60}
                 className="w-full h-auto"

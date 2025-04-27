@@ -124,7 +124,7 @@ const Index = () => {
       <div className="min-h-screen relative">
         <NavBar />
         
-        <header id="accueil" className="pt-28 pb-12 md:pt-40 md:pb-24 relative bg-gradient-to-b from-white to-section-light">
+        <header id="accueil" className="pt-10 pb-12 md:pb-10 relative bg-gradient-to-b from-white to-section-light">
           <ParallaxScroll strength={0.2} direction="right" className="absolute top-16 right-10">
             <div className="text-primary/40 animate-pulse-gentle">
               <Sparkles size={40} />

@@ -81,7 +81,7 @@ const CheckoutPage: React.FC = () => {
                     {/* Logo/Retour à l'accueil */}
                     <Link to="/" className="flex items-center mb-4 sm:mb-0">
                         <OptimizedImage
-                            src="/assets/logo/logo-rachel-gervais.png"
+                            src={siteConfig.ui.logo}
                             alt="logo Assistante Sociale indépendante"
                             className="h-10 w-auto"
                             width={120}

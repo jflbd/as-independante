@@ -10,7 +10,7 @@ export const siteConfig = {
     // UI configuration
     ui: {
         font: "Aptos, Arial, sans-serif",
-        logo: "/assets/logo/logo-rachel-gervais2.png",
+        logo: "/assets/logo/logo-rachel-gervais-removebg.png",
         colors: {
             primary: "#0D8496", // Couleur de la bannière turquoise du logo
             secondary: "#065964", // Version plus foncée pour les accents
