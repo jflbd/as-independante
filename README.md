@@ -29,7 +29,7 @@ Ce projet est un site web professionnel pour Rachel Gervais, assistante sociale 
 - **React Hook Form** - Gestion des formulaires
 - **Stripe API** - Traitement sécurisé des paiements par carte bancaire
 - **PayPal API** - Intégration des paiements alternatifs
-- **Netlify Functions** - Architecture serverless pour le backend
+- **Vercel API Routes** - Architecture serverless pour le backend
 - **React Helmet Async** - Gestion du SEO et méta-données compatible avec le Concurrent Mode
 - **Sharp** - Optimisation et transformation d'images
 - **PostCSS** - Traitement CSS avancé avec support pour le nesting et autres fonctionnalités modernes
@@ -40,7 +40,8 @@ Ce projet est un site web professionnel pour Rachel Gervais, assistante sociale 
 ### Prérequis
 
 - Node.js (v18 ou supérieur)
-- npm ou Bun
+- npm
+- Vercel CLI (`npm install -g vercel`)
 
 ### Installation
 
@@ -51,8 +52,6 @@ cd as-independante
 
 # Installer les dépendances
 npm install
-# ou avec Bun
-bun install
 ```
 
 ### Configuration
@@ -77,39 +76,42 @@ VITE_PAYPAL_PRODUCTION_CLIENT_ID="votre_id_client_production"
 
 ### Démarrage du serveur de développement
 
-```bash
-npm run dev
-# ou avec Bun
-bun run dev
-```
-
-Le site sera accessible à l'adresse [http://localhost:5173](http://localhost:5173)
-
-Pour tester les fonctions serverless localement, utilisez:
+Pour un développement complet avec fonctions API serverless (formulaire de contact, paiements, etc.) :
 
 ```bash
-# Installation de Netlify CLI si nécessaire
-npm install -g netlify-cli
+# Configuration initiale de Vercel (à faire une seule fois)
+vercel link
 
-# Démarrage du serveur netlify avec les fonctions serverless
-netlify dev
+# Démarrage du serveur de développement avec Vercel
+vercel dev
 ```
+
+Le site sera accessible à l'adresse [http://localhost:8080](http://localhost:8080)
+
+> **Important**: Utilisez toujours `vercel dev` pour le développement local si vous avez besoin des fonctions API (envoi d'email, paiement Stripe, etc.). La commande `npm run dev` ne permet pas d'accéder aux fonctions serverless.
 
 ### Build pour la production
 
 ```bash
 npm run build
-# ou avec Bun
-bun run build
 ```
 
 Les fichiers générés seront dans le dossier `dist/` prêts à être déployés.
 
+### Déploiement
+
+```bash
+# Déployer vers Vercel
+vercel deploy
+```
+
 ## 📁 Structure du projet
 
 ```
-netlify/              # Configuration et fonctions serverless
-  └── functions/      # Fonctions serverless utilisées pour l'API backend
+api/                # Fonctions API pour Vercel serverless
+  ├── create-payment-intent.js
+  ├── mailchimp-subscribe.js
+  └── send-email.js
 public/               # Fichiers statiques accessibles par le navigateur
   ├── assets/         # Images et ressources visuelles
   │   ├── avisuser/   # Images pour les témoignages clients
@@ -199,17 +201,20 @@ Pour remplacer une image existante, placez simplement votre nouveau fichier dans
 Pour passer du mode test au mode production :
 
 #### Stripe
+
 1. Remplacez les clés API de test Stripe (pk*test*... et sk*test*...) par vos clés de production (pk*live*... et sk*live*...)
-2. Déployez les nouvelles variables d'environnement sur votre serveur Netlify
+2. Déployez les nouvelles variables d'environnement sur votre projet Vercel
 
 #### PayPal
+
 1. Dans le fichier `src/config/paypalConfig.ts`, modifiez la valeur de `testMode` à `false` pour activer le mode production
 2. Assurez-vous que votre `productionClientId` contient votre véritable ID client PayPal de production
 3. Redéployez l'application pour appliquer les changements
 
 ## 📦 Scripts disponibles
 
-- `npm run dev` - Lance le serveur de développement
+- `vercel dev` - Lance le serveur de développement complet avec support des API routes
+- `npm run dev` - Lance le serveur de développement frontend uniquement (sans API fonctionnelles)
 - `npm run build` - Génère le build de production (incluant l'optimisation des images et la génération des favicons)
 - `npm run preview` - Prévisualise le build de production en local
 - `npm run lint` - Lance l'analyse du code avec ESLint
@@ -230,6 +235,7 @@ Le projet intègre plusieurs optimisations pour une expérience utilisateur opti
 
 ## 🔄 Mises à jour récentes
 
+- Migration de Netlify vers Vercel pour améliorer les performances et la fiabilité
 - Intégration complète de PayPal avec support du passage en production
 - Ajout d'un système de vente d'e-books avec téléchargement sécurisé
 - Implémentation d'un système de prise de rendez-vous en ligne

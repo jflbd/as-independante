@@ -29,7 +29,6 @@ dist-ssr
 !.env.example
 
 # Local folders
-.netlify
 .vercel
 
 # Debug files

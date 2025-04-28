@@ -5,7 +5,7 @@ export const mailchimpConfig = {
   apiKey: process.env.MAILCHIMP_API_KEY || '',
   serverPrefix: process.env.MAILCHIMP_SERVER_PREFIX || 'us1', // Préfixe du serveur (us1, us2, etc.)
   audienceId: process.env.MAILCHIMP_AUDIENCE_ID || '', // ID de la liste
-  subscribePath: '/.netlify/functions/mailchimp-subscribe',
+  subscribePath: '/api/mailchimp-subscribe',
   subscribeEndpoint: `https://${process.env.MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members`,
   subscribeMethod: 'POST',
   subscribeHeaders: {

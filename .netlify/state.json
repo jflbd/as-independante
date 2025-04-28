@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Saint-Sylvain",
+			"country": {
+				"code": "FR",
+				"name": "France"
+			},
+			"subdivision": {
+				"code": "NOR",
+				"name": "Normandy"
+			},
+			"timezone": "Europe/Paris",
+			"latitude": 49.0521,
+			"longitude": -0.2071,
+			"postalCode": "14190"
+		},
+		"timestamp": 1745829124360
+	}
+}

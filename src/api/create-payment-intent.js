@@ -1,5 +1,5 @@
 // Ce fichier serait normalement sur un serveur backend ou une fonction serverless
-// Exemple avec Netlify Functions, Vercel Edge Functions ou Firebase Cloud Functions
+// Exemple avec Vercel API Routes
 
 // Importer la bibliothèque Stripe côté serveur
 // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -9,7 +9,7 @@
  *
  * REMARQUE IMPORTANTE : Ceci est un exemple à implémenter sur votre backend.
  * NE PAS inclure la clé secrète Stripe dans votre code front-end.
- * Cette fonction doit être déployée sur un environnement sécurisé (Netlify/Vercel/Firebase).
+ * Cette fonction doit être déployée sur un environnement sécurisé (Vercel).
  */
 exports.handler = async (event) => {
   // Vérifier que la méthode est POST

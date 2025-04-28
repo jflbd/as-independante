@@ -3,7 +3,7 @@
  */
 export const emailConfig = {
   // URL de l'endpoint de la fonction serverless
-  sendEmailEndpoint: '/.netlify/functions/send-email',
+  sendEmailEndpoint: '/api/send-email',
   
   // Configuration des templates d'emails
   templates: {

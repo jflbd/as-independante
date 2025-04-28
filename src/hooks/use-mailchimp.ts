@@ -29,7 +29,7 @@ export function useMailchimp(): MailchimpHookReturn {
     setSuccess(false);
 
     try {
-      // Utiliser la fonction serverless Netlify au lieu de l'API Mailchimp directement
+      // Utiliser l'API Route Vercel pour gérer l'inscription à Mailchimp
       const response = await fetch(mailchimpConfig.subscribePath, {
         method: 'POST',
         headers: {
