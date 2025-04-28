@@ -1,4 +1,7 @@
 export const ebookConfig = {
+    // Variable pour contrôler l'accès à l'ebook
+    isEbookAvailable: true, // Mettre à true pour activer l'accès, false pour afficher la page d'attente
+    
     title: "Le guide essentiel pour devenir travailleur social en libéral",
     subtitle: "Toutes les étapes pour réussir votre installation et votre pratique",
     downloadUrl: "/ebooks/guide-assistante-sociale-independante.pdf",
@@ -18,6 +21,7 @@ export const ebookConfig = {
     fileFormat: "PDF",
     fileSize: "2.4 Mo",
     guarantee: "Satisfaction garantie ou remboursé pendant 30 jours",
-    supportEmail: "rachel.gervais@as-independante.fr",
-    supportPhone: "07 63 90 78 45",
+    // Utilisation des variables d'environnement pour les coordonnées de contact
+    supportEmail: import.meta.env.VITE_CONTACT_EMAIL || "rachel.gervais@as-independante.fr",
+    supportPhone: import.meta.env.VITE_CONTACT_PHONE || "07 63 90 78 45",
 };

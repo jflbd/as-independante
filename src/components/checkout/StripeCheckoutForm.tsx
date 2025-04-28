@@ -68,20 +68,21 @@ const StripeCheckoutForm: React.FC<StripeCheckoutFormProps> = ({ paymentDetails 
           // Simuler un délai pour l'authentification
           await new Promise(resolve => setTimeout(resolve, 1500));
           
-          // Stocker les détails pour la redirection
+          toast({
+            title: "Authentification 3D Secure",
+            description: "L'authentification a été effectuée avec succès.",
+          });
+          
+          // Stocker les informations de paiement pour la page de confirmation
           sessionStorage.setItem('paymentDetails', JSON.stringify({
             ...paymentDetails,
             paymentMethod: 'stripe',
-            paymentId: `auth_${Date.now()}`
+            paymentId: `auth_${Date.now()}`,
+            authenticated: true
           }));
           
-          // Rediriger vers la page d'authentification (qui n'existe pas, donc simuler un échec)
-          sessionStorage.setItem('paymentError', JSON.stringify({
-            code: 'authentication_required',
-            message: "L'authentification a échoué ou a été annulée par l'utilisateur."
-          }));
-          
-          navigate('/paiement-echec');
+          // Rediriger vers la page de succès après authentification simulée
+          navigate('/paiement-reussi');
           return;
         }
         

@@ -2,8 +2,17 @@ import React, { createContext, useState, ReactNode } from 'react';
 
 export type ModalType = 'contact' | 'legal' | 'quote' | null;
 
+// Type pour les détails d'erreur de paiement
+interface ErrorDetails {
+  code?: string;
+  message?: string;
+  type?: string;
+}
+
 interface ModalData {
   section?: string;
+  context?: string; // Pour identifier la source du contact (ex: 'payment_error')
+  errorDetails?: ErrorDetails; // Pour les détails d'erreur de paiement
   [key: string]: unknown;
 }
 

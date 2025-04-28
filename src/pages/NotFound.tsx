@@ -72,14 +72,6 @@ const NotFound = () => {
                 <Home size={18} />
                 <span>Page d'accueil</span>
               </Link>
-              
-              <button 
-                onClick={() => window.history.back()} 
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors duration-300"
-              >
-                <ArrowLeft size={18} />
-                <span>Retour</span>
-              </button>
             </div>
           </div>
         </div>

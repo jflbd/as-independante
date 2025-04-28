@@ -19,13 +19,17 @@ const ModalManager: React.FC = () => {
             <DialogTitle>Contactez-moi</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col space-y-4">
-            {/* Ne pas fermer immédiatement la modal après envoi pour permettre l'affichage du message de succès */}
-            <ContactForm onSuccess={() => {
-              // Retarder la fermeture pour permettre d'afficher le message de succès pendant quelques secondes
-              setTimeout(() => {
-                closeModal();
-              }, 5000);
-            }} />
+            {/* Transmettre le contexte et les détails si disponibles */}
+            <ContactForm 
+              onSuccess={() => {
+                // Retarder la fermeture pour permettre d'afficher le message de succès pendant quelques secondes
+                setTimeout(() => {
+                  closeModal();
+                }, 5000);
+              }}
+              contextSource={modalData?.context || ''}
+              contextDetails={modalData?.errorDetails || null}
+            />
           </div>
         </DialogContent>
       </Dialog>

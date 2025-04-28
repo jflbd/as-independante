@@ -2,12 +2,28 @@ import { useState, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { siteConfig } from "@/config/siteConfig";
 import { Send, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { useEmail } from "@/hooks/use-email";
+
+// Interface pour les détails d'erreur de paiement
+interface ErrorDetails {
+  code?: string;
+  message?: string;
+  type?: string;
+}
+
+// Type pour les différents contextes possibles
+type ContextSource = 'payment_error' | 'ebook_download' | string;
+
+// Type pour les détails contextuels selon la source
+type ContextDetails = ErrorDetails | Record<string, unknown> | null;
 
 interface ContactFormProps {
   onSuccess?: () => void;
+  contextSource?: ContextSource;
+  contextDetails?: ContextDetails;
 }
 
-const ContactForm = ({ onSuccess }: ContactFormProps) => {
+const ContactForm = ({ onSuccess, contextSource = '', contextDetails = null }: ContactFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,6 +32,9 @@ const ContactForm = ({ onSuccess }: ContactFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState("");
+  
+  // Utilisation du hook d'envoi d'emails personnalisé
+  const { sendEmail, loading } = useEmail();
 
   // Ajouter les styles d'animation globale via useEffect
   useEffect(() => {
@@ -62,75 +81,71 @@ const ContactForm = ({ onSuccess }: ContactFormProps) => {
     setErrorMessage("");
     
     try {
-      // Configuration pour FormSubmit
-      const formElement = e.target as HTMLFormElement;
+      // Préparer le sujet et le message en fonction du contexte
+      let subject = `Message de contact de ${formData.name}`;
+      let messageContent = formData.message;
       
-      // Créer un élément caché pour l'email de destination
-      const destinationEmail = document.createElement("input");
-      destinationEmail.type = "hidden";
-      destinationEmail.name = "_to";
-      destinationEmail.value = siteConfig.contact.email;
-      formElement.appendChild(destinationEmail);
-      
-      // Élément pour le sujet de l'email
-      const subjectField = document.createElement("input");
-      subjectField.type = "hidden";
-      subjectField.name = "_subject";
-      subjectField.value = `Message de contact de ${formData.name}`;
-      formElement.appendChild(subjectField);
-      
-      // Ne pas rediriger après soumission, simplement afficher un toast
-      const redirectField = document.createElement("input");
-      redirectField.type = "hidden";
-      redirectField.name = "_captcha";
-      redirectField.value = "false";
-      formElement.appendChild(redirectField);
-      
-      // Ajouter également _next pour empêcher la redirection
-      const nextField = document.createElement("input");
-      nextField.type = "hidden";
-      nextField.name = "_next";
-      nextField.value = "false";
-      formElement.appendChild(nextField);
-      
-      // Définir l'action du formulaire vers FormSubmit
-      formElement.action = `https://formsubmit.co/${siteConfig.contact.email}`;
-      formElement.method = "POST";
-      
-      // Soumettre le formulaire via AJAX pour éviter la redirection
-      const formDataToSend = new FormData(formElement);
-      const response = await fetch(formElement.action, {
-        method: 'POST',
-        body: formDataToSend,
-        headers: {
-          'Accept': 'application/json'
+      // Ajouter des informations contextuelles au message si disponibles
+      if (contextSource) {
+        // Personnaliser le sujet en fonction de la source
+        switch (contextSource) {
+          case 'payment_error':
+            subject = `[Assistance Paiement] Message de ${formData.name}`;
+            break;
+          case 'ebook_download':
+            subject = `[Assistance Ebook] Message de ${formData.name}`;
+            break;
+          default:
+            // Garder le sujet par défaut
+            break;
         }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Erreur lors de l'envoi: ${response.status} ${response.statusText}`);
+        
+        // Ajouter des informations supplémentaires au message
+        let contextInfo = `\n\n---\nInformations contextuelles:`;
+        contextInfo += `\nSource de contact: ${contextSource === 'payment_error' ? 'Page d\'erreur de paiement' : contextSource}`;
+        
+        // Ajouter les détails de l'erreur si disponibles
+        if (contextSource === 'payment_error' && contextDetails) {
+          contextInfo += `\nCode d'erreur: ${contextDetails.code || 'Non disponible'}`;
+          contextInfo += `\nMessage d'erreur: ${contextDetails.message || 'Non disponible'}`;
+          contextInfo += `\nType d'erreur: ${contextDetails.type || 'Non disponible'}`;
+        }
+        
+        // Ajouter les informations contextuelles au message
+        messageContent += contextInfo;
       }
       
-      // Mise à jour du statut et affichage d'un toast de succès
-      setFormStatus('success');
-      toast({
-        title: "Message envoyé",
-        description: "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais.",
+      // Utilisation de notre système d'envoi d'email personnalisé
+      const result = await sendEmail({
+        name: formData.name,
+        email: formData.email,
+        message: messageContent,
+        subject: subject,
       });
       
-      // Réinitialiser le formulaire
-      setFormData({ name: "", email: "", message: "" });
-      
-      // Appeler le callback onSuccess si fourni
-      if (onSuccess) {
-        onSuccess();
+      if (result.success) {
+        // Mise à jour du statut et affichage d'un toast de succès
+        setFormStatus('success');
+        toast({
+          title: "Message envoyé",
+          description: "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais.",
+        });
+        
+        // Réinitialiser le formulaire
+        setFormData({ name: "", email: "", message: "" });
+        
+        // Appeler le callback onSuccess si fourni
+        if (onSuccess) {
+          onSuccess();
+        }
+        
+        // Réinitialiser le statut après 5 secondes
+        setTimeout(() => {
+          setFormStatus('idle');
+        }, 5000);
+      } else {
+        throw new Error(result.message);
       }
-      
-      // Réinitialiser le statut après 5 secondes
-      setTimeout(() => {
-        setFormStatus('idle');
-      }, 5000);
-      
     } catch (error) {
       // Mise à jour du statut et affichage d'un toast d'erreur
       setFormStatus('error');

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { AlertTriangle, ArrowLeft, Home, HelpCircle, RefreshCw } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Home, HelpCircle, RefreshCw, ArrowUpLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/siteConfig';
+import { useModal } from '@/hooks/use-modal';
 
 interface ErrorDetails {
   code?: string;
@@ -11,10 +12,18 @@ interface ErrorDetails {
   type?: string;
 }
 
+// Interface pour les données contextuelles d'annulation
+interface CancelledPaymentContext {
+  productType?: string;
+  description?: string;
+}
+
 const PaiementEchecPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [errorDetails, setErrorDetails] = useState<ErrorDetails | null>(null);
+  const [fromEbookPage, setFromEbookPage] = useState<boolean>(false);
+  const { openModal } = useModal();
   
   // Fonction pour naviguer vers une page avec défilement vers une ancre
   const navigateWithScroll = (path: string, hash: string) => {
@@ -34,16 +43,42 @@ const PaiementEchecPage = () => {
     // Défiler vers le haut de la page
     window.scrollTo(0, 0);
     
-    // Récupérer les détails de l'erreur s'ils existent
     try {
+      // Récupérer les détails de l'erreur s'ils existent
       const errorData = sessionStorage.getItem('paymentError');
       if (errorData) {
         setErrorDetails(JSON.parse(errorData));
       }
+      
+      // D'abord essayer de récupérer les informations d'annulation (prioritaires)
+      const cancelContext = sessionStorage.getItem('cancelledPaymentContext');
+      if (cancelContext) {
+        const details = JSON.parse(cancelContext) as CancelledPaymentContext;
+        setFromEbookPage(details.productType === 'ebook');
+        // Nettoyer après utilisation
+        sessionStorage.removeItem('cancelledPaymentContext');
+        return;
+      }
+      
+      // Si pas d'informations d'annulation, essayer les détails de paiement normaux
+      const paymentDetails = sessionStorage.getItem('paymentDetails');
+      if (paymentDetails) {
+        const details = JSON.parse(paymentDetails);
+        setFromEbookPage(details.productType === 'ebook');
+      }
     } catch (error) {
-      console.error("Erreur lors de la récupération des détails d'erreur:", error);
+      console.error("Erreur lors de la récupération des détails:", error);
     }
   }, []);
+  
+  // Fonction pour gérer le retour intelligent
+  const handleGoBack = () => {
+    if (fromEbookPage) {
+      navigate('/ebook');
+    } else {
+      navigate('/');
+    }
+  };
   
   // Message en fonction du type d'erreur
   const getErrorMessage = () => {
@@ -89,6 +124,15 @@ const PaiementEchecPage = () => {
     return "Veuillez vérifier vos informations de paiement et réessayer.";
   };
   
+  // Fonction pour ouvrir la modal de contact avec contexte
+  const handleOpenContactModal = () => {
+    // Ouvrir la modal de contact avec des données contextuelles
+    openModal("contact", {
+      context: "payment_error", // Contexte pour identifier la source du contact
+      errorDetails: errorDetails // Transmettre les détails de l'erreur si disponibles
+    });
+  };
+  
   return (
     <div className="container mx-auto px-4 py-12">
       <Helmet>
@@ -118,8 +162,12 @@ const PaiementEchecPage = () => {
               <span>Réessayer le paiement</span>
             </li>
             <li className="flex items-start">
+              <ArrowUpLeft className="h-5 w-5 text-gray-500 mt-0.5 mr-3 flex-shrink-0" />
+              <span>Retourner à {fromEbookPage ? "la présentation de l'ebook" : "la page d'accueil"}</span>
+            </li>
+            <li className="flex items-start">
               <Home className="h-5 w-5 text-gray-500 mt-0.5 mr-3 flex-shrink-0" />
-              <span>Revenir à la page d'accueil</span>
+              <span>Aller à la page d'accueil</span>
             </li>
             <li className="flex items-start">
               <HelpCircle className="h-5 w-5 text-gray-500 mt-0.5 mr-3 flex-shrink-0" />
@@ -141,27 +189,36 @@ const PaiementEchecPage = () => {
           </div>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+        <div className="flex flex-wrap gap-2 justify-center mt-8 mx-auto max-w-lg">
+          <Button 
+            variant="outline" 
+            className="flex items-center text-sm"
+            onClick={handleGoBack}
+          >
+            <ArrowUpLeft className="mr-1 h-4 w-4" />
+            {fromEbookPage ? "Retour à l'ebook" : "Retour"}
+          </Button>
+          
           <Link to="/checkout">
-            <Button variant="outline" className="flex items-center">
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Réessayer le paiement
+            <Button variant="outline" className="flex items-center text-sm">
+              <RefreshCw className="mr-1 h-4 w-4" />
+              Réessayer
             </Button>
           </Link>
           
           <Link to="/">
-            <Button variant="outline" className="flex items-center">
-              <Home className="mr-2 h-4 w-4" />
+            <Button variant="outline" className="flex items-center text-sm">
+              <Home className="mr-1 h-4 w-4" />
               Accueil
             </Button>
           </Link>
           
           <Button 
-            onClick={() => navigateWithScroll('/', 'contact')}
-            className="bg-primary hover:bg-primary/90 flex items-center"
+            onClick={handleOpenContactModal}
+            className="bg-primary hover:bg-primary/90 flex items-center text-sm"
           >
-            Obtenir de l'aide
-            <HelpCircle className="ml-2 h-4 w-4" />
+            <HelpCircle className="mr-1 h-4 w-4" />
+            Aide
           </Button>
         </div>
       </div>

@@ -3,18 +3,22 @@ import { useEffect, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Euro } from "lucide-react";
 import StripePayment from '@/components/checkout/StripePayment';
 import PayPalCheckoutForm from '@/components/checkout/PayPalCheckoutForm';
 import { stripeConfig } from '@/config/stripeConfig';
 import { Helmet } from 'react-helmet-async';
 import { siteConfig } from '@/config/siteConfig';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 // Type pour les détails de paiement
 interface PaymentDetails {
   amount: string | number;
   description: string;
   paymentMethod?: 'stripe' | 'paypal';
+  customAmount?: boolean;
+  productType?: string; // Ajout du type de produit
 }
 
 // Initialisation de Stripe
@@ -24,6 +28,9 @@ const CheckoutPage: React.FC = () => {
   const location = useLocation();
   const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'paypal'>('paypal');
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+  const [customAmount, setCustomAmount] = useState<string>('');
+  const [isCustomAmount, setIsCustomAmount] = useState<boolean>(false);
+  const [isEbookPurchase, setIsEbookPurchase] = useState<boolean>(false); // État pour suivre si c'est un achat d'ebook
 
   useEffect(() => {
     // Récupérer la méthode de paiement depuis l'URL
@@ -47,6 +54,17 @@ const CheckoutPage: React.FC = () => {
           // Pour PayPal, le montant doit être une chaîne
           amount: parsedDetails.amount?.toString() || '0'
         });
+        
+        // Initialiser le montant personnalisé avec le montant actuel
+        setCustomAmount(parsedDetails.amount?.toString() || '0');
+        
+        // Vérifier si l'option montant personnalisé était activée
+        // Ne pas activer cette option si c'est un achat d'ebook
+        const isEbookProduct = parsedDetails.productType === 'ebook';
+        setIsEbookPurchase(isEbookProduct);
+        
+        // Si c'est un ebook, on force à false l'option de montant personnalisé
+        setIsCustomAmount(isEbookProduct ? false : (parsedDetails.customAmount || false));
       } catch (error) {
         console.error("Erreur lors de la récupération des détails de paiement:", error);
       }
@@ -56,18 +74,41 @@ const CheckoutPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [location]);
 
-  // Mettre à jour sessionStorage quand la méthode de paiement change
+  // Mettre à jour sessionStorage quand les détails changent
   useEffect(() => {
     if (paymentDetails) {
-      sessionStorage.setItem(
-        'paymentDetails',
-        JSON.stringify({
-          ...paymentDetails,
-          paymentMethod
-        })
-      );
+      const updatedDetails = {
+        ...paymentDetails,
+        paymentMethod,
+        // Si c'est un ebook, on utilise toujours le montant original
+        amount: isEbookPurchase ? paymentDetails.amount : (isCustomAmount ? customAmount : paymentDetails.amount),
+        // Ne pas permettre de montant personnalisé pour les ebooks
+        customAmount: isEbookPurchase ? false : isCustomAmount
+      };
+      
+      sessionStorage.setItem('paymentDetails', JSON.stringify(updatedDetails));
     }
-  }, [paymentMethod, paymentDetails]);
+  }, [paymentMethod, paymentDetails, customAmount, isCustomAmount, isEbookPurchase]);
+  
+  // Gérer le changement de montant
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // N'autoriser que les nombres avec au maximum 2 décimales
+    const value = e.target.value;
+    if (/^\d*\.?\d{0,2}$/.test(value)) {
+      setCustomAmount(value);
+    }
+  };
+  
+  // Toggle pour activer/désactiver le montant personnalisé
+  const toggleCustomAmount = () => {
+    // Empêcher la modification si c'est un achat d'ebook
+    if (!isEbookPurchase) {
+      setIsCustomAmount(!isCustomAmount);
+    }
+  };
+  
+  // Calculer le montant final à utiliser
+  const finalAmount = isEbookPurchase ? paymentDetails?.amount : (isCustomAmount ? customAmount : (paymentDetails?.amount || 0));
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -80,8 +121,44 @@ const CheckoutPage: React.FC = () => {
       
       {paymentDetails ? (
         <div className="mb-8 text-center">
-          <p className="text-xl font-medium">Montant : {paymentDetails.amount}€</p>
-          <p className="text-gray-600">{paymentDetails.description}</p>
+          {!isCustomAmount ? (
+            <>
+              <p className="text-xl font-medium">Montant : {paymentDetails.amount}€</p>
+              {/* Ne pas afficher le bouton de modification pour les ebooks */}
+              {!isEbookPurchase && (
+                <button 
+                  onClick={toggleCustomAmount}
+                  className="text-primary hover:text-primary/80 text-sm underline mt-1"
+                >
+                  Modifier le montant
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="max-w-xs mx-auto">
+              <Label htmlFor="custom-amount" className="text-lg font-medium mb-2 block">
+                Montant personnalisé
+              </Label>
+              <div className="relative">
+                <Input
+                  id="custom-amount"
+                  type="text"
+                  value={customAmount}
+                  onChange={handleAmountChange}
+                  className="pl-8 text-lg font-medium"
+                  placeholder="0.00"
+                />
+                <Euro className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+              </div>
+              <button 
+                onClick={toggleCustomAmount}
+                className="text-gray-500 hover:text-gray-700 text-sm underline mt-2"
+              >
+                Revenir au montant initial
+              </button>
+            </div>
+          )}
+          <p className="text-gray-600 mt-2">{paymentDetails.description}</p>
         </div>
       ) : (
         <Alert variant="destructive" className="mb-8">
@@ -129,15 +206,15 @@ const CheckoutPage: React.FC = () => {
               locale: 'fr',
             }}>
               <StripePayment paymentDetails={{
-                amount: typeof paymentDetails.amount === 'string' 
-                  ? parseFloat(paymentDetails.amount) 
-                  : paymentDetails.amount,
+                amount: typeof finalAmount === 'string' 
+                  ? parseFloat(finalAmount) || 0
+                  : finalAmount,
                 description: paymentDetails.description
               }} />
             </Elements>
           ) : (
             <PayPalCheckoutForm paymentDetails={{
-              amount: paymentDetails.amount.toString(),
+              amount: finalAmount.toString(),
               description: paymentDetails.description
             }} />
           )}
@@ -147,9 +224,16 @@ const CheckoutPage: React.FC = () => {
             <button
               onClick={() => {
                 if (window.confirm("Êtes-vous sûr de vouloir annuler votre paiement ?")) {
-                  // Optionnellement, effacer les détails de paiement
-                  sessionStorage.removeItem('paymentDetails');
-                  // Rediriger vers la page d'accueil ou une page d'annulation
+                  // Sauvegarder les informations sur le type de produit pour la page d'annulation
+                  if (paymentDetails && paymentDetails.productType) {
+                    // Conserver seulement les informations nécessaires pour le retour contextuel
+                    const contextInfo = {
+                      productType: paymentDetails.productType,
+                      description: paymentDetails.description
+                    };
+                    sessionStorage.setItem('cancelledPaymentContext', JSON.stringify(contextInfo));
+                  }
+                  // Rediriger vers la page d'annulation
                   window.location.href = '/paiement-annule';
                 }
               }}
@@ -166,7 +250,7 @@ const CheckoutPage: React.FC = () => {
           <p>En procédant au paiement, vous acceptez nos conditions générales de vente.</p>
           <p className="mt-2">
             Pour toute question concernant votre paiement, vous pouvez 
-            nous contacter à {siteConfig.contact.email}
+            me contacter à {siteConfig.contact.email}
           </p>
         </div>
       </div>

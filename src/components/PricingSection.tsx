@@ -33,7 +33,7 @@ const PricingSection = () => {
   const renderPaymentButton = () => {
     return (
       <div className="space-y-4">
-        <div className="flex justify-center gap-2 mb-2">
+        <div className="flex justify-center mb-2">
           <button 
             className={`px-4 py-2 rounded-l-lg border ${
               selectedPaymentMethod === 'paypal' 
@@ -43,9 +43,11 @@ const PricingSection = () => {
             onClick={() => setSelectedPaymentMethod('paypal')}
           >
             <img 
-              src="/assets/card/paypal-logo.svg" 
+              src={selectedPaymentMethod === 'paypal' 
+                ? "/assets/card/paypal-logo-blanc.svg" 
+                : "/assets/card/paypal-logo.svg"}
               alt="PayPal"
-              className={`w-5 h-5 mr-2 ${selectedPaymentMethod !== 'paypal' ? 'opacity-80' : ''}`} 
+              className="w-5 h-5 mr-2" 
             />
             PayPal
           </button>

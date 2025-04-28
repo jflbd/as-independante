@@ -2,6 +2,8 @@ import { ArrowRight, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { siteConfig } from "@/config/siteConfig";
+import { useEmail } from "@/hooks/use-email";
+import { emailConfig } from "@/config/emailConfig";
 
 type FormData = {
   name: string;
@@ -29,6 +31,9 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
     type: 'success' | 'error' | null;
     message: string;
   }>({ type: null, message: '' });
+  
+  // Utilisation du hook personnalisé pour l'envoi d'emails
+  const { sendEmail, loading } = useEmail();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -41,64 +46,40 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
     setFormStatus({ type: null, message: '' });
     
     console.log(`Envoi de demande d'accompagnement à: ${siteConfig.contact.email}`);
-    console.log("Données du formulaire:", formData);
     
     try {
-      // Configuration pour FormSubmit
-      const formElement = e.target as HTMLFormElement;
+      // Validation des champs obligatoires
+      if (!formData.name || !formData.email || !formData.message || !formData.company || !formData.phone) {
+        setFormStatus({
+          type: 'error',
+          message: "Veuillez remplir tous les champs obligatoires."
+        });
+        setIsSubmitting(false);
+        return;
+      }
       
-      // Créer un élément caché pour l'email de destination
-      const destinationEmail = document.createElement("input");
-      destinationEmail.type = "hidden";
-      destinationEmail.name = "_to";
-      destinationEmail.value = siteConfig.contact.email;
-      formElement.appendChild(destinationEmail);
+      // Construction du corps du message
+      const messageBody = `
+Demande d'accompagnement professionnelle:
+
+Nom: ${formData.name}
+Entreprise/Organisation: ${formData.company}
+Email: ${formData.email}
+Téléphone: ${formData.phone}
+
+Message:
+${formData.message}
+      `;
       
-      // Élément pour le sujet de l'email
-      const subjectField = document.createElement("input");
-      subjectField.type = "hidden";
-      subjectField.name = "_subject";
-      subjectField.value = `Demande d'accompagnement de ${formData.name} - ${formData.company}`;
-      formElement.appendChild(subjectField);
-      
-      // Désactiver le captcha
-      const captchaField = document.createElement("input");
-      captchaField.type = "hidden";
-      captchaField.name = "_captcha";
-      captchaField.value = "false";
-      formElement.appendChild(captchaField);
-      
-      // Comportement après envoi
-      const redirectField = document.createElement("input");
-      redirectField.type = "hidden";
-      redirectField.name = "_next";
-      redirectField.value = window.location.href;
-      formElement.appendChild(redirectField);
-      
-      // Ajouter les données du formulaire comme champs cachés pour FormSubmit
-      Object.entries(formData).forEach(([key, value]) => {
-        const hiddenField = document.createElement("input");
-        hiddenField.type = "hidden";
-        hiddenField.name = key;
-        hiddenField.value = value;
-        formElement.appendChild(hiddenField);
+      // Utilisation de notre service d'email personnalisé
+      const result = await sendEmail({
+        name: formData.name,
+        email: formData.email,
+        message: messageBody,
+        subject: `Demande d'accompagnement de ${formData.name} - ${formData.company}`,
       });
       
-      // Définir l'action du formulaire vers FormSubmit
-      formElement.action = `https://formsubmit.co/${siteConfig.contact.email}`;
-      formElement.method = "POST";
-      
-      // Soumettre le formulaire via AJAX pour éviter la redirection
-      const formDataToSend = new FormData(formElement);
-      const response = await fetch(formElement.action, {
-        method: 'POST',
-        body: formDataToSend,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-      
-      if (response.ok) {
+      if (result.success) {
         setFormStatus({
           type: 'success',
           message: "J'ai bien reçu votre demande d'accompagnement ! Je vous contacterai rapidement."
@@ -122,7 +103,7 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
           }, 300);
         }, 3000);
       } else {
-        throw new Error("Échec de l'envoi du formulaire");
+        throw new Error(result.message || "Échec de l'envoi du formulaire");
       }
     } catch (error) {
       console.error("Erreur lors de l'envoi de la demande:", error);
