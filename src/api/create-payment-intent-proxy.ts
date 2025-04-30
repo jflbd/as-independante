@@ -1,17 +1,25 @@
 import Stripe from "stripe";
+import { stripeConfig } from "@/config/stripeConfig";
 
 // Utilisation d'une constante pour le statement descriptor basé sur le nom du site
 const STATEMENT_DESCRIPTOR = "RACHEL GERVAIS AS";
 
-// Récupérer la clé secrète depuis les variables d'environnement ou utiliser une clé de secours
-const STRIPE_SECRET_KEY = import.meta.env.VITE_STRIPE_SECRET_KEY || import.meta.env.STRIPE_SECRET_KEY;
+// En développement, on utilise une clé secrète de test hardcodée (à remplacer par votre propre clé de test)
+// En production, cette valeur devrait être définie via les variables d'environnement du serveur
+const STRIPE_SECRET_KEY = import.meta.env.VITE_STRIPE_SECRET_KEY || "sk_test_votreclésecrete";
 
-// Vérifier si la clé API est disponible
-if (!STRIPE_SECRET_KEY) {
-  console.error("Erreur: Clé API Stripe non trouvée dans les variables d'environnement");
+// Vérifier si nous sommes en mode développement
+const isDev = import.meta.env.DEV || import.meta.env.MODE === 'development';
+
+// Afficher un avertissement si la clé n'est pas définie
+if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === "sk_test_votreclésecrete") {
+  console.warn(
+    "⚠️ ATTENTION : Vous utilisez une clé API Stripe de secours qui n'est pas valide. " +
+    "Définissez votre clé secrète Stripe dans le fichier .env.local avec VITE_STRIPE_SECRET_KEY."
+  );
 }
 
-// Initialiser Stripe
+// Initialiser Stripe avec la clé secrète
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 /**
