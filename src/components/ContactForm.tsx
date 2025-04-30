@@ -147,7 +147,7 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
             subject = `[Assistance Ebook] Message de ${formData.name}`;
             break;
           case 'ebook_page':
-            formType = "Contact depuis la page Ebook";
+            formType = "Contact Ebook";
             subject = `[Contact Page Ebook] Message de ${formData.name}`;
             break;
           case 'successful_payment':
