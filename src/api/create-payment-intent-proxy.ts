@@ -4,23 +4,34 @@ import { stripeConfig } from "@/config/stripeConfig";
 // Utilisation d'une constante pour le statement descriptor basé sur le nom du site
 const STATEMENT_DESCRIPTOR = "RACHEL GERVAIS AS";
 
-// En développement, on utilise une clé secrète de test hardcodée (à remplacer par votre propre clé de test)
-// En production, cette valeur devrait être définie via les variables d'environnement du serveur
-const STRIPE_SECRET_KEY = import.meta.env.VITE_STRIPE_SECRET_KEY || "sk_test_votreclésecrete";
+// Récupérer la clé secrète depuis les variables d'environnement
+const STRIPE_SECRET_KEY = import.meta.env.VITE_STRIPE_SECRET_KEY;
 
 // Vérifier si nous sommes en mode développement
 const isDev = import.meta.env.DEV || import.meta.env.MODE === 'development';
 
-// Afficher un avertissement si la clé n'est pas définie
-if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === "sk_test_votreclésecrete") {
-  console.warn(
-    "⚠️ ATTENTION : Vous utilisez une clé API Stripe de secours qui n'est pas valide. " +
-    "Définissez votre clé secrète Stripe dans le fichier .env.local avec VITE_STRIPE_SECRET_KEY."
+// Vérifier la présence de la clé Stripe avec un message d'erreur plus détaillé
+if (!STRIPE_SECRET_KEY) {
+  console.error(
+    "❌ ERREUR CRITIQUE : Clé secrète Stripe manquante. \n" +
+    "Pour résoudre ce problème :\n" +
+    "1. Créez un fichier .env.local à la racine du projet\n" +
+    "2. Ajoutez votre clé secrète : VITE_STRIPE_SECRET_KEY=sk_test_votreVraieClé\n" +
+    "3. Redémarrez le serveur de développement\n" +
+    "La clé doit commencer par sk_test_ pour l'environnement de test."
   );
+  throw new Error("Stripe Secret Key is missing. Check .env.local file.");
 }
 
 // Initialiser Stripe avec la clé secrète
-const stripe = new Stripe(STRIPE_SECRET_KEY);
+let stripe: Stripe;
+try {
+  stripe = new Stripe(STRIPE_SECRET_KEY);
+  console.log("✅ Connexion à l'API Stripe établie avec succès");
+} catch (error) {
+  console.error("❌ Échec de l'initialisation de Stripe:", error);
+  throw new Error("Failed to initialize Stripe client");
+}
 
 /**
  * Crée une intention de paiement Stripe
