@@ -1,74 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+import { Loader2, AlertCircle, Info } from 'lucide-react';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
-import { Loader2, ShieldCheck, AlertTriangle } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
-import { siteConfig } from '@/config/siteConfig';
 import { paypalConfig } from '@/config/paypalConfig';
-import { RefreshCw } from 'lucide-react';
 
-// Types précis pour l'API PayPal
-interface PayPalOrderActions {
-  create: (orderData: {
-    purchase_units: Array<{
-      amount: {
-        value: string;
-        currency_code: string;
-      };
-      description: string;
-    }>;
-  }) => Promise<string>;
-}
-
-interface PayPalOrderCapture {
-  id?: string;
-  status?: string;
+interface PayPalTransactionDetails {
+  id?: string; // Make id optional to match PayPal's response structure
+  create_time?: string;
+  update_time?: string;
   payer?: {
     name?: {
       given_name?: string;
       surname?: string;
     };
-    email_address?: string;
   };
-}
-
-interface PayPalCaptureActions {
-  order: {
-    capture: () => Promise<PayPalOrderCapture>;
-  };
-}
-
-interface PayPalOrderData {
-  orderID: string;
-  [key: string]: unknown;
-}
-
-interface PayPalButtonsOptions {
-  style?: {
-    color?: string;
-    shape?: string;
-    label?: string;
-    height?: number;
-  };
-  createOrder?: (data: unknown, actions: PayPalOrderActions) => Promise<string>;
-  onApprove?: (data: PayPalOrderData, actions: PayPalCaptureActions) => Promise<void>;
-  onCancel?: () => void;
-  onError?: (err: Error) => void;
-}
-
-interface PayPalButtons {
-  render: (selector: string) => void;
-}
-
-// Correction de la déclaration globale pour éviter les conflits
-declare global {
-  interface Window {
-    paypal?: {
-      Buttons: (config: PayPal.ButtonsConfig) => {
-        render: (selector: string) => void;
-      };
-    };
-  }
+  // Add other properties as needed
 }
 
 interface PayPalCheckoutFormProps {
@@ -79,249 +26,238 @@ interface PayPalCheckoutFormProps {
 }
 
 const PayPalCheckoutForm: React.FC<PayPalCheckoutFormProps> = ({ paymentDetails }) => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isPayPalScriptLoaded, setIsPayPalScriptLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
   const [scriptError, setScriptError] = useState<string | null>(null);
-  const paypalScriptRef = useRef<HTMLScriptElement | null>(null);
-  const paymentAttemptCountRef = useRef<number>(0);
-
-  // Fonction pour logger les informations de débogage
-  const logDebugInfo = () => {
-    console.log("Debug PayPal - Config:", {
-      clientId: paypalConfig.clientId,
-      testMode: paypalConfig.testMode,
-      clientIdTest: paypalConfig.clientId,
-      hasEnvVar: !!import.meta.env.VITE_PAYPAL_CLIENT_ID
-    });
+  
+  // Options de configuration PayPal complètes pour assurer le bon chargement
+  const paypalOptions = {
+    clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID || '',
+    currency: "EUR",
+    intent: "capture",
+    components: "buttons",
+    debug: import.meta.env.DEV === true,
   };
 
-  // Chargement du script PayPal
+  // Vérifier la validité des paramètres avant de tenter le rendu
   useEffect(() => {
-    const loadPayPalScript = async () => {
-      try {
-        // Logger les infos pour le débogage
-        logDebugInfo();
-        
-        // Réinitialiser les erreurs précédentes
-        setScriptError(null);
-        
-        // Incrémenter le compteur de tentatives
-        paymentAttemptCountRef.current += 1;
-        
-        // Force un rechargement du script PayPal si c'est une nouvelle tentative après échec
-        if (paypalScriptRef.current) {
-          document.body.removeChild(paypalScriptRef.current);
-          paypalScriptRef.current = null;
-          setIsPayPalScriptLoaded(false);
-          
-          // Supprimer l'instance PayPal de window pour forcer un rechargement complet
-          if (window.paypal) {
-            delete window.paypal;
-          }
-        }
+    // Vérifier si le montant est valide
+    const numericAmount = parseFloat(paymentDetails.amount);
+    if (isNaN(numericAmount) || numericAmount <= 0) {
+      setError(`Montant invalide : ${paymentDetails.amount}`);
+      return;
+    }
 
-        const script = document.createElement('script');
-        
-        // Utiliser l'ID client depuis la configuration mise à jour
-        const clientId = paypalConfig.clientId;
-        
-        if (!clientId || clientId === 'votre_paypal_client_id_production') {
-          throw new Error("Client ID PayPal invalide ou manquant.");
-        }
-        
-        // Ajouter les paramètres adaptés à l'environnement
-        const parameters = new URLSearchParams({
-          'client-id': clientId,
-          'currency': 'EUR',
-          'locale': 'fr_FR'
-        });
-        
-        // Ajouter un paramètre unique pour éviter la mise en cache
-        parameters.append('v', `${paymentAttemptCountRef.current}-${Date.now()}`);
+    // Vérifier si l'ID client est configuré
+    if (!import.meta.env.VITE_PAYPAL_CLIENT_ID) {
+      setError("ID client PayPal non configuré");
+      return;
+    }
 
-        // Utiliser les paramètres dans l'URL
-        console.log(`Mode: ${import.meta.env.MODE}, Client ID: ${clientId.substring(0, 10)}...`);
-        script.src = `https://www.paypal.com/sdk/js?${parameters.toString()}`;
-        script.async = true;
-        
-        script.onload = () => {
-          console.log("PayPal script loaded successfully");
-          setIsPayPalScriptLoaded(true);
-        };
-        
-        script.onerror = (error) => {
-          console.error("Error loading PayPal script:", error);
-          setScriptError("Impossible de charger le service PayPal. Veuillez réessayer plus tard.");
-        };
-        
-        document.body.appendChild(script);
-        paypalScriptRef.current = script;
-        
-        return () => {
-          if (paypalScriptRef.current && document.body.contains(paypalScriptRef.current)) {
-            document.body.removeChild(paypalScriptRef.current);
-            paypalScriptRef.current = null;
-          }
-        };
-      } catch (error) {
-        console.error('Erreur lors du chargement du script PayPal:', error);
-        setScriptError((error as Error).message || "Une erreur est survenue lors du chargement de PayPal.");
-      }
-    };
+    // Effacer les erreurs si tout est valide
+    setError(null);
     
-    loadPayPalScript();
-  }, [paymentDetails]); // Recharger quand les détails de paiement changent
-
-  // Initialisation du bouton PayPal après chargement du script
-  useEffect(() => {
-    const renderPayPalButton = () => {
-      if (!isPayPalScriptLoaded || !window.paypal || !paymentDetails) return;
-      
-      // Nettoyer le conteneur pour éviter des rendus multiples
-      const paypalContainer = document.getElementById('paypal-button-container');
-      if (paypalContainer) {
-        paypalContainer.innerHTML = '';
-        
-        try {
-          window.paypal.Buttons({
-            style: {
-              color: 'blue',
-              shape: 'rect',
-              label: 'pay',
-              height: 45
-            },
-            createOrder: (data, actions) => {
-              return actions.order.create({
-                purchase_units: [{
-                  amount: {
-                    value: paymentDetails.amount,
-                    currency_code: 'EUR'
-                  },
-                  description: paymentDetails.description
-                }]
-              });
-            },
-            onApprove: async (data, actions) => {
-              setIsLoading(true);
-              
-              try {
-                // Capture l'ordre (la transaction)
-                const orderDetails = await actions.order.capture();
-                
-                // Enregistrement des détails de la transaction dans sessionStorage
-                sessionStorage.setItem(
-                  'paymentDetails',
-                  JSON.stringify({
-                    ...paymentDetails,
-                    paymentMethod: 'paypal',
-                    paymentId: orderDetails.id || data.orderID,
-                    payerName: orderDetails.payer?.name?.given_name || ''
-                  })
-                );
-                
-                toast({
-                  title: "Paiement réussi !",
-                  description: "Votre transaction a été approuvée.",
-                  variant: "default",
-                });
-                
-                // Redirection vers la page de confirmation
-                navigate('/paiement-reussi');
-              } catch (error) {
-                console.error('Erreur lors de la capture du paiement:', error);
-                toast({
-                  title: "Erreur de paiement",
-                  description: "Un problème est survenu lors du traitement de votre paiement.",
-                  variant: "destructive",
-                });
-              } finally {
-                setIsLoading(false);
-              }
-            },
-            onCancel: () => {
-              toast({
-                title: "Paiement annulé",
-                description: "Vous avez annulé le processus de paiement.",
-                variant: "default",
-              });
-            },
-            onError: (err) => {
-              console.error('Erreur PayPal:', err);
-              toast({
-                title: "Erreur de paiement",
-                description: "Une erreur s'est produite. Veuillez réessayer plus tard.",
-                variant: "destructive",
-              });
-            }
-          }).render('#paypal-button-container');
-        } catch (error) {
-          console.error('Erreur lors du rendu du bouton PayPal:', error);
-        }
+    // Vérification périodique de la disponibilité de l'API PayPal
+    const checkInterval = setInterval(() => {
+      if (window.paypal) {
+        console.log("PayPal script détecté ✅");
+        setScriptLoaded(true);
+        clearInterval(checkInterval);
+      } else {
+        console.log("En attente du script PayPal...");
       }
-    };
-    
-    // Court délai pour s'assurer que PayPal est complètement chargé
-    const timer = setTimeout(() => {
-      renderPayPalButton();
     }, 500);
     
     return () => {
-      clearTimeout(timer);
+      clearInterval(checkInterval);
     };
-  }, [isPayPalScriptLoaded, paymentDetails, navigate]);
+  }, [paymentDetails.amount]);
+
+  // Fonction pour gérer le succès du paiement
+  const handlePaymentSuccess = (details: PayPalTransactionDetails) => {
+    try {
+      console.log("Paiement réussi:", details);
+      const paymentInfo = {
+        amount: paymentDetails.amount,
+        description: paymentDetails.description,
+        paymentMethod: 'paypal',
+        paymentId: details.id || 'unknown',
+        payerName: details.payer?.name?.given_name 
+          ? `${details.payer.name.given_name} ${details.payer.name.surname || ''}`
+          : undefined,
+        status: 'success',
+        timestamp: new Date().toISOString()
+      };
+      
+      // Stocker les informations de paiement dans sessionStorage
+      sessionStorage.setItem('paymentDetails', JSON.stringify(paymentInfo));
+      console.log("Redirection vers la page de succès...");
+      
+      // Redirection vers la page de succès avec délai réduit
+      setTimeout(() => {
+        // Force la navigation par programmation vers la page de succès
+        window.location.href = '/paiement-reussi';
+      }, 100);
+    } catch (err) {
+      console.error("Erreur lors du traitement post-paiement:", err);
+      setError("Une erreur s'est produite lors de la finalisation de votre paiement.");
+    }
+  };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Paiement via PayPal</h2>
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <h3 className="text-lg font-medium mb-4">Payer avec PayPal ou une carte bancaire</h3>
       
-      {isLoading ? (
-        <div className="flex justify-center p-8">
-          <Loader2 className="animate-spin h-10 w-10 text-primary" />
-        </div>
-      ) : (
-        <>
-          {scriptError ? (
-            <div className="p-4 mb-6 bg-red-50 border border-red-200 rounded-md">
-              <div className="flex items-start">
-                <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 mr-3" />
-                <div>
-                  <h3 className="text-sm font-medium text-red-800">Erreur de chargement</h3>
-                  <p className="text-sm text-red-700 mt-1">
-                    {scriptError}
-                  </p>
-                  <Button 
-                    className="mt-3 text-xs bg-red-100 text-red-800 hover:bg-red-200"
-                    onClick={() => window.location.reload()}
-                  >
-                    <RefreshCw className="h-3 w-3 mr-1" />
-                    Réessayer
-                  </Button>
-                </div>
-              </div>
+      {/* Informations Sandbox pour les tests - Affichées uniquement en mode développement */}
+      {import.meta.env.DEV && (
+        <div className="mb-6 mx-auto p-4 border border-amber-300 bg-amber-50 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <Info size={20} className="text-amber-600" />
+            <h2 className="font-semibold text-amber-800">Compte PayPal Sandbox pour les tests</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div className="bg-white p-3 rounded border border-amber-200">
+              <p className="font-medium text-amber-800">Compte PayPal :</p>
+              <p className="font-mono mt-1">{paypalConfig.sandboxAccount.email}</p>
+              <p className="font-mono">{paypalConfig.sandboxAccount.password}</p>
             </div>
+            <div className="bg-white p-3 rounded border border-amber-200">
+              <p className="font-medium text-amber-800">Carte de test :</p>
+              <p className="font-mono mt-1">{paypalConfig.sandboxAccount.cardnumber}</p>
+              <p className="font-mono">Exp: {paypalConfig.sandboxAccount.expDate} - CVV: {paypalConfig.sandboxAccount.cvc}</p>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-amber-700">Ces informations n'apparaissent qu'en mode développement et vous permettent de tester les paiements PayPal sans utiliser un vrai compte.</p>
+        </div>
+      )}
+      
+      {loading && (
+        <div className="py-8 text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-gray-600">Traitement de votre paiement...</p>
+        </div>
+      )}
+      
+      {error && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4 mr-2" />
+          <AlertDescription>{error}</AlertDescription>
+          <div className="mt-4">
+            <Button 
+              onClick={() => {
+                setError(null);
+                window.location.reload();
+              }}
+              variant="outline"
+              className="w-full"
+            >
+              Réessayer
+            </Button>
+          </div>
+        </Alert>
+      )}
+      
+      {/* Debug info - à supprimer en production */}
+      {import.meta.env.DEV && (
+        <div className="mb-4 text-xs text-gray-500 border p-2 border-gray-200 rounded">
+          <p>Mode: {import.meta.env.DEV ? "Développement" : "Production"}</p>
+          <p>Montant: {paymentDetails.amount}€</p>
+          <p>Description: {paymentDetails.description}</p>
+          <p>Client ID: {import.meta.env.VITE_PAYPAL_CLIENT_ID ? import.meta.env.VITE_PAYPAL_CLIENT_ID.substring(0, 10) + "..." : "Non défini"}</p>
+          <p>API PayPal chargée: {typeof window !== "undefined" && window.paypal ? "Oui" : "Non"}</p>
+          <p>Script chargé: {scriptLoaded ? "Oui" : "Non"}</p>
+        </div>
+      )}
+      
+      <PayPalScriptProvider options={paypalOptions}>
+        <div className={loading ? 'opacity-50 pointer-events-none' : ''}>
+          {scriptLoaded ? (
+            <PayPalButtons
+              style={{ layout: "vertical", color: "blue", shape: "rect", height: 45 }}
+              disabled={loading}
+              forceReRender={[paymentDetails.amount, paymentDetails.description]}
+              createOrder={(data, actions) => {
+                console.log("Création de la commande PayPal");
+                return actions.order.create({
+                  intent: "CAPTURE",
+                  purchase_units: [
+                    {
+                      description: paymentDetails.description,
+                      amount: {
+                        currency_code: "EUR",
+                        value: paymentDetails.amount,
+                      },
+                    },
+                  ],
+                  application_context: {
+                    shipping_preference: "NO_SHIPPING",
+                    user_action: "PAY_NOW",
+                    return_url: window.location.origin + "/paiement-reussi",
+                    cancel_url: window.location.origin + "/paiement-annule",
+                  }
+                });
+              }}
+              onApprove={(data, actions) => {
+                setLoading(true);
+                console.log("Paiement approuvé, capture en cours...", data);
+                
+                if (!actions.order) {
+                  console.error("Actions order object is undefined");
+                  setError("Une erreur technique est survenue. Veuillez réessayer.");
+                  setLoading(false);
+                  return Promise.resolve();
+                }
+                
+                return actions.order
+                  .capture()
+                  .then(details => {
+                    console.log("Capture réussie, détails:", details);
+                    handlePaymentSuccess(details);
+                    
+                    // Double sécurité en cas de non-redirection automatique
+                    setTimeout(() => {
+                      if (document.location.pathname !== '/paiement-reussi') {
+                        console.log("Redirection forcée après délai...");
+                        window.location.href = '/paiement-reussi';
+                      }
+                    }, 2000);
+                  })
+                  .catch(err => {
+                    console.error("Erreur lors de la capture du paiement:", err);
+                    setError("Une erreur s'est produite lors de la capture du paiement. Veuillez réessayer.");
+                    setLoading(false);
+                  });
+              }}
+              onCancel={() => {
+                console.log("Paiement annulé par l'utilisateur");
+                // Stocker le contexte d'annulation
+                const contextInfo = {
+                  description: paymentDetails.description
+                };
+                sessionStorage.setItem('cancelledPaymentContext', JSON.stringify(contextInfo));
+                
+                // Rediriger vers la page d'annulation
+                window.location.href = '/paiement-annule';
+              }}
+              onError={(err) => {
+                console.error("Erreur PayPal:", err);
+                setError("Une erreur s'est produite lors du traitement de votre paiement. Veuillez réessayer.");
+              }}
+            />
           ) : (
-            <div id="paypal-button-container" className="mb-6">
-              {!isPayPalScriptLoaded && (
-                <div className="flex justify-center p-8">
-                  <Loader2 className="animate-spin h-8 w-8 text-primary" />
-                </div>
-              )}
+            <div className="py-6 text-center border border-dashed border-gray-300 rounded-md">
+              <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
+              <p className="text-sm text-gray-600">Chargement de PayPal...</p>
             </div>
           )}
-          
-          <div className="text-sm text-gray-600 mb-4 text-center">
-            PayPal vous permet de payer avec votre compte PayPal ou par carte bancaire sans avoir à créer de compte.
-          </div>
-          
-          <div className="flex items-center bg-blue-50 p-3 rounded-md text-sm">
-            <ShieldCheck className="h-5 w-5 text-blue-500 mr-2" />
-            <p className="text-blue-700">
-              Vos données de paiement sont sécurisées et protégées par PayPal.
-            </p>
-          </div>
-        </>
-      )}
+        </div>
+      </PayPalScriptProvider>
+      
+      <p className="text-center text-xs text-gray-500 mt-4">
+        En procédant au paiement, vous acceptez nos conditions générales de vente.
+        Vos informations de paiement sont sécurisées par PayPal.
+      </p>
     </div>
   );
 };

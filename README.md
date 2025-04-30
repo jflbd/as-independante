@@ -71,7 +71,6 @@ STRIPE_SECRET_KEY=sk_test_your_secret_key
 
 # Configuration PayPal (remplacer par votre ID client réel en production)
 VITE_PAYPAL_CLIENT_ID="votre_id_client"
-VITE_PAYPAL_PRODUCTION_CLIENT_ID="votre_id_client_production"
 ```
 
 ### Démarrage du serveur de développement
@@ -86,7 +85,7 @@ vercel link
 vercel dev
 ```
 
-Le site sera accessible à l'adresse [http://localhost:8080](http://localhost:8080)
+Le site sera accessible à l'adresse [http://localhost:3000](http://localhost:3000)
 
 > **Important**: Utilisez toujours `vercel dev` pour le développement local si vous avez besoin des fonctions API (envoi d'email, paiement Stripe, etc.). La commande `npm run dev` ne permet pas d'accéder aux fonctions serverless.
 

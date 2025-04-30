@@ -2,14 +2,56 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { paypalConfig } from '../../config/paypalConfig';
 import { siteConfig } from '../../config/siteConfig';
 import { useToast } from '../../hooks/use-toast';
-import { 
-  PayPalOrderResponseData, 
-  PayPalOrderData,
-  PayPalActions, 
-  PayPalButtonsOptions,
-  PayPalButtonsComponent,
-  PayPalSDK
-} from './types/paypal';
+
+// Types pour les données PayPal
+interface PayPalPurchaseUnit {
+  description?: string;
+  amount?: {
+    currency_code?: string;
+    value?: string;
+  };
+  [key: string]: unknown; // Pour les autres propriétés potentielles
+}
+
+// Interface pour les données de création d'ordre PayPal
+interface PayPalOrderCreateData {
+  purchase_units: Array<{
+    description?: string;
+    amount: {
+      currency_code: string;
+      value: string;
+    };
+    [key: string]: unknown;
+  }>;
+  payer?: {
+    email_address?: string;
+    name?: {
+      given_name: string;
+      surname: string;
+    };
+  };
+  [key: string]: unknown;
+}
+
+interface PayPalOrderResponseData {
+  id: string;
+  status?: string;
+  payer?: {
+    name?: {
+      given_name?: string;
+      surname?: string;
+    };
+    email_address?: string;
+  };
+  purchase_units?: Array<PayPalPurchaseUnit>;
+}
+
+interface PayPalActions {
+  order: {
+    create: (data: PayPalOrderCreateData) => Promise<string>;
+    capture: () => Promise<PayPalOrderResponseData>;
+  };
+}
 
 // Props du composant
 interface PayPalButtonProps {
@@ -25,18 +67,7 @@ interface PayPalButtonProps {
   disabled?: boolean;
   className?: string;
 }
-
-// Définition globale de l'interface Window pour la SDK PayPal
-declare global {
-  interface Window {
-    paypal?: {
-      Buttons: (config: PayPal.ButtonsConfig) => {
-        render: (selector: string) => void;
-      };
-    };
-  }
-}
-
+// La définition globale de l'interface Window est déjà dans paypal.d.ts
 export function PayPalButton({
   amount,
   onSuccess,
@@ -246,20 +277,26 @@ export function PayPalButton({
 
   return (
     <div className={className}>
-      {paypalConfig.testMode && (
-        <div className="p-2 mb-4 text-sm bg-amber-100 border border-amber-300 rounded text-amber-800">
-          <p className="font-bold">Mode test PayPal actif</p>
-          <p>Utilisez les identifiants sandbox pour tester les paiements.</p>
-          <p className="mt-1 text-xs">Email: sb-cjzgc40987248@personal.example.com</p>
-        </div>
-      )}
+      <div className="p-2 mb-4 text-sm bg-blue-100 border border-blue-300 rounded text-blue-800">
+        <p className="font-bold">État du composant PayPal</p>
+        <p>Mode de test actif: {paypalConfig.testMode ? "Oui" : "Non"}</p>
+        <p>Script chargé: {scriptLoaded ? "Oui" : "Non"}</p>
+        <p>Bouton rendu: {buttonRendered ? "Oui" : "Non"}</p>
+        <p>Erreur détectée: {error ? "Oui" : "Non"}</p>
+        <p>Client ID: {paypalConfig.clientId ? paypalConfig.clientId.substring(0, 10) + '...' : 'Non défini'}</p>
+        <p>Montant: {amount}</p>
+      </div>
+
       {error && (
         <div className="p-2 mb-4 text-sm bg-red-100 border border-red-300 rounded text-red-800">
           <p className="font-bold">Erreur PayPal</p>
           <p>{error}</p>
         </div>
       )}
-      <div ref={paypalButtonRef} id="paypal-button-container" className="min-h-[150px]" />
+      <div ref={paypalButtonRef} id="paypal-button-container" className="min-h-[150px] border border-dashed border-gray-300 flex items-center justify-center">
+        {!scriptLoaded && <p className="text-gray-500 text-center">Chargement du script PayPal...</p>}
+        {scriptLoaded && !buttonRendered && !error && <p className="text-gray-500 text-center">Initialisation du bouton PayPal...</p>}
+      </div>
       {disabled && <div className="text-center text-gray-500 mt-2">Bouton PayPal désactivé</div>}
     </div>
   );

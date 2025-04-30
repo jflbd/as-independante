@@ -65,8 +65,7 @@ const AboutSection = () => {
             {siteConfig.name}, Assistante Sociale Indépendante
           </h2>
           <p className="text-gray-600">
-            Assistante sociale diplômée d'État depuis 2009, avec plus de 10 ans d'expérience.
-            J'interviens en toute confidentialité auprès des particuliers et professionnels.
+            Assistante sociale diplômée d'État depuis 2009 et exerçant en libérale depuis 2019, j'interviens en toute confidentialité auprès des particuliers et professionnels.
           </p>
         </FadeInSection>
 

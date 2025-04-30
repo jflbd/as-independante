@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import SafeLink from '@/components/SafeLink';
 import { siteConfig } from '@/config/siteConfig';
 import { SiFacebook } from '@icons-pack/react-simple-icons';
-import { useLegalModal } from '@/contexts/LegalModalContext';
 import { Book, Lock, FileText } from 'lucide-react';
+import { scrollToTop, scrollToSectionWithNavOffset, navigateToLegalSection } from '@/utils/scroll-utils';
 
 const FooterSchemaOrgScript: React.FC = () => (
   <script 
@@ -44,47 +44,147 @@ const SmoothScrollLink: React.FC<{
   children: React.ReactNode;
 }> = ({ to, className, id, children }) => {
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
-  const isEbookPage = location.pathname === '/ebook';
+  const navigate = useNavigate();
+  const currentPath = location.pathname;
+  const [isScrolling, setIsScrolling] = useState(false);
   
-  // Si le lien pointe vers une ancre et nous ne sommes pas sur la page d'accueil
-  if (to.startsWith('#') && !isHomePage) {
-    // Naviguer vers la page d'accueil puis faire défiler vers l'ancre
+  // Extraire le chemin de base et l'ancre de l'URL de destination
+  let basePath = to;
+  let anchor = '';
+  
+  if (to.includes('#')) {
+    const parts = to.split('#');
+    basePath = parts[0] || currentPath; // Si basePath est vide, utiliser le chemin actuel
+    anchor = parts[1];
+  }
+  
+  // Vérifier si nous sommes sur la même page que la destination
+  const isSamePage = (basePath === '' || basePath === '/') && currentPath === '/' || 
+                     basePath !== '' && basePath !== '/' && currentPath === basePath;
+  
+  // Déterminer si le lien pointe vers la page des mentions légales
+  const isLegalLink = basePath === '/mentions-legales' || basePath === 'mentions-legales';
+  
+  // Si nous sommes sur la même page et qu'il y a une ancre
+  if (isSamePage && anchor) {
+    return (
+      <a 
+        href={`#${anchor}`} 
+        className={`${className} ${isScrolling ? 'pointer-events-none opacity-75' : ''}`}
+        id={id}
+        onClick={(e) => {
+          e.preventDefault();
+          if (isScrolling) return;
+          
+          setIsScrolling(true);
+          
+          // Fermer tous les menus ouverts potentiels (utile si footer visible sur mobile)
+          document.body.click();
+          
+          // Obtenir la hauteur actuelle de la navbar
+          const navbarElement = document.querySelector('nav');
+          const navbarHeight = navbarElement ? navbarElement.getBoundingClientRect().height : 70;
+          
+          // Utiliser la fonction de défilement de scroll-utils
+          scrollToSectionWithNavOffset(anchor, navbarHeight, 20, () => {
+            setIsScrolling(false);
+          });
+        }}
+      >
+        {children}
+      </a>
+    );
+  }
+  
+  // Gestion spéciale pour le lien "Accueil" - défilement vers le haut de la page d'accueil
+  if (to === "/" || to === "") {
     return (
       <Link 
         to="/" 
-        onClick={(e) => {
-          // Si on est déjà sur la page d'accueil, juste faire défiler
-          if (isHomePage) {
-            e.preventDefault();
-            const targetElement = document.getElementById(to.substring(1));
-            if (targetElement) {
-              targetElement.scrollIntoView({ behavior: 'smooth' });
-            }
-          } else {
-            // Sinon, naviguer vers la page d'accueil puis faire défiler
-            setTimeout(() => {
-              const targetElement = document.getElementById(to.substring(1));
-              if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
-              }
-            }, 100);
-          }
-        }}
-        className={className}
+        className={`${className} ${isScrolling ? 'pointer-events-none opacity-75' : ''}`}
         id={id}
+        onClick={(e) => {
+          if (isScrolling) return;
+          
+          setIsScrolling(true);
+          
+          // Si nous sommes déjà sur la page d'accueil, défiler vers le haut immédiatement
+          if (currentPath === "/") {
+            e.preventDefault();
+            scrollToTop();
+            setTimeout(() => setIsScrolling(false), 500);
+          }
+          // Sinon, la navigation se fait via le Link et le hook useScrollToTop s'en occupera
+        }}
+        state={{ scrollToTop: true }}
       >
         {children}
       </Link>
     );
   }
   
-  // Si c'est une URL normale ou nous sommes déjà sur la page d'accueil
-  return <SafeLink to={to} className={className} id={id}>{children}</SafeLink>;
+  // Si le lien pointe vers une page des mentions légales avec une ancre
+  if (isLegalLink && anchor) {
+    return (
+      <a
+        href={`/mentions-legales#${anchor}`}
+        className={`${className} ${isScrolling ? 'pointer-events-none opacity-75' : ''}`}
+        id={id}
+        onClick={(e) => {
+          e.preventDefault();
+          if (isScrolling) return;
+          
+          setIsScrolling(true);
+          
+          // Si nous sommes déjà sur la page des mentions légales, faire défiler vers l'ancre
+          if (currentPath === '/mentions-legales') {
+            // Utiliser la fonction dédiée pour la navigation dans les mentions légales
+            // en forçant un petit délai pour s'assurer que tout est prêt
+            setTimeout(() => {
+              navigateToLegalSection(anchor);
+              setIsScrolling(false);
+            }, 50);
+          } else {
+            // Sinon, naviguer vers la page des mentions légales avec l'ancre
+            navigate(`/mentions-legales#${anchor}`);
+          }
+        }}
+      >
+        {children}
+      </a>
+    );
+  }
+  
+  // Si nous devons naviguer vers une autre page avec une ancre
+  if (!isSamePage && anchor && !isLegalLink) {
+    // Construire l'URL complète avec l'ancre
+    const fullPath = basePath + (basePath.endsWith('/') ? '' : '/') + `#${anchor}`;
+    return (
+      <Link 
+        to={fullPath} 
+        className={`${className} ${isScrolling ? 'pointer-events-none opacity-75' : ''}`} 
+        id={id}
+        onClick={() => {
+          if (isScrolling) return;
+          setIsScrolling(true);
+          setTimeout(() => setIsScrolling(false), 100);
+        }}
+      >
+        {children}
+      </Link>
+    );
+  }
+  
+  // Si c'est une URL normale sans ancre ou une URL externe
+  if (to.startsWith('http') || to.startsWith('mailto:') || to.startsWith('tel:')) {
+    return <SafeLink to={to} className={className} id={id} external={to.startsWith('http')}>{children}</SafeLink>;
+  }
+  
+  // URL interne normale
+  return <Link to={to} className={className} id={id}>{children}</Link>;
 };
 
 const Footer: React.FC = () => {
-    const { openLegalModal } = useLegalModal();
     const location = useLocation();
     const currentYear = new Date().getFullYear();
     const startYear = 2019; // Année de création du site
@@ -94,12 +194,13 @@ const Footer: React.FC = () => {
     
     // Déterminer si nous sommes sur la page d'accueil ou une autre page
     const isHomePage = location.pathname === '/';
+    const isLegalPage = location.pathname === '/mentions-legales';
     
     // Données structurées pour les liens de navigation du footer
     const footerNavLinks = [
       { 
         name: "Accueil", 
-        url: isHomePage ? "#accueil" : "/", 
+        url: "/", 
         id: "footer-home" 
       },
       { 
@@ -126,12 +227,12 @@ const Footer: React.FC = () => {
       },
     ];
 
-    // Liens vers les informations légales dans les modales
+    // Liens vers les informations légales (maintenant avec des liens directs vers les ancres)
     const legalLinks = [
-      { name: "Mentions légales", section: "presentation", icon: <FileText className="h-4 w-4 mr-1" /> },
-      { name: "Données personnelles", section: "personal-data", icon: <Lock className="h-4 w-4 mr-1" /> },
-      { name: "Conditions d'utilisation", section: "terms", icon: <Book className="h-4 w-4 mr-1" /> },
-    ] as const;
+      { name: "Mentions légales", url: "/mentions-legales#presentation", icon: <FileText className="h-4 w-4 mr-1" /> },
+      { name: "Données personnelles", url: "/mentions-legales#personal-data", icon: <Lock className="h-4 w-4 mr-1" /> },
+      { name: "Conditions d'utilisation", url: "/mentions-legales#terms", icon: <Book className="h-4 w-4 mr-1" /> },
+    ];
     
     return (
         <footer className="py-8 bg-gray-50 relative" itemScope itemType="https://schema.org/WPFooter">
@@ -175,28 +276,28 @@ const Footer: React.FC = () => {
                     ))}
                   </ul>
                   
-                  {/* Liens légaux avec modales */}
+                  {/* Liens légaux avec des liens directs vers les sections */}
                   <h3 className="text-sm font-semibold mb-2 text-gray-700">Informations légales</h3>
                   <ul className="space-y-2">
                     {legalLinks.map((link, index) => (
                       <li key={`legal-${index}`}>
-                        <button 
-                          onClick={() => openLegalModal(link.section)}
+                        <SmoothScrollLink 
+                          to={link.url} 
                           className="text-sm text-gray-600 hover:text-primary transition-colors hover:underline flex items-center"
                         >
                           {link.icon}
                           {link.name}
-                        </button>
+                        </SmoothScrollLink>
                       </li>
                     ))}
                     <li>
-                      <SafeLink 
+                      <SmoothScrollLink 
                         to="/mentions-legales" 
                         className="text-sm text-gray-600 hover:text-primary transition-colors hover:underline flex items-center"
                       >
                         <FileText className="h-4 w-4 mr-1" />
                         Version complète
-                      </SafeLink>
+                      </SmoothScrollLink>
                     </li>
                   </ul>
                 </nav>

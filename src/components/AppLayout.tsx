@@ -16,9 +16,10 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <HelmetProvider>
-      <CookieConsentProvider>
+      {/* Réorganisation des providers pour résoudre les problèmes d'accessibilité */}
+      <ModalProvider>
         <LegalModalProvider>
-          <ModalProvider>
+          <CookieConsentProvider>
             <div className="app">
               {/* Nous ne rendons pas la NavBar ici pour éviter les doublons,
                   car chaque page l'inclut déjà */}
@@ -28,9 +29,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <LegalModalContainer />
               <ScrollButtons />
             </div>
-          </ModalProvider>
+          </CookieConsentProvider>
         </LegalModalProvider>
-      </CookieConsentProvider>
+      </ModalProvider>
     </HelmetProvider>
   );
 };

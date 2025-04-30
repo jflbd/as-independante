@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { ArrowLeft, ArrowRight, CreditCard, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, CreditCard, Lock, Info } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -19,6 +19,7 @@ import StripePayment from "./StripePayment";
 import { PayPalButton } from "./PayPalButton";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "../ui/checkbox";
+import { paypalConfig } from "@/config/paypalConfig";
 
 // Définition inline du type PayPalOrderResponseData pour éviter les erreurs d'importation
 interface PayPalOrderResponseData {
@@ -67,7 +68,29 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
   const [showPaypalButton, setShowPaypalButton] = useState(false);
   const [validAmount, setValidAmount] = useState<number>(0);
   const [amountError, setAmountError] = useState<string | null>(null);
+  const [paypalScriptLoaded, setPaypalScriptLoaded] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Vérifie si le script PayPal est chargé
+  useEffect(() => {
+    const checkPayPalScript = () => {
+      if (typeof window !== 'undefined' && window.paypal) {
+        setPaypalScriptLoaded(true);
+        console.log("PayPal SDK détecté ✅");
+        return true;
+      }
+      return false;
+    };
+
+    if (!checkPayPalScript()) {
+      const interval = setInterval(() => {
+        if (checkPayPalScript()) {
+          clearInterval(interval);
+        }
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, []);
 
   // Validation du montant
   useEffect(() => {
@@ -191,6 +214,40 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
         <CardTitle className="text-2xl font-serif">Moyen de paiement</CardTitle>
       </CardHeader>
       <CardContent>
+        {/* Informations de débogage PayPal pour les développeurs */}
+        {import.meta.env.DEV && (
+          <div className="mb-6 p-3 border border-blue-200 rounded-md bg-blue-50 text-xs">
+            <div className="flex items-center gap-1 font-medium text-blue-800 mb-2">
+              <Info size={16} />
+              <span>Informations PayPal (mode développeur)</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+              <div>
+                <span className="font-medium">Mode : </span>
+                <span>{import.meta.env.MODE}</span>
+              </div>
+              <div>
+                <span className="font-medium">Test actif : </span>
+                <span>{paypalConfig.testMode ? "Oui" : "Non"}</span>
+              </div>
+              <div>
+                <span className="font-medium">Script chargé : </span>
+                <span>{paypalScriptLoaded ? "Oui ✅" : "Non ⛔"}</span>
+              </div>
+              <div>
+                <span className="font-medium">Client ID : </span>
+                <span>{paypalConfig.clientId 
+                  ? `${paypalConfig.clientId.substring(0, 10)}...${paypalConfig.clientId.substring(paypalConfig.clientId.length - 5)}` 
+                  : "Non défini ⛔"}</span>
+              </div>
+              <div>
+                <span className="font-medium">Montant : </span>
+                <span>{validAmount} €</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Tabs 
           defaultValue="card" 
           onValueChange={handleTabChange}

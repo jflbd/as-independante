@@ -1,25 +1,31 @@
 import React, { useContext } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import LegalModal from '../legal/LegalModal';
-import { useLegalModal } from '@/contexts/LegalModalContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import DemandeAccompagnementDialog from '../pricing/QuoteFormDialog';
 import { ModalContext } from '@/contexts/ModalContext';
 import ContactForm from '../ContactForm';
 
 const ModalManager: React.FC = () => {
   const { activeModal, closeModal, modalData } = useContext(ModalContext);
-  const { closeLegalModal } = useLegalModal();
+  
+  // Utilisé pour générer un ID unique pour chaque dialog
+  const contactFormDescId = React.useId();
   
   return (
     <>
       {/* Modale de Contact */}
       <Dialog open={activeModal === 'contact'} onOpenChange={(open) => !open && closeModal()}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent 
+          className="sm:max-w-[500px]" 
+          aria-describedby={contactFormDescId}
+        >
           <DialogHeader>
             <DialogTitle>Contactez-moi</DialogTitle>
+            <DialogDescription id={contactFormDescId}>
+              Remplissez le formulaire ci-dessous pour m'envoyer un message.
+            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col space-y-4">
-            {/* Transmettre le contexte et les détails si disponibles */}
+            {/* Transmettre le contexte, les détails et le message prérempli si disponibles */}
             <ContactForm 
               onSuccess={() => {
                 // Retarder la fermeture pour permettre d'afficher le message de succès pendant quelques secondes
@@ -29,19 +35,12 @@ const ModalManager: React.FC = () => {
               }}
               contextSource={modalData?.context || ''}
               contextDetails={modalData?.errorDetails || null}
+              prefilledMessage={typeof modalData?.prefilledMessage === 'string' ? modalData.prefilledMessage : ''}
+              transactionDetails={modalData?.transactionDetails || null}
             />
           </div>
         </DialogContent>
       </Dialog>
-      
-      {/* Modale des Mentions Légales */}
-      {activeModal === 'legal' && (
-        <LegalModal 
-          isOpen={true} 
-          onClose={closeModal} 
-          initialSection={modalData?.section} 
-        />
-      )}
       
       {/* Modale de Demande de Devis */}
       {activeModal === 'quote' && (

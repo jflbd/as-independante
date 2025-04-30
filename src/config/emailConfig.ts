@@ -3,7 +3,10 @@
  */
 export const emailConfig = {
   // URL de l'endpoint de la fonction serverless
-  sendEmailEndpoint: '/api/send-email',
+  // En dev, utilise l'URL de base définie dans .env, sinon utilise le chemin relatif
+  sendEmailEndpoint: import.meta.env.VITE_API_BASE_URL 
+    ? `${import.meta.env.VITE_API_BASE_URL}/send-email` 
+    : '/api/send-email',
   
   // Configuration des templates d'emails
   templates: {
@@ -20,7 +23,7 @@ export const emailConfig = {
   
   // Configuration des délais
   timeouts: {
-    sendTimeout: 30000, // 30 secondes
+    sendTimeout: 60000, // 60 secondes (augmenté de 30 à 60 secondes)
   },
 
   // Messages d'erreur et de succès

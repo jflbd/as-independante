@@ -1,6 +1,7 @@
 import { ArrowRight, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/siteConfig";
 import { useEmail } from "@/hooks/use-email";
 import { emailConfig } from "@/config/emailConfig";
@@ -58,26 +59,20 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
         return;
       }
       
-      // Construction du corps du message
-      const messageBody = `
-Demande d'accompagnement professionnelle:
-
-Nom: ${formData.name}
-Entreprise/Organisation: ${formData.company}
-Email: ${formData.email}
-Téléphone: ${formData.phone}
-
-Message:
-${formData.message}
-      `;
-      
-      // Utilisation de notre service d'email personnalisé
-      const result = await sendEmail({
+      // Création d'un objet EmailData standardisé selon l'interface définie
+      const emailData = {
         name: formData.name,
         email: formData.email,
-        message: messageBody,
+        phone: formData.phone,
+        company: formData.company,
+        message: formData.message,
+        formType: "Demande d'accompagnement professionnel",
         subject: `Demande d'accompagnement de ${formData.name} - ${formData.company}`,
-      });
+        contextSource: "professional_quote"
+      };
+      
+      // Utilisation de notre service d'email personnalisé avec le nouveau format
+      const result = await sendEmail(emailData);
       
       if (result.success) {
         setFormStatus({
@@ -101,7 +96,7 @@ ${formData.message}
           setTimeout(() => {
             setFormStatus({ type: null, message: '' });
           }, 300);
-        }, 3000);
+        }, 6000);
       } else {
         throw new Error(result.message || "Échec de l'envoi du formulaire");
       }
@@ -118,16 +113,27 @@ ${formData.message}
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[500px] z-50">
+      <DialogContent className="sm:max-w-[500px] z-50" aria-describedby="quote-form-description">
         {/* Bouton de fermeture */}
-        <button
+        <Button
           onClick={() => setIsOpen(false)}
-          className="absolute right-4 top-4 rounded-full p-2 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          variant="ghost"
+          size="icon"
+          className="absolute right-4 top-4 rounded-full"
           type="button"
+          hoverAnimation="none"
+          clickAnimation="scale"
         >
           <X className="h-5 w-5" />
           <span className="sr-only">Fermer</span>
-        </button>
+        </Button>
+        
+        <DialogHeader>
+          <DialogTitle>Demande de devis</DialogTitle>
+          <DialogDescription id="quote-form-description">
+            Complétez ce formulaire pour recevoir un devis personnalisé.
+          </DialogDescription>
+        </DialogHeader>
         
         {formStatus.type ? (
           <div className={`p-8 rounded-lg flex flex-col items-center justify-center gap-4 text-center
@@ -145,13 +151,6 @@ ${formData.message}
           </div>
         ) : (
           <>
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold">Demande d'accompagnement professionnel</DialogTitle>
-              <DialogDescription>
-                Remplissez ce formulaire pour recevoir une proposition d'accompagnement personnalisée pour votre entreprise ou organisation.
-              </DialogDescription>
-            </DialogHeader>
-            
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -231,20 +230,23 @@ ${formData.message}
               </div>
               
               <div className="flex justify-end gap-3 pt-2">
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md transition-all duration-300 hover:bg-gray-300 focus:bg-gray-300 focus-visible:outline-none border border-gray-400 shadow-sm"
+                  variant="outline"
+                  className="min-w-[100px] bg-gray-100"
                   disabled={isSubmitting}
-                  style={{ minWidth: "100px" }}
+                  hoverAnimation="medium"
+                  clickAnimation="scale"
                 >
                   Annuler
-                </button>
-                <button 
+                </Button>
+                <Button 
                   type="submit"
-                  className="bg-[#0d8496] hover:bg-[#065964] text-white font-medium px-6 py-2 rounded-md flex items-center justify-center transition-all duration-300 hover:shadow-md focus-visible:outline-none focus:ring-2 focus:ring-[#0d8496]/50"
+                  className="min-w-[180px] bg-[#0d8496] hover:bg-[#065964] text-white"
                   disabled={isSubmitting}
-                  style={{ minWidth: "180px" }}
+                  hoverAnimation="strong" 
+                  clickAnimation="bounce"
                 >
                   {isSubmitting ? (
                   <div className="flex items-center justify-center">
@@ -263,7 +265,7 @@ ${formData.message}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                   )}
-                </button>
+                </Button>
               </div>
             </form>
           </>

@@ -1,32 +1,32 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 import App from './App.tsx'
-import AppLayout from './components/AppLayout.tsx'
 import './index.css'
+import { debugEnvironment } from './utils/debug-env' // Import du script de débogage
+import { LegalModalProvider } from './contexts/LegalModalContext'
+import { ModalProvider } from './contexts/ModalContext'
+import { CookieConsentProvider } from './contexts/CookieConsentContext'
 
-// Utilisation de createBrowserRouter avec les future flags pour résoudre les avertissements
-const router = createBrowserRouter(
-  [
-    {
-      path: '*',
-      element: (
-        <AppLayout>
-          <App />
-        </AppLayout>
-      ),
-    },
-  ],
-  {
-    // Future flags pour React Router v7
-    future: {
-      v7_relativeSplatPath: true,
-    },
-  }
-);
+// Exécution du débogage d'environnement
+if (import.meta.env.DEV) {
+  debugEnvironment()
+  console.log('📝 Application démarrée en mode développement')
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <HelmetProvider>
+      <BrowserRouter>
+        <CookieConsentProvider>
+          <ModalProvider>
+            <LegalModalProvider>
+              <App />
+            </LegalModalProvider>
+          </ModalProvider>
+        </CookieConsentProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   </React.StrictMode>,
 )

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, Lock } from 'lucide-react';
 import { stripeConfig } from '@/config/stripeConfig';
+import { Button } from '@/components/ui/button';
 
 interface StripePaymentButtonProps {
   amount: number;
@@ -25,13 +26,15 @@ const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ amount, descr
 
   return (
     <div className="w-full">
-      <button
+      <Button
         onClick={handlePayment}
-        className="bg-[#6772e5] hover:bg-[#5469d4] text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center w-full transition-all duration-300 hover:shadow-lg"
+        className="bg-[#6772e5] hover:bg-[#5469d4] text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center w-full"
+        hoverAnimation="strong"
+        clickAnimation="bounce"
       >
         <CreditCard className="mr-2 h-5 w-5" />
-        Payer {amount}€ par carte
-      </button>
+        Payer par carte
+      </Button>
       
       <div className="mt-2 flex items-center justify-center text-xs text-gray-500">
         <Lock className="h-3 w-3 mr-1" />

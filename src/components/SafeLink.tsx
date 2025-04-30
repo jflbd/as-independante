@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
+import { scrollToSectionWithOffset } from '@/utils/scroll-utils';
 
 interface SafeLinkProps extends RouterLinkProps {
   external?: boolean;
@@ -20,17 +20,11 @@ const SafeLink: React.FC<SafeLinkProps> = ({
   const isAnchor = typeof to === 'string' && to.startsWith('#');
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Pour les liens d'ancrage, implémenter un défilement fluide
+    // Pour les liens d'ancrage, implémenter un défilement fluide avec offset
     if (isAnchor) {
       e.preventDefault();
       const targetId = to.substring(1);
-      const element = document.getElementById(targetId);
-      
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        console.warn(`L'élément avec l'ID ${targetId} n'existe pas sur la page`);
-      }
+      scrollToSectionWithOffset(targetId);
     }
     
     // Appeler le onClick d'origine s'il existe

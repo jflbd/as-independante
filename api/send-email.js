@@ -24,6 +24,10 @@ export default async function handler(req, res) {
       email,
       message,
       subject = "Nouveau message de contact",
+      phone,
+      company,
+      formType,
+      transactionDetails,
     } = req.body;
 
     // Validation de base
@@ -34,16 +38,51 @@ export default async function handler(req, res) {
       });
     }
 
-    // Vérification des paramètres de configuration
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+    // Log de debug pour voir les variables d'environnement disponibles
+    console.log("📧 Variables d'environnement d'email détectées:");
+    console.log(`   - EMAIL_USER: ${process.env.EMAIL_USER ? "✓" : "✗"}`);
+    console.log(
+      `   - EMAIL_PASSWORD: ${process.env.EMAIL_PASSWORD ? "✓" : "✗"}`
+    );
+    console.log(
+      `   - EMAIL_RECIPIENT: ${process.env.EMAIL_RECIPIENT || "Non défini"}`
+    );
+    console.log(`   - EMAIL_HOST: ${process.env.EMAIL_HOST || "Non défini"}`);
+    console.log(`   - EMAIL_PORT: ${process.env.EMAIL_PORT || "Non défini"}`);
+    console.log(
+      `   - EMAIL_SERVICE: ${process.env.EMAIL_SERVICE || "Non défini"}`
+    );
+
+    // Vérification des paramètres de configuration et définition de valeurs par défaut si nécessaire
+    let emailUser = process.env.EMAIL_USER;
+    let emailPassword = process.env.EMAIL_PASSWORD;
+    const emailRecipient =
+      process.env.EMAIL_RECIPIENT || "leblondjul@hotmail.com"; // Utiliser une valeur par défaut si non définie
+
+    // Vérifier et nettoyer les variables sensibles
+    if (!emailUser || !emailPassword) {
       console.error("Configuration des paramètres d'email incomplète");
-      return res.status(500).json({
-        error: "Configuration du serveur incomplète",
-        message:
-          "Les paramètres d'email ne sont pas correctement configurés sur le serveur",
-        details:
-          "Vérifiez que EMAIL_USER et EMAIL_PASSWORD sont définis dans les variables d'environnement",
-      });
+
+      // Si nous sommes en développement et que nous avons détecté les variables dans le corps de la requête .env.local
+      // (ceci est utile pour le débogage uniquement)
+      if (req.body._debug_env && process.env.NODE_ENV !== "production") {
+        console.log(
+          "⚠️ Utilisation des variables de débogage (NON SÉCURISÉ, à utiliser uniquement en développement)"
+        );
+        emailUser = req.body._debug_env.EMAIL_USER || emailUser;
+        emailPassword = req.body._debug_env.EMAIL_PASSWORD || emailPassword;
+      }
+
+      // Si toujours pas de variables, retourner une erreur
+      if (!emailUser || !emailPassword) {
+        return res.status(500).json({
+          error: "Configuration du serveur incomplète",
+          message:
+            "Les paramètres d'email ne sont pas correctement configurés sur le serveur",
+          details:
+            "Vérifiez que EMAIL_USER et EMAIL_PASSWORD sont définis dans les variables d'environnement",
+        });
+      }
     }
 
     // Si Gmail est utilisé comme service, afficher des informations utiles pour le débogage
@@ -56,44 +95,86 @@ export default async function handler(req, res) {
       );
     }
 
+    // Nettoyer le mot de passe des guillemets éventuels
+    if (emailPassword) {
+      if (emailPassword.startsWith('"') && emailPassword.endsWith('"')) {
+        emailPassword = emailPassword.slice(1, -1);
+        console.log("📝 Guillemets autour du mot de passe détectés et retirés");
+      }
+
+      // Retirer aussi les guillemets simples
+      if (emailPassword.startsWith("'") && emailPassword.endsWith("'")) {
+        emailPassword = emailPassword.slice(1, -1);
+        console.log(
+          "📝 Guillemets simples autour du mot de passe détectés et retirés"
+        );
+      }
+
+      // Afficher le début du mot de passe pour vérification (sécurité partielle)
+      console.log(
+        `📝 Début du mot de passe (premiers caractères): ${emailPassword.slice(
+          0,
+          2
+        )}***`
+      );
+    }
+
     // Créer un transporteur avec vos informations SMTP
-    const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE || "gmail",
+    const transporterConfig = {
+      service: process.env.EMAIL_SERVICE || undefined, // undefined si non spécifié (utilisation de host/port)
       host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT || 587,
+      port: parseInt(process.env.EMAIL_PORT || "587"),
       secure: process.env.EMAIL_SECURE === "true",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD, // Doit être un mot de passe d'application pour Gmail
+        user: emailUser,
+        pass: emailPassword, // Utiliser le mot de passe nettoyé
       },
-      debug: true, // Mode débogage pour plus d'informations en cas d'erreur
+      // Configuration spécifique pour Office 365
+      tls: {
+        ciphers: "SSLv3",
+        rejectUnauthorized: false,
+      },
+      debug: process.env.NODE_ENV !== "production", // Mode débogage uniquement en développement
+    };
+
+    console.log("📧 Configuration du transporteur SMTP:", {
+      service: transporterConfig.service,
+      host: transporterConfig.host,
+      port: transporterConfig.port,
+      secure: transporterConfig.secure,
+      auth: { user: transporterConfig.auth.user, pass: "********" },
     });
+
+    const transporter = nodemailer.createTransport(transporterConfig);
 
     // Configuration de l'email
     const mailOptions = {
-      from: `"${name}" <${email}>`,
-      to: process.env.EMAIL_RECIPIENT,
-      replyTo: email,
+      from: `"${name}" <${emailUser}>`, // Utiliser emailUser comme expéditeur réel
+      to: emailRecipient,
+      replyTo: email, // L'email du contact pour la réponse
       subject: subject,
-      text: `
-        Nom: ${name}
-        Email: ${email}
-        
-        Message:
-        ${message}
-      `,
-      html: `
-        <h2>Nouveau message de contact</h2>
-        <p><strong>Nom:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p style="white-space: pre-wrap;">${message}</p>
-      `,
+      text: formatEmailText(req.body),
+      html: formatEmailHtml(req.body),
     };
 
+    // Vérifier la connexion au serveur SMTP avant d'envoyer
+    console.log("🔄 Vérification de la connexion au serveur SMTP...");
+    await new Promise((resolve, reject) => {
+      transporter.verify(function (error, success) {
+        if (error) {
+          console.error("❌ Échec de la vérification du serveur SMTP:", error);
+          reject(error);
+        } else {
+          console.log("✅ Serveur SMTP prêt à accepter des messages");
+          resolve(success);
+        }
+      });
+    });
+
     // Envoyer l'email
+    console.log("🔄 Envoi de l'email en cours...");
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email envoyé avec succès:", info.messageId);
+    console.log("✅ Email envoyé avec succès:", info.messageId);
 
     // Retourner une réponse positive
     return res.status(200).json({
@@ -104,7 +185,7 @@ export default async function handler(req, res) {
       },
     });
   } catch (error) {
-    console.error("Erreur d'envoi d'email:", error);
+    console.error("❌ Erreur d'envoi d'email:", error);
 
     // Messages d'erreur personnalisés en fonction du type d'erreur
     let errorMessage = "Erreur lors de l'envoi du message";
@@ -134,4 +215,132 @@ export default async function handler(req, res) {
           : "Vérifiez les paramètres EMAIL_* dans vos variables d'environnement.",
     });
   }
+}
+
+// Fonction pour formater le contenu texte de l'email selon le format standardisé
+function formatEmailText(data) {
+  const { name, email, phone, company, message, formType, transactionDetails } =
+    data;
+
+  // Définir le titre du message
+  const messageTitle = formType || "Nouveau message de contact";
+
+  let emailContent = `${messageTitle}\n\n`;
+
+  // Informations de contact
+  emailContent += `Nom: ${name}\n`;
+  emailContent += `Email: ${email}\n`;
+
+  if (phone) {
+    emailContent += `Téléphone: ${phone}\n`;
+  }
+
+  if (company) {
+    emailContent += `Entreprise/Organisation: ${company}\n`;
+  }
+
+  // Détails de transaction si présents
+  if (transactionDetails) {
+    emailContent += "\n--- Détails de la transaction ---\n";
+    if (transactionDetails.amount) {
+      emailContent += `Montant: ${
+        typeof transactionDetails.amount === "number"
+          ? `${transactionDetails.amount.toFixed(2)}€`
+          : `${transactionDetails.amount}€`
+      }\n`;
+    }
+    if (transactionDetails.description) {
+      emailContent += `Description: ${transactionDetails.description}\n`;
+    }
+    if (transactionDetails.date) {
+      emailContent += `Date: ${transactionDetails.date}\n`;
+    }
+    if (transactionDetails.transactionId) {
+      emailContent += `N° de transaction: ${transactionDetails.transactionId}\n`;
+    }
+    if (transactionDetails.paymentMethod) {
+      emailContent += `Méthode: ${transactionDetails.paymentMethod}\n`;
+    }
+  }
+
+  // Message
+  emailContent += "\nMessage:\n";
+  emailContent += message;
+
+  return emailContent;
+}
+
+// Fonction pour formater le contenu HTML de l'email selon le format standardisé
+function formatEmailHtml(data) {
+  const { name, email, phone, company, message, formType, transactionDetails } =
+    data;
+
+  // Définir le titre du message
+  const messageTitle = formType || "Nouveau message de contact";
+
+  let htmlContent = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <h2 style="color: #0D8496; border-bottom: 2px solid #0D8496; padding-bottom: 8px; margin-bottom: 20px;">
+        ${messageTitle}
+      </h2>
+      
+      <div style="margin-bottom: 25px;">
+        <p><strong>Nom:</strong> ${name}</p>
+        <p><strong>Email:</strong> <a href="mailto:${email}" style="color: #0D8496;">${email}</a></p>
+  `;
+
+  if (phone) {
+    htmlContent += `<p><strong>Téléphone:</strong> ${phone}</p>`;
+  }
+
+  if (company) {
+    htmlContent += `<p><strong>Entreprise/Organisation:</strong> ${company}</p>`;
+  }
+
+  // Détails de transaction si présents
+  if (transactionDetails) {
+    htmlContent += `
+      <div style="margin: 20px 0; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #0D8496; border-radius: 4px;">
+        <h3 style="margin-top: 0; color: #0D8496;">Détails de la transaction</h3>
+    `;
+
+    if (transactionDetails.amount) {
+      const formattedAmount =
+        typeof transactionDetails.amount === "number"
+          ? `${transactionDetails.amount.toFixed(2)}€`
+          : `${transactionDetails.amount}€`;
+      htmlContent += `<p><strong>Montant:</strong> ${formattedAmount}</p>`;
+    }
+
+    if (transactionDetails.description) {
+      htmlContent += `<p><strong>Description:</strong> ${transactionDetails.description}</p>`;
+    }
+
+    if (transactionDetails.date) {
+      htmlContent += `<p><strong>Date:</strong> ${transactionDetails.date}</p>`;
+    }
+
+    if (transactionDetails.transactionId) {
+      htmlContent += `<p><strong>N° de transaction:</strong> ${transactionDetails.transactionId}</p>`;
+    }
+
+    if (transactionDetails.paymentMethod) {
+      htmlContent += `<p><strong>Méthode:</strong> ${transactionDetails.paymentMethod}</p>`;
+    }
+
+    htmlContent += `</div>`;
+  }
+
+  // Message
+  htmlContent += `
+      </div>
+      
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+        <h3 style="color: #444;">Message:</h3>
+        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px; white-space: pre-wrap;">${message}</div>
+      </div>
+    </div>
+  `;
+
+  return htmlContent;
 }

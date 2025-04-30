@@ -10,16 +10,17 @@ import PricingCard from "./pricing/PricingCard";
 import PayPalPaymentButton from "./pricing/PayPalPaymentButton";
 import StripePaymentButton from "./pricing/StripePaymentButton.tsx";
 import DemandeAccompagnementDialog from "./pricing/QuoteFormDialog";
+import ContactButton from "./ContactButton";
 
 const PricingSection = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'paypal' | 'stripe'>('paypal');
 
   const particularFeatures = [
-    { text: "Premier rendez-vous d'évaluation gratuit" },
-    { text: "Prise en charge possible par votre mutuelle" },
-    { text: "Accompagnement pour les démarches administratives et sociales" },
-    { text: "Paiement sécurisé via PayPal ou carte bancaire" }
+    { text: "Évaluation initiale gratuite" },
+    { text: "Aide complète aux démarches administratives et sociales" },
+    { text: "Paiement sécurisé par PayPal ou carte bancaire" },
+    { text: "Autres moyens de paiement : chèque, espèces ou virement" }
   ];
 
   const professionalFeatures = [
@@ -83,9 +84,6 @@ const PricingSection = () => {
           <h2 className="text-2xl md:text-4xl font-serif font-bold mb-4">
             Des tarifs adaptés à votre situation
           </h2>
-          <p className="text-gray-600">
-            Possibilité de prise en charge par votre mutuelle (N° ADELI)
-          </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
@@ -103,20 +101,23 @@ const PricingSection = () => {
             cta={
               <Dialog>
                 <DialogTrigger asChild onClick={() => setIsDialogOpen(true)}>
-                  <button
-                    className="bg-[#0d8496] hover:bg-[#065964] text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center w-full transition-all duration-300 hover:shadow-lg"
-                  >
-                    <FileText className="mr-2 h-5 w-5" />
-                    Demander un devis
-                  </button>
+                  <div>
+                    <ContactButton 
+                      variant="default" 
+                      size="lg" 
+                      className="w-full" 
+                      text="Demander un devis" 
+                      iconType="quote" 
+                      modalType="quote"
+                    />
+                  </div>
                 </DialogTrigger>
+                <DemandeAccompagnementDialog isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
               </Dialog>
             }
           />
         </div>
       </div>
-      
-      <DemandeAccompagnementDialog isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
     </section>
   );
 };

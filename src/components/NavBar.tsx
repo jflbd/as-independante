@@ -5,9 +5,9 @@ import { OptimizedImage } from "./OptimizedImage";
 import { siteConfig } from "@/config/siteConfig";
 import { Link } from "react-router-dom";
 import ContactButton from "./ContactButton";
-import QuoteButton from "./QuoteButton";
 import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
+import { scrollToSectionWithNavOffset, scrollToSubSection } from "@/utils/scroll-utils";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -121,37 +121,24 @@ const NavBar = () => {
   }, [location.pathname]);
 
   const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      setIsScrolling(true);
-      
-      // Fermer les menus avant de défiler
+    setIsScrolling(true);
+    
+    // Fermer les menus avant de défiler
+    setTimeout(() => {
+      setIsOpen(false);
+      setShowServiceDropdown(false);
+      setShowMobileServiceDropdown(false);
+    
+      // Attendre que les animations de fermeture soient terminées
       setTimeout(() => {
-        setIsOpen(false);
-        setShowServiceDropdown(false);
-        setShowMobileServiceDropdown(false);
-      
-        // Attendre que les animations de fermeture soient terminées
-        setTimeout(() => {
-          // Recalculer la hauteur courante pour un scrolling précis
-          const currentNavHeight = navRef.current?.getBoundingClientRect().height || navHeight;
-          const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-          
-          // Scroll avec offset pour la hauteur du menu fixe
-          window.scrollTo({
-            top: sectionTop - currentNavHeight - 20, // 20px additional padding
-            behavior: "smooth"
-          });
-          
-          setActiveSection(sectionId);
-          
-          // Reset scrolling state after animation completes
-          setTimeout(() => {
-            setIsScrolling(false);
-          }, 1000);
-        }, 150);
-      }, 50);
-    }
+        // Utiliser la fonction utilitaire de scroll
+        scrollToSectionWithNavOffset(sectionId, navHeight, 20, () => {
+          setIsScrolling(false);
+        });
+        
+        setActiveSection(sectionId);
+      }, 150);
+    }, 50);
   };
 
   // Track scroll position to highlight active section and navbar background
@@ -245,6 +232,14 @@ const NavBar = () => {
     { id: "contact", label: "Contact" },
   ];
 
+  // Fonction utilitaire pour défiler vers des sous-sections de services
+  const scrollToServiceSection = (idx: number) => {
+    // Utiliser notre fonction utilitaire pour défiler vers une sous-section
+    setTimeout(() => {
+      scrollToSubSection("services", idx, navHeight, 20, 300);
+    }, 50);
+  };
+
   return (
     <>
       <nav 
@@ -275,16 +270,16 @@ const NavBar = () => {
               </div>
             </Link>
 
-            {/* Desktop Menu - Amélioration de l'espacement et de la taille du texte */}
+            {/* Desktop Menu - Optimisation pour tablette */}
             <div className="hidden md:flex items-center">
-              {/* Primary Navigation Items */}
-              <div className="flex space-x-3 lg:space-x-6">
+              {/* Primary Navigation Items - Espacement minimal pour tablettes */}
+              <div className="flex space-x-0.5 lg:space-x-4">
                 {mainNavItems.map((item) => (
                   item.hasDropdown ? (
                     <div key={item.id} className="relative" ref={serviceButtonRef}>
                       <button
                         className={`
-                          px-3 py-2 text-sm lg:text-base rounded-full transition-all duration-300 flex items-center
+                          px-1 sm:px-1.5 md:px-2 lg:px-3 py-2 text-[10px] md:text-xs lg:text-sm rounded-full transition-all duration-300 flex items-center
                           ${activeSection === item.id || showServiceDropdown
                             ? "text-white font-semibold bg-primary shadow-md transform -translate-y-0.5" 
                             : "text-gray-600 hover:text-primary hover:bg-primary/5"}
@@ -293,12 +288,12 @@ const NavBar = () => {
                         aria-expanded={showServiceDropdown}
                         aria-label={`Menu ${item.label}`}
                       >
-                        <span className="relative mr-1">
+                        <span className="relative whitespace-nowrap mr-1">
                           {item.label}
                         </span>
                         {showServiceDropdown ? 
-                          <ChevronUp size={16} className="transition-transform" /> : 
-                          <ChevronDown size={16} className="transition-transform" />
+                          <ChevronUp size={12} className="transition-transform" /> : 
+                          <ChevronDown size={12} className="transition-transform" />
                         }
                       </button>
                       
@@ -315,23 +310,8 @@ const NavBar = () => {
                               className="w-full text-left px-4 py-2 flex items-center text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors"
                               onClick={(e) => {
                                 e.stopPropagation(); // Empêcher la propagation de l'événement
-                                scrollToSection("services");
+                                scrollToServiceSection(idx);
                                 setShowServiceDropdown(false);
-                                
-                                // Ajout d'un délai pour permettre au scrollToSection de finir
-                                setTimeout(() => {
-                                  // Sélection des articles dans la section services (particuliers ou professionnels)
-                                  const articles = document.querySelectorAll('#services article');
-                                  if (articles && articles.length >= 2) {
-                                    const targetSection = idx === 0 ? articles[0] : articles[1];
-                                    const sectionTop = targetSection.getBoundingClientRect().top + window.scrollY;
-                                    
-                                    window.scrollTo({
-                                      top: sectionTop - navHeight - 20,
-                                      behavior: "smooth"
-                                    });
-                                  }
-                                }, 200);
                               }}
                             >
                               {subItem.icon}
@@ -346,7 +326,7 @@ const NavBar = () => {
                       key={item.id}
                       to={`#${item.id}`} 
                       className={`
-                        px-3 py-2 text-sm lg:text-base rounded-full transition-all duration-300 
+                        px-1 sm:px-1.5 md:px-2 lg:px-3 py-2 text-[10px] md:text-xs lg:text-sm rounded-full transition-all duration-300 
                         ${activeSection === item.id 
                           ? "text-white font-semibold bg-primary shadow-md transform -translate-y-0.5" 
                           : "text-gray-600 hover:text-primary hover:bg-primary/5"}
@@ -358,7 +338,7 @@ const NavBar = () => {
                       aria-label={`Naviguer vers la section ${item.label}`}
                       aria-current={activeSection === item.id ? "page" : undefined}
                     >
-                      <span className="relative">
+                      <span className="relative whitespace-nowrap">
                         {item.label}
                       </span>
                     </SafeLink>
@@ -434,24 +414,9 @@ const NavBar = () => {
                                 className="w-full flex items-center px-4 py-3 text-left rounded-lg text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  scrollToSection("services");
+                                  scrollToServiceSection(idx);
                                   setIsOpen(false);
                                   setMobileDropdown(null);
-                                  
-                                  // Ajout d'un délai pour permettre au scrollToSection de finir
-                                  setTimeout(() => {
-                                    // Sélection des articles dans la section services (particuliers ou professionnels)
-                                    const articles = document.querySelectorAll('#services article');
-                                    if (articles && articles.length >= 2) {
-                                      const targetSection = idx === 0 ? articles[0] : articles[1];
-                                      const sectionTop = targetSection.getBoundingClientRect().top + window.scrollY;
-                                      
-                                      window.scrollTo({
-                                        top: sectionTop - navHeight - 20,
-                                        behavior: "smooth"
-                                      });
-                                    }
-                                  }, 300);
                                 }}
                               >
                                 {subItem.icon}
@@ -485,7 +450,13 @@ const NavBar = () => {
                   {/* Bouton de contact dans le menu mobile */}
                   <div className="grid gap-4">
                     <ContactButton variant="default" className="w-full" />
-                    <QuoteButton variant="outline" className="w-full" />
+                    <ContactButton 
+                      variant="outline" 
+                      className="w-full" 
+                      text="Demander un devis" 
+                      iconType="quote" 
+                      modalType="quote"
+                    />
                   </div>
                 </div>
               </div>

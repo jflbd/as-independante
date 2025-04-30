@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
+  "devCommand": "npm run dev:full",
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
@@ -19,6 +19,18 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'"
         }
       ]
     },
@@ -28,6 +40,42 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/public/ebooks/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(.+)\\.(jpg|jpeg|gif|png|webp|svg)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.+)\\.(js|css)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.+)\\.(pdf|doc|docx|xls|xlsx|ppt|pptx)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
         }
       ]
     }
@@ -47,6 +95,16 @@
       "source": "/tarifs",
       "destination": "/#tarifs",
       "permanent": true
+    },
+    {
+      "source": "/ebook",
+      "destination": "/ebooks/guide-assistante-sociale-independante.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guide",
+      "destination": "/ebooks/guide-assistante-sociale-independante.pdf",
+      "permanent": false
     }
   ]
 }

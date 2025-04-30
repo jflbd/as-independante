@@ -1,4 +1,5 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
+import { lockScroll, unlockScroll, forceUnlockScroll } from '@/lib/utils';
 
 export type ModalType = 'contact' | 'legal' | 'quote' | null;
 
@@ -36,16 +37,41 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [modalData, setModalData] = useState<ModalData | null>(null);
 
+  // S'assurer que le défilement est toujours restauré lors du démontage du composant
+  useEffect(() => {
+    return () => {
+      // Si le composant est démonté, s'assurer de libérer le défilement
+      forceUnlockScroll();
+    };
+  }, []);
+
+  // Gestion des changements d'état de la modal
+  useEffect(() => {
+    if (activeModal) {
+      // Verrouiller le défilement quand une modale est active
+      lockScroll();
+    } else if (activeModal === null) {
+      // Déverrouiller le défilement avec un délai pour permettre aux animations de se terminer
+      setTimeout(() => {
+        unlockScroll();
+      }, 100);
+    }
+  }, [activeModal]);
+
   const openModal = (modalType: ModalType, initialData: ModalData | null = null) => {
     setActiveModal(modalType);
     setModalData(initialData);
-    document.body.style.overflow = 'hidden'; // Empêcher le scroll du body
   };
 
   const closeModal = () => {
     setActiveModal(null);
     setModalData(null);
-    document.body.style.overflow = ''; // Restaurer le scroll du body
+    
+    // S'assurer que le défilement est restauré après la fermeture avec un délai supplémentaire
+    setTimeout(() => {
+      // Double vérification du déverrouillage pour les cas où la fermeture se passe mal
+      unlockScroll();
+    }, 300);
   };
 
   return (

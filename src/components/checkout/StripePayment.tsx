@@ -3,12 +3,17 @@ import { useStripe, useElements, CardElement, Elements } from '@stripe/react-str
 import { loadStripe } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
 import { stripeConfig, testCards } from '@/config/stripeConfig';
-import { ArrowLeft, ChevronRight, Lock } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Lock, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+// Import du proxy API pour le développement
+import { createPaymentIntent } from '@/api/create-payment-intent-proxy';
 
 // Initialiser Stripe avec la clé publique
 const stripePromise = loadStripe(stripeConfig.publishableKey);
+console.log('Stripe init avec clé publique:', stripeConfig.publishableKey ? stripeConfig.publishableKey.substring(0, 10) + '...' : 'non définie');
 
 // Styles pour le formulaire de carte
 const cardStyle = {
@@ -55,12 +60,23 @@ const StripeCardForm = ({ onGoBack, amount, description, onPaymentComplete }: {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [isApiLoading, setIsApiLoading] = useState<boolean>(true);
   const [customerData, setCustomerData] = useState<CustomerData>({
     firstName: '',
     lastName: '',
     email: ''
   });
   const { toast } = useToast();
+
+  console.log('État du formulaire Stripe:', { 
+    stripeLoaded: !!stripe, 
+    elementsLoaded: !!elements,
+    clientSecretSet: !!clientSecret, 
+    processing: isProcessing,
+    apiLoading: isApiLoading,
+    error: error || apiError
+  });
 
   // Gestion des changements dans les champs du formulaire
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,64 +86,103 @@ const StripeCardForm = ({ onGoBack, amount, description, onPaymentComplete }: {
 
   // Créer une intention de paiement au chargement du composant
   useEffect(() => {
-    if (amount <= 0) return;
+    if (amount <= 0) {
+      setApiError('Montant invalide');
+      setIsApiLoading(false);
+      return;
+    }
     
-    const createPaymentIntent = async () => {
+    const createPaymentIntentRequest = async () => {
+      setIsApiLoading(true);
+      setApiError(null);
+      
+      console.log('Création de l\'intention de paiement pour:', amount, description);
+      
       try {
-        // Appeler notre fonction serverless pour créer l'intention de paiement
-        const response = await fetch('/api/create-payment-intent', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount,
-            description,
-            metadata: {
-              service: description,
-              customAmount: amount.toString()
-            },
-            // Nous n'envoyons pas les données client ici car elles ne sont pas encore remplies
-            // Elles seront envoyées lors de la confirmation du paiement
-          }),
-        });
-
-        // Amélioration de la gestion des réponses non-OK
-        if (!response.ok) {
-          // Lire d'abord la réponse comme texte pour éviter les erreurs de parsing JSON
-          const errorText = await response.text();
-          let errorData;
-          
+        let data;
+        
+        // En développement, utiliser directement la fonction API importée
+        if (import.meta.env.DEV) {
           try {
-            // Essayer de parser le texte en JSON si possible
-            errorData = JSON.parse(errorText);
-            throw new Error(errorData.error || errorData.message || `Erreur ${response.status}: ${response.statusText}`);
+            console.log('Utilisation du proxy API local en développement');
+            data = await createPaymentIntent({
+              amount,
+              description,
+              metadata: {
+                service: description,
+                customAmount: amount.toString()
+              },
+            });
+            console.log('Réponse du proxy API local:', data);
+          } catch (devError: unknown) {
+            console.error('Erreur avec le proxy API local:', devError);
+            if (devError instanceof Error) {
+              throw new Error(`Erreur API développement: ${devError.message}`);
+            }
+            throw new Error(`Erreur API développement: ${String(devError)}`);
+          }
+        } 
+        // En production, appeler l'API serverless
+        else {
+          // Appeler notre fonction serverless pour créer l'intention de paiement
+          const response = await fetch('/api/create-payment-intent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              amount,
+              description,
+              metadata: {
+                service: description,
+                customAmount: amount.toString()
+              },
+            }),
+          });
+
+          console.log('Réponse API status:', response.status, response.statusText);
+          
+          // Amélioration de la gestion des réponses non-OK
+          if (!response.ok) {
+            // Lire d'abord la réponse comme texte pour éviter les erreurs de parsing JSON
+            const errorText = await response.text();
+            console.error('Erreur de réponse API:', errorText);
+            
+            let errorData;
+            try {
+              // Essayer de parser le texte en JSON si possible
+              errorData = JSON.parse(errorText);
+              throw new Error(errorData.error || errorData.message || `Erreur ${response.status}: ${response.statusText}`);
+            } catch (parseError) {
+              // Si ce n'est pas un JSON valide, utiliser le texte brut ou le statut HTTP
+              console.error('Erreur de parsing JSON:', parseError);
+              throw new Error(errorText || `Erreur du serveur (${response.status}): ${response.statusText}`);
+            }
+          }
+
+          // Amélioration de la gestion du parsing JSON réussi
+          try {
+            const responseText = await response.text();
+            console.log('Réponse brute API:', responseText.substring(0, 100) + (responseText.length > 100 ? '...' : ''));
+            data = responseText ? JSON.parse(responseText) : {};
           } catch (parseError) {
-            // Si ce n'est pas un JSON valide, utiliser le texte brut ou le statut HTTP
-            console.error('Erreur de parsing JSON:', parseError);
-            throw new Error(errorText || `Erreur du serveur (${response.status}): ${response.statusText}`);
+            console.error('Erreur de parsing JSON dans la réponse:', parseError);
+            throw new Error('Format de réponse invalide du serveur');
           }
         }
 
-        // Amélioration de la gestion du parsing JSON réussi
-        let data;
-        try {
-          const responseText = await response.text();
-          data = responseText ? JSON.parse(responseText) : {};
-        } catch (parseError) {
-          console.error('Erreur de parsing JSON dans la réponse:', parseError);
-          throw new Error('Format de réponse invalide du serveur');
-        }
-
         if (!data || !data.clientSecret) {
+          console.error('Réponse API sans clientSecret:', data);
           throw new Error('La réponse du serveur ne contient pas les informations nécessaires');
         }
 
         console.log('PaymentIntent créé avec succès', data.paymentIntentId || 'ID non disponible');
         setClientSecret(data.clientSecret);
+        setIsApiLoading(false);
       } catch (error) {
         console.error('Erreur complète:', error);
-        setError((error as Error).message);
+        setApiError((error as Error).message);
+        setIsApiLoading(false);
         toast({
           title: "Erreur de configuration",
           description: "Impossible d'initialiser le paiement. Veuillez réessayer ultérieurement.",
@@ -136,7 +191,7 @@ const StripeCardForm = ({ onGoBack, amount, description, onPaymentComplete }: {
       }
     };
 
-    createPaymentIntent();
+    createPaymentIntentRequest();
   }, [amount, description, toast]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -212,6 +267,29 @@ const StripeCardForm = ({ onGoBack, amount, description, onPaymentComplete }: {
       setIsProcessing(false);
     }
   };
+
+  // Si on a une erreur API, afficher un message d'erreur plus clair
+  if (apiError) {
+    return (
+      <div className="space-y-4">
+        <Alert variant="destructive">
+          <AlertTriangle className="h-5 w-5 mr-2" />
+          <AlertDescription>
+            <div className="font-medium">Erreur d'initialisation du paiement</div>
+            <div className="text-sm">{apiError}</div>
+          </AlertDescription>
+        </Alert>
+        <div className="text-center">
+          <Button 
+            variant="outline" 
+            onClick={() => window.location.reload()}
+          >
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -317,12 +395,12 @@ const StripeCardForm = ({ onGoBack, amount, description, onPaymentComplete }: {
         <Button 
           type="submit" 
           className="bg-primary hover:bg-primary/90"
-          disabled={isProcessing || !stripe || !clientSecret}
+          disabled={isProcessing || !stripe || !clientSecret || isApiLoading}
         >
-          {isProcessing ? (
+          {isProcessing || isApiLoading ? (
             <>
               <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent rounded-full"></div>
-              Traitement en cours...
+              {isApiLoading ? 'Initialisation...' : 'Traitement en cours...'}
             </>
           ) : (
             <>
@@ -333,6 +411,19 @@ const StripeCardForm = ({ onGoBack, amount, description, onPaymentComplete }: {
           )}
         </Button>
       </div>
+      
+      {/* Afficher les états de debug en mode développement */}
+      {import.meta.env.DEV && (
+        <div className="mt-4 p-2 border border-gray-200 rounded bg-gray-50 text-xs">
+          <div className="font-medium">État du bouton de paiement:</div>
+          <div className="grid grid-cols-2 gap-1 mt-1">
+            <div>Stripe chargé: <span className={stripe ? "text-green-600" : "text-red-600"}>{stripe ? "✓" : "✗"}</span></div>
+            <div>Client Secret: <span className={clientSecret ? "text-green-600" : "text-red-600"}>{clientSecret ? "✓" : "✗"}</span></div>
+            <div>API en cours: <span className={!isApiLoading ? "text-green-600" : "text-amber-600"}>{!isApiLoading ? "✓" : "chargement..."}</span></div>
+            <div>État submit: <span className={!isProcessing ? "text-green-600" : "text-amber-600"}>{!isProcessing ? "prêt" : "en cours..."}</span></div>
+          </div>
+        </div>
+      )}
     </form>
   );
 };

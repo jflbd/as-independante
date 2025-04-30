@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, Calendar, ArrowRight, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/siteConfig';
+import { OptimizedImage } from '@/components/OptimizedImage';
+import { ModalContext, ModalProvider } from '@/contexts/ModalContext';
+import ModalManager from '@/components/ui/ModalManager';
 
 // Définition du type pour canvas-confetti
 interface ConfettiOptions {
@@ -40,10 +43,11 @@ interface PaymentDetails {
   payerName?: string;
 }
 
-const PaiementReussiPage = () => {
+const PaiementReussiPageContent = () => {
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
   const [transactionId, setTransactionId] = useState<string>('');
   const navigate = useNavigate();
+  const { openModal } = useContext(ModalContext);
   
   // Fonction pour naviguer vers une page avec défilement vers une ancre
   const navigateWithScroll = (path: string, hash: string) => {
@@ -154,81 +158,145 @@ const PaiementReussiPage = () => {
     return String(amount);
   };
   
+  // Fonction pour ouvrir la modale de contact avec les détails de la transaction
+  const handleContactClick = () => {
+    // Utilisation de la nouvelle propriété transactionDetails plutôt que prefilledMessage
+    openModal('contact', {
+      context: 'successful_payment',
+      transactionDetails: {
+        amount: paymentDetails?.amount,
+        description: paymentDetails?.description || 'Non spécifiée',
+        date: new Date().toLocaleDateString('fr-FR'),
+        transactionId: transactionId,
+        paymentMethod: paymentDetails?.paymentMethod || 'Non spécifiée'
+      }
+    });
+    
+    console.log("Ouverture de la modale de contact avec détails de transaction");
+  };
+  
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Helmet>
         <title>Paiement confirmé - {siteConfig.name}</title>
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       
-      <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-4">
-            <CheckCircle className="h-8 w-8" />
-          </div>
-          <h1 className="text-2xl md:text-3xl font-serif font-bold mb-3">Paiement confirmé !</h1>
-          <p className="text-gray-600">
-            Merci pour votre paiement. Votre transaction a bien été enregistrée.
-          </p>
-        </div>
-        
-        <div className="bg-gray-50 p-5 rounded-lg mb-8">
-          <h2 className="font-semibold text-lg mb-3">Détails de la transaction</h2>
-          <dl className="space-y-2">
-            <div className="flex justify-between py-1">
-              <dt className="text-gray-600">Montant</dt>
-              <dd className="font-medium">{formatAmount(paymentDetails?.amount)} €</dd>
+      {/* Header avec logo */}
+      <header className="bg-white border-b border-gray-100 py-4 px-4 mb-6 shadow-sm">
+        <div className="container mx-auto max-w-4xl flex justify-between items-center">
+          <Link to="/" className="flex items-center group">
+            <div className="w-12 h-12 overflow-hidden rounded-full border-2 border-primary/10 transition-all duration-300 group-hover:shadow-md">
+              <OptimizedImage
+                src={siteConfig.ui.logo}
+                alt={siteConfig.name}
+                width={48}
+                height={48}
+                className="w-full h-full object-contain"
+              />
             </div>
-            <div className="flex justify-between py-1 border-t border-gray-200">
-              <dt className="text-gray-600">Description</dt>
-              <dd>{paymentDetails?.description || '--'}</dd>
+            <div className="ml-3 hidden sm:block">
+              <h3 className="text-lg font-serif font-bold text-primary">{siteConfig.name}</h3>
+              <p className="text-xs text-gray-500">Votre accompagnement social</p>
             </div>
-            <div className="flex justify-between py-1 border-t border-gray-200">
-              <dt className="text-gray-600">Date</dt>
-              <dd>{new Date().toLocaleDateString('fr-FR')}</dd>
-            </div>
-            <div className="flex justify-between py-1 border-t border-gray-200">
-              <dt className="text-gray-600">N° de transaction</dt>
-              <dd className="font-mono text-sm">{transactionId}</dd>
-            </div>
-            <div className="flex justify-between py-1 border-t border-gray-200">
-              <dt className="text-gray-600">Méthode de paiement</dt>
-              <dd className="capitalize">{paymentDetails?.paymentMethod || '--'}</dd>
-            </div>
-          </dl>
-        </div>
-        
-        <div className="bg-blue-50 p-5 rounded-lg mb-8">
-          <div className="flex items-start">
-            <Calendar className="h-5 w-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold text-blue-800">Prochaines étapes</h3>
-              <p className="text-blue-700 mt-1">
-                Vous allez recevoir un email de confirmation dans les prochaines minutes.
-                {paymentDetails?.description?.toLowerCase().includes('consultation') && 
-                  " Je vous contacterai prochainement pour planifier notre rendez-vous."}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-          <Link to="/">
-            <Button variant="outline" className="flex items-center w-full sm:w-auto justify-center">
-              <Home className="mr-2 h-4 w-4" />
-              Retour à l'accueil
-            </Button>
           </Link>
-          <Button 
-            onClick={() => navigateWithScroll('/', 'contact')}
-            className="bg-primary hover:bg-primary/90 flex items-center w-full sm:w-auto justify-center"
-          >
-            Me contacter
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          
+          <div className="flex items-center">
+            <Link to="/" className="text-sm text-gray-500 hover:text-primary flex items-center transition-colors">
+              <Home size={16} className="mr-1" /> 
+              Retour à l'accueil
+            </Link>
+          </div>
+        </div>
+      </header>
+      
+      <div className="container mx-auto px-4 py-8 flex-grow">
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-4">
+              <CheckCircle className="h-8 w-8" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold mb-3">Paiement confirmé !</h1>
+            <p className="text-gray-600">
+              Merci pour votre paiement. Votre transaction a bien été enregistrée.
+            </p>
+          </div>
+        
+          <div className="bg-gray-50 p-5 rounded-lg mb-8">
+            <h2 className="font-semibold text-lg mb-3">Détails de la transaction</h2>
+            <dl className="space-y-2">
+              <div className="flex justify-between py-1">
+                <dt className="text-gray-600">Montant</dt>
+                <dd className="font-medium">{formatAmount(paymentDetails?.amount)} €</dd>
+              </div>
+              <div className="flex justify-between py-1 border-t border-gray-200">
+                <dt className="text-gray-600">Description</dt>
+                <dd>{paymentDetails?.description || '--'}</dd>
+              </div>
+              <div className="flex justify-between py-1 border-t border-gray-200">
+                <dt className="text-gray-600">Date</dt>
+                <dd>{new Date().toLocaleDateString('fr-FR')}</dd>
+              </div>
+              <div className="flex justify-between py-1 border-t border-gray-200">
+                <dt className="text-gray-600">N° de transaction</dt>
+                <dd className="font-mono text-sm">{transactionId}</dd>
+              </div>
+              <div className="flex justify-between py-1 border-t border-gray-200">
+                <dt className="text-gray-600">Méthode de paiement</dt>
+                <dd className="capitalize">{paymentDetails?.paymentMethod || '--'}</dd>
+              </div>
+            </dl>
+          </div>
+          
+          <div className="bg-blue-50 p-5 rounded-lg mb-8">
+            <div className="flex items-start">
+              <Calendar className="h-5 w-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-blue-800">Prochaines étapes</h3>
+                <p className="text-blue-700 mt-1">
+                  Vous allez recevoir un email de confirmation dans les prochaines minutes.
+                  {paymentDetails?.description?.toLowerCase().includes('consultation') && 
+                    " Je vous contacterai prochainement pour planifier notre rendez-vous."}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <Link to="/">
+              <Button variant="outline" className="flex items-center w-full sm:w-auto justify-center">
+                <Home className="mr-2 h-4 w-4" />
+                Retour à l'accueil
+              </Button>
+            </Link>
+            <Button 
+              onClick={handleContactClick}
+              className="bg-primary hover:bg-primary/90 flex items-center w-full sm:w-auto justify-center"
+            >
+              Me contacter
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
+      
+      {/* Footer minimal */}
+      <footer className="bg-white border-t border-gray-100 py-4 text-center text-xs text-gray-500 mt-auto">
+        <div className="container mx-auto">
+          <p>&copy; {new Date().getFullYear()} {siteConfig.name} - Tous droits réservés</p>
+        </div>
+      </footer>
     </div>
+  );
+};
+
+// Composant wrapper qui fournit le contexte de modal
+const PaiementReussiPage = () => {
+  return (
+    <ModalProvider>
+      <PaiementReussiPageContent />
+      <ModalManager />
+    </ModalProvider>
   );
 };
 

@@ -4,6 +4,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+// Définition des variantes d'animation
+export const animationVariants = {
+  hover: {
+    subtle: "hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200",
+    medium: "hover:shadow-md hover:-translate-y-1 transition-all duration-300",
+    strong: "hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300",
+    none: "",
+  },
+  click: {
+    bounce: "active:translate-y-0.5 active:shadow-inner transition-all duration-75",
+    scale: "active:scale-95 transition-all duration-75",
+    glow: "active:shadow-md active:shadow-primary/20 transition-all duration-75",
+    none: "",
+  },
+};
+
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
@@ -37,14 +53,24 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  hoverAnimation?: keyof typeof animationVariants.hover;
+  clickAnimation?: keyof typeof animationVariants.click;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, hoverAnimation = "medium", clickAnimation = "bounce", ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    
+    // Combinaison des classes de base du bouton avec les animations
+    const animatedClassName = cn(
+      buttonVariants({ variant, size, className }),
+      animationVariants.hover[hoverAnimation],
+      animationVariants.click[clickAnimation],
+    );
+    
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={animatedClassName}
         ref={ref}
         {...props}
       />

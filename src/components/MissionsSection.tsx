@@ -52,13 +52,13 @@ const MissionsSection = () => {
                 Mon métier consiste à créer un lien de confiance, à valoriser la personne en mettant l'accent sur l'estime de soi, à mobiliser ses propres ressources mais également sa famille et/ou son réseau de manière globale.
               </p>
               <p className="text-gray-700 mb-4">
-                <strong>Le but étant de la rendre autonome.</strong>
+                <strong>Le but étant d'aider les personnes à réaliser leurs démarches elles-mêmes, en toute autonomie.</strong>
               </p>
               <p className="text-gray-700 mb-4">
                 Afin d'atteindre cet objectif, plusieurs leviers peuvent être actionnés tels que l'écoute, le soutien, l'information, l'orientation vers des services compétents le cas échéant…
               </p>
-              <p className="text-gray-700 font-semibold">
-                Je suis également soumise au secret professionnel par le Code de l'Action Sociale et des Familles.
+              <p className="text-gray-700">
+                Je suis également soumise au secret professionnel, <strong>selon l'article L411-3</strong> du Code de l'Action Sociale et des Familles.
               </p>
             </div>
           </FadeInSection>

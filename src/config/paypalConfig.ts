@@ -1,55 +1,53 @@
-// Configuration pour l'intégration PayPal
-// Ce fichier contient les paramètres pour les environnements de test et de production
-
-/**
- * Détermine si l'application fonctionne en mode développement
- * import.meta.env.MODE est automatiquement défini par Vite
- * - 'development' pendant le développement local (npm run dev)
- * - 'production' lors de la build de production (npm run build)
- */
-const isDevelopment = import.meta.env.MODE === 'development';
-
+// Configuration PayPal pour l'application
 export const paypalConfig = {
-  // Mode test activé en développement, désactivé en production
-  testMode: isDevelopment,
+  // Récupère le client ID depuis les variables d'environnement
+  clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID || 'AZLVmuBjvzf8X1Tn33Hw0fz5m4PpBYqAoXmWsCDAVZdwd3F_KWLv4ojfHshrogmeLhhTl2Z4uzbvr8aY',
+  // Mode test activé par défaut en développement
+  testMode: import.meta.env.DEV || import.meta.env.VITE_APP_ENV === 'development' || false,
+  // Options de style pour les boutons PayPal
+  styles: {
+    standard: {
+      layout: 'vertical',
+      color: 'blue',
+      shape: 'rect',
+      label: 'pay'
+    },
+    checkout: {
+      layout: 'vertical', 
+      color: 'blue',
+      shape: 'rect',
+      label: 'pay'
+    }
+  },
   
-  // ID client PayPal récupéré depuis les variables d'environnement
-  // La même variable VITE_PAYPAL_CLIENT_ID aura des valeurs différentes 
-  // selon l'environnement (.env.development vs .env.production)
-  clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
-  
-  // Configuration pour le bouton PayPal
+  // Configuration des boutons (utilisée par PayPalButton.tsx)
   buttonConfig: {
     style: {
       layout: 'vertical',
       color: 'blue',
       shape: 'rect',
-      label: 'pay',
-      height: 40,
-    },
+      label: 'pay'
+    }
   },
   
-  // Comptes de test PayPal Sandbox (uniquement pour développement)
-  testAccounts: {
-    business: {
-      email: 'sb-ae8bz41008247@business.example.com',
-      password: '@n&8F+Jc',
-    },
-    personal: {
-      email: 'sb-cjzgc40987248@personal.example.com',
-      password: '6pJt.%.8',
-    },
+  // Options de debug pour les Smart Payment Buttons
+  debug: true,
+  
+  // Configuration des options pour le SDK PayPal
+  sdkOptions: {
+    clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
+    currency: "EUR",
+    intent: "capture",
+    debug: true,
+    components: "buttons,marks"
   },
   
-  // Instructions pour les développeurs
-  instructions: `
-    Pour tester PayPal en environnement sandbox :
-    
-    1. Connectez-vous à votre compte développeur PayPal : https://developer.paypal.com/
-    2. Accédez à la section Sandbox > Accounts pour créer/gérer des comptes de test
-    3. Utilisez ces comptes pour effectuer des achats de test
-    4. Consultez les transactions dans la section Sandbox > Transactions
-    
-    En mode test, aucun véritable paiement ne sera effectué.
-  `,
+  // Informations de test sandbox
+  sandboxAccount: {
+    email: "sb-cjzgc40987248@personal.example.com",
+    password: "6pJt.%.8",
+    cardnumber: "4020023101630580",
+    expDate: "05/2030",
+    cvc: "123"
+  }
 };

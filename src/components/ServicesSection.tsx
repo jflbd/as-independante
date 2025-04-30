@@ -2,7 +2,7 @@ import { ArrowRight, Check, Heart, Home, FileText, DollarSign, Users, User, Brie
 import FadeInSection from "./animations/FadeInSection";
 import StaggeredReveal from "./animations/StaggeredReveal";
 import ParallaxScroll from "./animations/ParallaxScroll";
-import QuoteButton from "./QuoteButton";
+import ContactButton from "./ContactButton";
 
 export const services = [
   {
@@ -24,12 +24,12 @@ export const services = [
     ],
     details: [
       "Il s'agit d'une prestation de service, qui vous est directement adressée, sans intermédiaire.",
-      "Il est important de savoir que mon métier est répertorié à l'Agence Régional de Santé dans le secteur d'activité médico-social. Dans ce cadre, je possède un numéro ADELI qui vous donne la possibilité d'avoir une prise en charge par votre mutuelle.",
+      "Il est important de savoir que mon métier est répertorié à l'Agence Régional de Santé dans le secteur d'activité médico-social.",
     ],
     interventions: [
       "Mon intervention débute par un premier entretien d'évaluation et de diagnostic",
       "En fonction de la problématique et de la demande, l'aide pourra s'étaler dans le temps pour devenir un véritable accompagnement social global.",
-      "Dans le cadre de cette mission, je suis amenée à constituer divers dossiers : dossier DALO (Droit au Logement Opposable), SYPLO (Système Priorité Logement), surendettement, ACS (Aide Complémentaire Santé), CMUC (Couverture Maladie Universelle Complémentaire), demande de retraite, dossier MDPH (Maison Départementale des Personnes Handicapées), demande de mise sous protection, demande de logement, renouvellement et/ou demandes de titre de séjour…"
+      "Dans le cadre de cette mission, je suis amenée à constituer divers dossiers : dossier DALO (Droit au Logement Opposable), surendettement, ACS (Aide Complémentaire Santé), CSS (Complémentaire Santé Solidaire), demande de retraite, dossier MDPH (Maison Départementale des Personnes Handicapées), demande de mise sous protection, demande de logement, renouvellement et/ou demandes de titre de séjour…"
     ]
   },
   {
@@ -198,7 +198,14 @@ const ServicesSection = () => {
                       <p className="font-bold text-lg">{services[1].interventions[0]}</p>
                       <p className="mt-2 text-gray-700">{services[1].description}</p>
                       <div className="mt-6 flex justify-center">
-                        <QuoteButton variant="secondary" size="lg" className="shadow-md hover:shadow-lg" />
+                        <ContactButton 
+                          variant="outline" 
+                          size="lg" 
+                          className="shadow-md hover:shadow-lg" 
+                          text="Demander un devis" 
+                          iconType="quote" 
+                          modalType="quote"
+                        />
                       </div>
                     </div>
                   </FadeInSection>

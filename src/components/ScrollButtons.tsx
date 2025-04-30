@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUp, ArrowDown, Home } from 'lucide-react';
+import { scrollToTop, scrollToBottom } from '../utils/scroll-utils';
 
 interface ScrollButtonsProps {
   includeHomeButton?: boolean;
@@ -10,6 +11,7 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
   const [scrollPosition, setScrollPosition] = useState(0);
   const [documentHeight, setDocumentHeight] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
+  const [showButtons, setShowButtons] = useState(true); // On commence par les afficher par défaut
   
   // Seuils pour déterminer si on est en haut, au milieu ou en bas de la page
   const TOP_THRESHOLD = 200; // En pixels depuis le haut
@@ -18,14 +20,18 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
   useEffect(() => {
     // Fonction pour mettre à jour les dimensions
     const updateDimensions = () => {
-      setDocumentHeight(Math.max(
+      const docHeight = Math.max(
         document.body.scrollHeight,
         document.body.offsetHeight,
         document.documentElement.clientHeight,
         document.documentElement.scrollHeight,
         document.documentElement.offsetHeight
-      ));
+      );
+      setDocumentHeight(docHeight);
       setViewportHeight(window.innerHeight);
+      
+      // Toujours afficher les boutons, quelle que soit la hauteur de la page
+      setShowButtons(true);
     };
     
     // Fonction pour mettre à jour la position de défilement
@@ -46,69 +52,41 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
       window.removeEventListener('scroll', updateScrollPosition);
       window.removeEventListener('resize', updateDimensions);
     };
-  }, []);
+  }, [includeHomeButton]);
   
   const isAtTop = scrollPosition < TOP_THRESHOLD;
   const isAtBottom = documentHeight - (scrollPosition + viewportHeight) < BOTTOM_THRESHOLD;
   
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-  
-  const scrollToBottom = () => {
-    window.scrollTo({
-      top: documentHeight,
-      behavior: 'smooth'
-    });
-  };
-  
-  // Ne pas afficher les boutons de défilement si la hauteur du document est inférieure à 2 fois la hauteur de la fenêtre
-  if (documentHeight < viewportHeight * 1.5) {
-    return includeHomeButton ? (
-      <div className="fixed bottom-6 right-6 z-40">
-        <button 
-          onClick={onHomeClick}
-          className="flex items-center justify-center w-12 h-12 bg-primary/90 hover:bg-primary text-white rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
-          aria-label="Retour à l'accueil"
-        >
-          <Home size={20} />
-        </button>
-      </div>
-    ) : null;
-  }
-  
+  // Toujours afficher les boutons
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-2">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
       {/* Bouton d'accueil si demandé */}
       {includeHomeButton && (
         <button 
           onClick={onHomeClick}
-          className="flex items-center justify-center w-12 h-12 bg-primary/90 hover:bg-primary text-white rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className="flex items-center justify-center w-12 h-12 bg-primary hover:bg-primary text-white rounded-full shadow-xl transition-all hover:shadow-2xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
           aria-label="Retour à l'accueil"
         >
           <Home size={20} />
         </button>
       )}
       
-      {/* Afficher uniquement au milieu ou en bas de la page */}
+      {/* Bouton de défilement vers le haut (visible si non au sommet) */}
       {!isAtTop && (
         <button 
-          onClick={scrollToTop}
-          className="flex items-center justify-center w-12 h-12 bg-primary/90 hover:bg-primary text-white rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          onClick={() => scrollToTop()}
+          className="flex items-center justify-center w-12 h-12 bg-primary hover:bg-primary text-white rounded-full shadow-xl transition-all hover:shadow-2xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
           aria-label="Défiler vers le haut"
         >
           <ArrowUp size={20} />
         </button>
       )}
       
-      {/* Afficher uniquement en haut ou au milieu de la page */}
+      {/* Bouton de défilement vers le bas (visible si non en bas) */}
       {!isAtBottom && (
         <button 
-          onClick={scrollToBottom}
-          className="flex items-center justify-center w-12 h-12 bg-primary/70 hover:bg-primary text-white rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          onClick={() => scrollToBottom()}
+          className="flex items-center justify-center w-12 h-12 bg-primary hover:bg-primary text-white rounded-full shadow-xl transition-all hover:shadow-2xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
           aria-label="Défiler vers le bas"
         >
           <ArrowDown size={20} />

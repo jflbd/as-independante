@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail } from "lucide-react";
+import { Mail, FileText, LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal";
 
@@ -7,18 +7,38 @@ interface ContactButtonProps {
   variant?: "default" | "outline" | "link";
   size?: "default" | "sm" | "lg";
   className?: string;
+  text?: string;
+  iconType?: "mail" | "quote";
+  modalType?: "contact" | "quote";
+  context?: string;
+  hoverAnimation?: "subtle" | "medium" | "strong" | "none";
+  clickAnimation?: "bounce" | "scale" | "glow" | "none";
 }
 
 const ContactButton: React.FC<ContactButtonProps> = ({ 
   variant = "outline", 
   size = "default",
-  className = ""
+  className = "",
+  text = "Me contacter",
+  iconType = "mail",
+  modalType = "contact",
+  context = "",
+  hoverAnimation = "medium",
+  clickAnimation = "bounce"
 }) => {
   const { openModal } = useModal();
   
   const handleClick = () => {
-    openModal("contact");
+    // Si un contexte est fourni, le passer à la fonction d'ouverture de la modale
+    if (context) {
+      openModal(modalType, { contextSource: context });
+    } else {
+      openModal(modalType);
+    }
   };
+  
+  // Sélection de l'icône en fonction de iconType
+  const Icon: LucideIcon = iconType === "quote" ? FileText : Mail;
   
   return (
     <Button
@@ -26,9 +46,11 @@ const ContactButton: React.FC<ContactButtonProps> = ({
       size={size}
       onClick={handleClick}
       className={`flex items-center gap-2 ${className}`}
+      hoverAnimation={hoverAnimation}
+      clickAnimation={clickAnimation}
     >
-      <Mail size={16} />
-      Me contacter
+      <Icon size={16} />
+      {text}
     </Button>
   );
 };

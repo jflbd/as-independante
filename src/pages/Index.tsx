@@ -19,6 +19,9 @@ import FadeInSection from "@/components/animations/FadeInSection";
 import StaggeredReveal from "@/components/animations/StaggeredReveal";
 import ParallaxScroll from "@/components/animations/ParallaxScroll";
 import { useLocation } from "react-router-dom";
+import ScrollButtons from "@/components/ScrollButtons";
+import { scrollToSectionWithOffset } from "@/utils/scroll-utils";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const observerInitialized = useRef(false);
@@ -72,11 +75,16 @@ const Index = () => {
     
     if (scrollTarget) {
       setTimeout(() => {
-        const element = document.getElementById(scrollTarget);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
+        scrollToSectionWithOffset(scrollTarget);
       }, 500); // Délai pour s'assurer que la page est complètement chargée
+    }
+    
+    // Gestion des ancres dans l'URL
+    const hash = location.hash;
+    if (hash) {
+      setTimeout(() => {
+        scrollToSectionWithOffset(hash.substring(1)); // Enlever le # du début
+      }, 500);
     }
   }, [location]);
 
@@ -129,6 +137,9 @@ const Index = () => {
         <link rel="canonical" href={siteConfig.url} />
       </Helmet>
       
+      {/* Ajout des boutons de navigation */}
+      <ScrollButtons />
+      
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <ParallaxScroll strength={0.05} direction="down" className="absolute top-20 left-10 w-64 h-64">
           <div className="rounded-full bg-primary/10 blur-3xl h-full w-full"></div>
@@ -169,11 +180,17 @@ const Index = () => {
                   </p>
                   <SafeLink
                     to="#contact"
-                    className="inline-flex items-center px-6 py-3 text-white bg-primary" style={{ borderRadius: '0.5rem' }}
-                    aria-label="Me contacter"
                   >
-                    Me contacter
-                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                    <Button 
+                      size="lg"
+                      className="bg-primary hover:bg-primary/90 text-white px-6 py-6"
+                      hoverAnimation="strong"
+                      clickAnimation="bounce"
+                      onClick={() => scrollToSectionWithOffset('contact')}
+                    >
+                      Me contacter
+                      <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                    </Button>
                   </SafeLink>
                 </FadeInSection>
               </div>
@@ -182,7 +199,7 @@ const Index = () => {
                 {serviceCards.map((card, index) => (
                   <div 
                     key={index} 
-                    className={`bg-white p-6 shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 ${card.borderColor}`} style={{ borderRadius: '0.5rem' }}
+                    className={`bg-white p-6 shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 ${card.borderColor} flex flex-col h-full`} style={{ borderRadius: '0.5rem' }}
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${card.gradientFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
                     <div className={`absolute -right-4 -bottom-4 ${card.decorationColor} transform rotate-12 group-hover:scale-110 transition-transform`}>
@@ -199,7 +216,7 @@ const Index = () => {
                       {card.icon}
                       <h3 className="text-xl font-semibold text-primary">{card.title}</h3>
                     </div>
-                    <p className="text-gray-600 relative z-10">{card.description}</p>
+                    <p className="text-gray-600 relative z-10 flex-grow">{card.description}</p>
                   </div>
                 ))}
               </StaggeredReveal>
