@@ -31,7 +31,8 @@ const ContactButton: React.FC<ContactButtonProps> = ({
   const handleClick = () => {
     // Si un contexte est fourni, le passer à la fonction d'ouverture de la modale
     if (context) {
-      openModal(modalType, { contextSource: context });
+      console.log(`ContactButton: ouverture modale avec contexte="${context}"`);
+      openModal(modalType, { context: context });
     } else {
       openModal(modalType);
     }

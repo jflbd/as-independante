@@ -53,6 +53,9 @@ const ContactForm = ({
   // Utilisation du hook d'envoi d'emails personnalisé
   const { sendEmail, loading } = useEmail();
 
+  // Message de débogage pour afficher la valeur de contextSource
+  console.log("ContactForm initialisé avec contextSource:", contextSource);
+
   // Mettre à jour le message si prefilledMessage change
   useEffect(() => {
     if (prefilledMessage) {
@@ -193,6 +196,10 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
       
       // Utilisation de notre système d'envoi d'email personnalisé
       console.log("Appel du hook d'envoi d'email...");
+      console.log("Données complètes envoyées:", {
+        ...emailData,
+        contextSource: contextSource  // Vérifier spécifiquement cette valeur
+      });
       const result = await sendEmail(emailData);
       
       console.log("Résultat de l'envoi:", result);

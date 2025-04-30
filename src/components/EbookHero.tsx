@@ -25,7 +25,7 @@ const EbookHero: React.FC = () => {
       <div className="absolute inset-0 opacity-5 pattern-wavy"></div>
       
       <div className="container mx-auto px-4 pt-16 pb-20 max-w-[100vw]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center max-w-6xl mx-auto px-4 min-h-[50vh]">
           {/* Colonne de gauche - Contenu textuel */}
           <div className="max-w-2xl px-2 relative z-10">
             {/* Étiquette exclusive */}

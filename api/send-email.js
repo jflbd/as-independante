@@ -30,6 +30,23 @@ export default async function handler(req, res) {
       contextSource,
       transactionDetails,
     } = req.body;
+    
+    // Récupérer l'URL de référence (referer) pour déterminer d'où vient la demande
+    const referer = req.headers.referer || "";
+    console.log("URL d'origine de la requête:", referer);
+    
+    // Déterminer le type de formulaire en fonction du contexte ou de l'URL de référence
+    let finalFormType = formType;
+    
+    // Si le message provient de la page Ebook, forcer le type à "Contact Ebook"
+    if (
+      contextSource === "ebook_page" || 
+      referer.includes("/ebook") || 
+      referer.includes("ebook-page")
+    ) {
+      console.log("Détecté comme provenant de la page Ebook, définition de formType='Contact Ebook'");
+      finalFormType = "Contact Ebook";
+    }
 
     // Validation de base
     if (!name || !email || !message) {
