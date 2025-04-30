@@ -27,6 +27,7 @@ export default async function handler(req, res) {
       phone,
       company,
       formType,
+      contextSource,
       transactionDetails,
     } = req.body;
 
@@ -219,18 +220,22 @@ export default async function handler(req, res) {
 
 // Fonction pour formater le contenu texte de l'email selon le format standardisé
 function formatEmailText(data) {
-  const { name, email, phone, company, message, formType, transactionDetails } =
-    data;
+  const { name, email, phone, company, message, formType, contextSource, transactionDetails } = data;
 
   // Définir le titre du message
   const messageTitle = formType || "Nouveau message de contact";
 
   let emailContent = `${messageTitle}\n\n`;
+  
+  // Ajouter l'information sur la source si disponible
+  if (contextSource === "ebook_page") {
+    emailContent += "📖 CONTACT DEPUIS LA PAGE EBOOK\n\n";
+  }
 
   // Informations de contact
   emailContent += `Nom: ${name}\n`;
   emailContent += `Email: ${email}\n`;
-
+  
   if (phone) {
     emailContent += `Téléphone: ${phone}\n`;
   }
@@ -272,8 +277,7 @@ function formatEmailText(data) {
 
 // Fonction pour formater le contenu HTML de l'email selon le format standardisé
 function formatEmailHtml(data) {
-  const { name, email, phone, company, message, formType, transactionDetails } =
-    data;
+  const { name, email, phone, company, message, formType, contextSource, transactionDetails } = data;
 
   // Définir le titre du message
   const messageTitle = formType || "Nouveau message de contact";
@@ -283,6 +287,12 @@ function formatEmailHtml(data) {
       <h2 style="color: #0D8496; border-bottom: 2px solid #0D8496; padding-bottom: 8px; margin-bottom: 20px;">
         ${messageTitle}
       </h2>
+      
+      ${contextSource === "ebook_page" ? 
+        `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
+          <p style="margin: 0; color: #0D8496; font-weight: bold;">📖 CONTACT DEPUIS LA PAGE EBOOK</p>
+        </div>` : ''
+      }
       
       <div style="margin-bottom: 25px;">
         <p><strong>Nom:</strong> ${name}</p>
