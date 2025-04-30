@@ -183,12 +183,15 @@ export function PayPalButton({
   // Fonction pour rendre le bouton PayPal
   useEffect(() => {
     // Ne pas continuer s'il y a des conditions qui ne sont pas remplies
-    if (!scriptLoaded || !paypalButtonRef.current || buttonRendered || disabled || error) return;
+    if (!scriptLoaded || !paypalButtonRef.current || disabled || error) return;
 
     // Vider d'abord le conteneur
     if (paypalButtonRef.current) {
       paypalButtonRef.current.innerHTML = '';
     }
+    
+    // Réinitialiser l'état du rendu du bouton
+    setButtonRendered(false);
 
     // Attendre un court instant pour s'assurer que le SDK est complètement initialisé
     const timeoutId = setTimeout(() => {

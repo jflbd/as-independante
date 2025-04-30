@@ -7,7 +7,7 @@ export const emailConfig = {
   sendEmailEndpoint: import.meta.env.VITE_API_BASE_URL 
     ? `${import.meta.env.VITE_API_BASE_URL}/send-email` 
     : '/api/send-email',
-  
+    
   // Configuration des templates d'emails
   templates: {
     contact: {

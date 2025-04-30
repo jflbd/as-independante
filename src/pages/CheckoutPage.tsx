@@ -36,6 +36,10 @@ const CheckoutPage: React.FC = () => {
   const [isEbookPurchase, setIsEbookPurchase] = useState<boolean>(false); // État pour suivre si c'est un achat d'ebook
 
   useEffect(() => {
+    // Corriger le padding-top indésirable
+    document.body.style.padding = '0';
+    document.body.style.margin = '0';
+    
     // Récupérer la méthode de paiement depuis l'URL
     const params = new URLSearchParams(location.search);
     const method = params.get('method');
@@ -75,6 +79,13 @@ const CheckoutPage: React.FC = () => {
     
     // Défiler vers le haut de la page
     window.scrollTo(0, 0);
+    
+    // Nettoyage à la destruction du composant
+    return () => {
+      // Réinitialiser les styles du body lorsqu'on quitte la page
+      document.body.style.padding = '';
+      document.body.style.margin = '';
+    };
   }, [location]);
 
   // Mettre à jour sessionStorage quand les détails changent

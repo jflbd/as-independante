@@ -8,6 +8,7 @@ import ModalManager from './ui/ModalManager';
 import LegalModalContainer from './legal/LegalModalContainer';
 import ScrollButtons from './ScrollButtons';
 import NavBar from './NavBar';
+import { ScrollUnlocker } from './ui/ScrollUnlocker';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -28,6 +29,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <ModalManager />
               <LegalModalContainer />
               <ScrollButtons />
+              {/* Composant de sécurité pour garantir le fonctionnement du scroll */}
+              <ScrollUnlocker />
             </div>
           </CookieConsentProvider>
         </LegalModalProvider>

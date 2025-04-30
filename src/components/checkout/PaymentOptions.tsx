@@ -164,13 +164,14 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({
   }, [toast]);
 
   // Gestionnaire pour le changement d'onglet
-  const handleTabChange = useCallback((value: string) => {
+  const handleTabChange = (value: string) => {
     setPaymentMethod(value as "card" | "paypal");
-    // Réinitialiser les états lors du changement d'onglet
-    setShowPaypalButton(false);
-    setIsProcessing(false);
-  }, []);
-  
+    // Réinitialiser l'affichage du bouton PayPal à chaque changement vers l'onglet PayPal
+    if (value === "paypal") {
+      setShowPaypalButton(false);
+    }
+  };
+
   // Préparer l'affichage du montant formaté de manière sécurisée
   const formattedAmount = useMemo(() => {
     try {

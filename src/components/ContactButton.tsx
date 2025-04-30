@@ -13,6 +13,7 @@ interface ContactButtonProps {
   context?: string;
   hoverAnimation?: "subtle" | "medium" | "strong" | "none";
   clickAnimation?: "bounce" | "scale" | "glow" | "none";
+  onClick?: () => void; // Nouvelle prop pour permettre des actions supplémentaires au clic
 }
 
 const ContactButton: React.FC<ContactButtonProps> = ({ 
@@ -24,7 +25,8 @@ const ContactButton: React.FC<ContactButtonProps> = ({
   modalType = "contact",
   context = "",
   hoverAnimation = "medium",
-  clickAnimation = "bounce"
+  clickAnimation = "bounce",
+  onClick
 }) => {
   const { openModal } = useModal();
   
@@ -35,6 +37,11 @@ const ContactButton: React.FC<ContactButtonProps> = ({
       openModal(modalType, { context: context });
     } else {
       openModal(modalType);
+    }
+
+    // Exécuter l'action supplémentaire si fournie
+    if (onClick) {
+      onClick();
     }
   };
   

@@ -25,10 +25,13 @@ let originalStyle: {
   top?: string;
   width?: string;
   paddingRight?: string;
+  height?: string;
+  scrollBehavior?: string;
 } = {};
 
 /**
  * Verrouille le défilement du body tout en préservant la position de défilement actuelle
+ * sans remonter la page au début
  */
 export function lockScroll(): void {
   if (scrollLocked) return;
@@ -36,13 +39,7 @@ export function lockScroll(): void {
   if (typeof window !== 'undefined') {
     // Sauvegarde des styles originaux avant de les modifier
     const body = document.body;
-    originalStyle = {
-      overflow: body.style.overflow,
-      position: body.style.position,
-      top: body.style.top,
-      width: body.style.width,
-      paddingRight: body.style.paddingRight
-    };
+    const html = document.documentElement;
     
     // Sauvegarde de la position de défilement
     scrollPosition = window.scrollY;
@@ -50,25 +47,44 @@ export function lockScroll(): void {
     // Calcul de la largeur de la barre de défilement pour éviter un décalage
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     
-    // Application des styles qui verrouillent le défilement mais maintiennent la position visuelle
-    body.style.overflow = 'hidden';
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollPosition}px`;
-    body.style.width = '100%';
+    originalStyle = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      paddingRight: body.style.paddingRight,
+      height: html.style.height,
+      scrollBehavior: html.style.scrollBehavior
+    };
     
-    // Ajouter un padding pour compenser la barre de défilement disparue
-    if (scrollbarWidth > 0) {
-      body.style.paddingRight = `${scrollbarWidth}px`;
+    // Méthode alternative qui préserve la position visuelle sans utiliser position: fixed
+    // Cette approche évite que la page remonte en haut
+    body.classList.add('scroll-locked');
+    body.style.overflow = 'hidden';
+    body.style.paddingRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : '';
+    
+    // Empêcher le scroll du html également (important pour iOS Safari)
+    html.style.overflow = 'hidden';
+    
+    // Solution pour iOS Safari qui peut toujours défiler
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+      body.style.position = 'fixed';
+      body.style.width = '100%';
+      body.style.top = `-${scrollPosition}px`;
     }
     
     // Marquer comme verrouillé
     scrollLocked = true;
     
-    // Ajouter une classe pour d'autres effets CSS potentiels
-    body.classList.add('scroll-locked');
+    // Ajouter un attribut de données pour faciliter la détection
+    document.documentElement.setAttribute('data-scroll-locked', 'true');
     
-    // Correction pour iOS Safari
-    document.documentElement.style.scrollBehavior = 'auto';
+    // S'assurer que la position de défilement reste inchangée
+    setTimeout(() => {
+      if (window.scrollY !== scrollPosition && !/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        window.scrollTo(0, scrollPosition);
+      }
+    }, 0);
   }
 }
 
@@ -76,10 +92,11 @@ export function lockScroll(): void {
  * Déverrouille le défilement du body et restaure la position de défilement
  */
 export function unlockScroll(): void {
-  if (!scrollLocked) return;
+  if (!scrollLocked && !document.documentElement.hasAttribute('data-scroll-locked')) return;
   
   if (typeof window !== 'undefined') {
     const body = document.body;
+    const html = document.documentElement;
     
     // Restauration des styles originaux
     body.style.overflow = originalStyle.overflow || '';
@@ -87,6 +104,8 @@ export function unlockScroll(): void {
     body.style.top = originalStyle.top || '';
     body.style.width = originalStyle.width || '';
     body.style.paddingRight = originalStyle.paddingRight || '';
+    html.style.height = originalStyle.height || '';
+    html.style.overflow = '';
     
     // Enlever la classe
     body.classList.remove('scroll-locked');
@@ -94,11 +113,16 @@ export function unlockScroll(): void {
     // Restaurer la position de défilement
     window.scrollTo(0, scrollPosition);
     
-    // Restaurer le comportement de défilement
-    document.documentElement.style.scrollBehavior = '';
+    // Restaurer le comportement de défilement (après un court délai pour assurer que la position est restaurée)
+    setTimeout(() => {
+      html.style.scrollBehavior = originalStyle.scrollBehavior || '';
+    }, 50);
     
     // Marquer comme déverrouillé
     scrollLocked = false;
+    
+    // Supprimer l'attribut de données
+    document.documentElement.removeAttribute('data-scroll-locked');
     
     // Réinitialiser les variables
     scrollPosition = 0;
@@ -122,15 +146,29 @@ export function forceUnlockScroll(): void {
     body.style.width = '';
     body.style.paddingRight = '';
     body.style.height = '';
-    body.style.overflow = '';
+    body.style.left = '';
+    body.style.right = '';
+    body.style.margin = '';
     
-    // Enlever toutes les classes qui pourraient être liées au verrouillage
-    body.classList.remove('scroll-locked', 'modal-open', 'overflow-hidden');
-    
-    // Réinitialiser les styles HTML également
+    // Nettoyer les styles du HTML également
     html.style.overflow = '';
     html.style.height = '';
-    html.style.scrollBehavior = '';
+    html.style.position = '';
+    html.style.top = '';
+    html.style.width = '';
+    
+    // Spécifique pour tarteaucitron
+    body.classList.remove('scroll-locked', 'modal-open', 'overflow-hidden', 'tarteaucitron-modal-open');
+    
+    // Réinitialiser le comportement de défilement
+    setTimeout(() => {
+      html.style.scrollBehavior = '';
+      window.scrollTo(0, window.scrollY || 0);
+    }, 50);
+    
+    // Supprimer les attributs de données
+    html.removeAttribute('data-scroll-locked');
+    body.removeAttribute('data-scroll-locked');
     
     // Marquer comme déverrouillé
     scrollLocked = false;
@@ -138,5 +176,11 @@ export function forceUnlockScroll(): void {
     // Réinitialiser les variables
     scrollPosition = 0;
     originalStyle = {};
+    
+    // Restaurer la visibilité des éléments qui peuvent avoir été masqués
+    const hiddenElements = document.querySelectorAll('[aria-hidden="true"][data-modal-backdrop]');
+    hiddenElements.forEach((el) => {
+      el.removeAttribute('aria-hidden');
+    });
   }
 }
