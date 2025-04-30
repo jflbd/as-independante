@@ -4,7 +4,12 @@ import Stripe from "stripe";
 const STATEMENT_DESCRIPTOR = "RACHEL GERVAIS AS";
 
 // Récupérer la clé secrète depuis les variables d'environnement ou utiliser une clé de secours
-const STRIPE_SECRET_KEY = import.meta.env.STRIPE_SECRET_KEY;
+const STRIPE_SECRET_KEY = import.meta.env.VITE_STRIPE_SECRET_KEY || import.meta.env.STRIPE_SECRET_KEY;
+
+// Vérifier si la clé API est disponible
+if (!STRIPE_SECRET_KEY) {
+  console.error("Erreur: Clé API Stripe non trouvée dans les variables d'environnement");
+}
 
 // Initialiser Stripe
 const stripe = new Stripe(STRIPE_SECRET_KEY);
