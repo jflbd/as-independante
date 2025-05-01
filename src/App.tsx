@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import AppLayout from './components/AppLayout';
 import Index from './pages/Index';
 import LegalNotices from './pages/LegalNotices';
 import EbookPage from './pages/EbookPage';
@@ -6,18 +7,15 @@ import EbookComingSoonPage from './pages/EbookComingSoonPage';
 import AcheterEbookPage from './pages/AcheterEbookPage';
 import CheckoutPage from './pages/CheckoutPage';
 import PaiementReussiPage from './pages/PaiementReussiPage';
-import PaiementAnnulePage from './pages/PaiementAnnulePage';
 import PaiementEchecPage from './pages/PaiementEchecPage';
+import PaiementAnnulePage from './pages/PaiementAnnulePage';
 import TelechargementPage from './pages/TelechargementPage';
-import TestCheckoutPage from './pages/TestCheckoutPage';
-import NotFound from './pages/NotFound';
 import { ebookConfig } from './config/ebookConfig';
-import { ScrollUnlocker } from './components/ui/ScrollUnlocker';
 import { useScrollToTop } from './hooks/useScrollToTop';
-import './App.css';
+import { ScrollUnlocker } from './components/ui/ScrollUnlocker';
 
 function App() {
-  // Active le défilement vers le haut à chaque changement de page
+  // Active le défilement vers le haut à chaque changement de page pour toutes les routes
   useScrollToTop();
   
   // Contrôle d'accès à la page Ebook
@@ -39,14 +37,19 @@ function App() {
         } />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/paiement-reussi" element={<PaiementReussiPage />} />
-        <Route path="/paiement-annule" element={<PaiementAnnulePage />} />
         <Route path="/paiement-echec" element={<PaiementEchecPage />} />
-        <Route path="/telechargement-ebook" element={<TelechargementPage />} />
-        <Route path="/test-checkout" element={<TestCheckoutPage />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/paiement-annule" element={<PaiementAnnulePage />} />
+        <Route path="/telechargement/:token" element={<TelechargementPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
 }
 
-export default App;
+export default function WrappedApp() {
+  return (
+    <AppLayout>
+      <App />
+    </AppLayout>
+  )
+}
