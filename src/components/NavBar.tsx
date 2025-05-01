@@ -476,27 +476,7 @@ const NavBar = () => {
                       Me contacter
                     </Button>
 
-                    {/* Bouton "Demander un devis" - ouvre la modale */}
-                    <Button 
-                      variant="outline" 
-                      className="w-full flex items-center gap-2" 
-                      onClick={(e) => {
-                        e.stopPropagation(); // Empêcher la propagation de l'événement
-                        
-                        // Fermer d'abord le menu mobile
-                        setIsOpen(false);
-                        
-                        // Attendre que l'animation de fermeture du menu se termine
-                        // avant d'ouvrir la modale pour éviter les conflits
-                        setTimeout(() => {
-                          // Ouvrir explicitement la modale après fermeture du menu
-                          openModal('quote');
-                        }, 300); // Délai suffisant pour la fermeture du menu
-                      }}
-                    >
-                      <FileText size={16} />
-                      Demander un devis
-                    </Button>
+                    
                   </div>
                 </div>
               </div>
