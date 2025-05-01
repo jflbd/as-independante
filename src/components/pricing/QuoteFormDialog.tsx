@@ -1,10 +1,11 @@
 import { ArrowRight, X, CheckCircle2, AlertCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/siteConfig";
 import { useEmail } from "@/hooks/use-email";
 import { emailConfig } from "@/config/emailConfig";
+import { forceUnlockScroll } from "@/lib/utils";
 
 type FormData = {
   name: string;
@@ -36,6 +37,16 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
   // Utilisation du hook personnalisé pour l'envoi d'emails
   const { sendEmail, loading } = useEmail();
   
+  // Gestionnaire de fermeture sécurisé
+  const handleCloseModal = useCallback(() => {
+    // S'assurer que le défilement est déverrouillé
+    setTimeout(() => {
+      forceUnlockScroll();
+    }, 100);
+    
+    setIsOpen(false);
+  }, [setIsOpen]);
+  
   // Quand la modale s'ouvre, débloquer le défilement du contenu de la modale
   useEffect(() => {
     if (isOpen) {
@@ -48,6 +59,14 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
       }, 100);
     }
   }, [isOpen]);
+
+  // S'assurer que le déverrouillage du scroll se produit toujours lors du démontage
+  useEffect(() => {
+    return () => {
+      // Déverrouillage forcé lors du démontage du composant
+      forceUnlockScroll();
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -95,7 +114,7 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
         
         // Réinitialiser le formulaire après 3 secondes
         setTimeout(() => {
-          setIsOpen(false);
+          handleCloseModal(); // Utiliser la fonction sécurisée
           
           setFormData({
             name: "",
@@ -125,14 +144,21 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (!open) {
+        handleCloseModal(); // Utiliser notre fonction sécurisée lors de la fermeture
+      } else {
+        setIsOpen(true);
+      }
+    }}>
       <DialogContent 
         className="sm:max-w-[500px] z-50 max-h-[90vh] overflow-hidden dialog-content" 
         aria-describedby="quote-form-description"
+        hideCloseButton={true} // Utiliser notre nouvelle prop pour masquer le bouton par défaut
       >
-        {/* Bouton de fermeture */}
+        {/* Bouton de fermeture personnalisé */}
         <Button
-          onClick={() => setIsOpen(false)}
+          onClick={handleCloseModal} 
           variant="ghost"
           size="icon"
           className="absolute right-4 top-4 rounded-full"
@@ -249,7 +275,7 @@ const DemandeAccompagnementDialog = ({ isOpen, setIsOpen }: QuoteFormDialogProps
                 <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
                   <Button
                     type="button"
-                    onClick={() => setIsOpen(false)}
+                    onClick={handleCloseModal} // Utiliser la fonction sécurisée
                     variant="outline"
                     className="min-w-[100px] bg-gray-100"
                     disabled={isSubmitting}

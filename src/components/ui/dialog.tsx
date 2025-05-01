@@ -27,10 +27,15 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+// Ajout de la prop hideCloseButton pour contrôler l'affichage du bouton de fermeture
+interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  hideCloseButton?: boolean;
+}
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => {
+  DialogContentProps
+>(({ className, children, hideCloseButton = false, ...props }, ref) => {
   // Générer un ID unique pour la description si nécessaire
   const defaultDescriptionId = React.useId();
   // Utiliser soit l'aria-describedby fourni, soit notre ID par défaut
@@ -55,10 +60,13 @@ const DialogContent = React.forwardRef<
             Contenu de la boîte de dialogue
           </div>
         )}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-transparent">
-          <X className="h-5 w-5" />
-          <span className="sr-only">Fermer</span>
-        </DialogPrimitive.Close>
+        {/* Afficher le bouton de fermeture seulement si hideCloseButton est false */}
+        {!hideCloseButton && (
+          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-transparent">
+            <X className="h-5 w-5" />
+            <span className="sr-only">Fermer</span>
+          </DialogPrimitive.Close>
+        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   )

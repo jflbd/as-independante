@@ -220,7 +220,7 @@ const Footer: React.FC = () => {
       },
       { 
         name: "Ebook", 
-        url: "/ebook", 
+        url: location.pathname === '/ebook' ? "#" : "/ebook", 
         id: "footer-ebook", 
         highlight: true, 
         icon: <Book className="h-4 w-4 mr-1" /> 

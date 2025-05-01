@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, ChevronUp, User, Building, Mail } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp, User, Building, Mail, FileText } from "lucide-react";
 import SafeLink from "./SafeLink";
 import { OptimizedImage } from "./OptimizedImage";
 import { siteConfig } from "@/config/siteConfig";
@@ -9,9 +9,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
 import { scrollToSectionWithNavOffset, scrollToSubSection } from "@/utils/scroll-utils";
-import { lockScroll, unlockScroll } from "@/lib/utils"; // Importer les fonctions de gestion du scroll
+import { lockScroll, unlockScroll } from "@/lib/utils"; 
+import { useModal } from "@/hooks/use-modal"; 
+import { ModalContext } from "@/contexts/ModalContext";
 
 const NavBar = () => {
+  // Hook pour la gestion des modales
+  const { openModal } = useModal();
+  
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("accueil");
   const [isScrolling, setIsScrolling] = useState(false);
@@ -450,12 +455,13 @@ const NavBar = () => {
                   <div className="border-t border-gray-200 my-2"></div>
                   
                   {/* Boutons de contact dans le menu mobile */}
-                  <div className="grid gap-4">
+                  <div className="grid gap-4" onClick={e => e.stopPropagation()}>
                     {/* Bouton "Me contacter" - redirige vers la section contact */}
                     <Button 
                       variant="default" 
                       className="w-full flex items-center gap-2" 
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation(); // Empêcher la propagation de l'événement
                         setIsOpen(false); // Ferme le menu mobile
                         setTimeout(() => {
                           // Défilement vers la section contact
@@ -471,15 +477,26 @@ const NavBar = () => {
                     </Button>
 
                     {/* Bouton "Demander un devis" - ouvre la modale */}
-                    <ContactButton 
+                    <Button 
                       variant="outline" 
-                      className="w-full" 
-                      text="Demander un devis" 
-                      iconType="quote" 
-                      modalType="quote"
-                      // Le hook useModal s'exécute en premier, puis le menu se ferme
-                      // Pas besoin d'ajouter onClick ici car ContactButton gère déjà l'ouverture de la modale
-                    />
+                      className="w-full flex items-center gap-2" 
+                      onClick={(e) => {
+                        e.stopPropagation(); // Empêcher la propagation de l'événement
+                        
+                        // Fermer d'abord le menu mobile
+                        setIsOpen(false);
+                        
+                        // Attendre que l'animation de fermeture du menu se termine
+                        // avant d'ouvrir la modale pour éviter les conflits
+                        setTimeout(() => {
+                          // Ouvrir explicitement la modale après fermeture du menu
+                          openModal('quote');
+                        }, 300); // Délai suffisant pour la fermeture du menu
+                      }}
+                    >
+                      <FileText size={16} />
+                      Demander un devis
+                    </Button>
                   </div>
                 </div>
               </div>

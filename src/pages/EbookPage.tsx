@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   CheckCircle, FileText, Download, 
   BookOpen, List, ShieldCheck, 
@@ -19,10 +19,12 @@ import ModalManager from '@/components/ui/ModalManager';
 
 const EbookPage: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const navbarRef = useRef<HTMLDivElement>(null);
     const presentationRef = useRef<HTMLElement>(null);
     
     useEffect(() => {
+        // Défilement vers le haut à chaque changement de l'URL ou du hash
         window.scrollTo(0, 0);
         
         // Supprimer tout padding-top du body
@@ -58,7 +60,7 @@ const EbookPage: React.FC = () => {
             // Restaurer les valeurs par défaut du body si nécessaire
             // document.body.style.paddingTop = '';
         };
-    }, []);
+    }, [location]); // Ajout de location comme dépendance pour réagir aux changements d'URL
 
     // Table des matières de l'ebook
     const tableOfContents = [

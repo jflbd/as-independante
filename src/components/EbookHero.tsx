@@ -81,6 +81,7 @@ const EbookHero: React.FC = () => {
                   text="Me contacter"
                   iconType="mail"
                   modalType="contact"
+                  context="ebook_page" // Ajout du contexte pour savoir d'où vient la demande de contact
                   className="border-primary text-primary hover:bg-primary/5 w-full sm:w-auto relative z-30"
                 />
               </div>
