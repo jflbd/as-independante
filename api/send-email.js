@@ -30,21 +30,23 @@ export default async function handler(req, res) {
       contextSource,
       transactionDetails,
     } = req.body;
-    
+
     // Récupérer l'URL de référence (referer) pour déterminer d'où vient la demande
     const referer = req.headers.referer || "";
     console.log("URL d'origine de la requête:", referer);
-    
+
     // Déterminer le type de formulaire en fonction du contexte ou de l'URL de référence
     let finalFormType = formType;
-    
+
     // Si le message provient de la page Ebook, forcer le type à "Contact Ebook"
     if (
-      contextSource === "ebook_page" || 
-      referer.includes("/ebook") || 
+      contextSource === "ebook_page" ||
+      referer.includes("/ebook") ||
       referer.includes("ebook-page")
     ) {
-      console.log("Détecté comme provenant de la page Ebook, définition de formType='Contact Ebook'");
+      console.log(
+        "Détecté comme provenant de la page Ebook, définition de formType='Contact Ebook'"
+      );
       finalFormType = "Contact Ebook";
     }
 
@@ -237,22 +239,39 @@ export default async function handler(req, res) {
 
 // Fonction pour formater le contenu texte de l'email selon le format standardisé
 function formatEmailText(data) {
-  const { name, email, phone, company, message, formType, contextSource, transactionDetails } = data;
+  const {
+    name,
+    email,
+    phone,
+    company,
+    message,
+    formType,
+    contextSource,
+    transactionDetails,
+  } = data;
 
   // Définir le titre du message
   const messageTitle = formType || "Nouveau message de contact";
 
   let emailContent = `${messageTitle}\n\n`;
-  
+
   // Ajouter l'information sur la source si disponible
   if (contextSource === "ebook_page") {
     emailContent += "📖 CONTACT DEPUIS LA PAGE EBOOK\n\n";
   }
 
+  if (contextSource === "devis-pro") {
+    emailContent += "🤝 DEMANDE DE DEVIS PROFESSIONNEL\n\n";
+  }
+
+  if (contextSource === "home") {
+    emailContent += "🏠 CONTACT DEPUIS LA PAGE D'ACCUEIL\n\n";
+  }
+
   // Informations de contact
   emailContent += `Nom: ${name}\n`;
   emailContent += `Email: ${email}\n`;
-  
+
   if (phone) {
     emailContent += `Téléphone: ${phone}\n`;
   }
@@ -294,7 +313,16 @@ function formatEmailText(data) {
 
 // Fonction pour formater le contenu HTML de l'email selon le format standardisé
 function formatEmailHtml(data) {
-  const { name, email, phone, company, message, formType, contextSource, transactionDetails } = data;
+  const {
+    name,
+    email,
+    phone,
+    company,
+    message,
+    formType,
+    contextSource,
+    transactionDetails,
+  } = data;
 
   // Définir le titre du message
   const messageTitle = formType || "Nouveau message de contact";
@@ -305,10 +333,52 @@ function formatEmailHtml(data) {
         ${messageTitle}
       </h2>
       
-      ${contextSource === "ebook_page" ? 
-        `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
+      ${
+        contextSource === "ebook_page"
+          ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
           <p style="margin: 0; color: #0D8496; font-weight: bold;">📖 CONTACT DEPUIS LA PAGE EBOOK</p>
-        </div>` : ''
+        </div>`
+          : ""
+      }
+      
+      ${
+        contextSource === "home"
+          ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
+          <p style="margin: 0; color: #0D8496; font-weight: bold;">🏠 CONTACT DEPUIS LA PAGE D'ACCUEIL</p>
+        </div>`
+          : ""
+      }
+      
+      ${
+        contextSource === "devis-pro" || contextSource === "quote"
+          ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
+          <p style="margin: 0; color: #0D8496; font-weight: bold;">🤝 DEMANDE DE DEVIS PROFESSIONNEL</p>
+        </div>`
+          : ""
+      }
+      
+      ${
+        contextSource === "payment_error"
+          ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #fde8e8; border-left: 4px solid #e02424; border-radius: 4px;">
+          <p style="margin: 0; color: #e02424; font-weight: bold;">⚠️ CONTACT SUITE À UNE ERREUR DE PAIEMENT</p>
+        </div>`
+          : ""
+      }
+      
+      ${
+        contextSource === "successful_payment"
+          ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #ecfdf5; border-left: 4px solid #047857; border-radius: 4px;">
+          <p style="margin: 0; color: #047857; font-weight: bold;">✅ CONTACT APRÈS UN PAIEMENT RÉUSSI</p>
+        </div>`
+          : ""
+      }
+      
+      ${
+        contextSource && !["ebook_page", "home", "devis-pro", "quote", "payment_error", "successful_payment"].includes(contextSource)
+          ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
+          <p style="margin: 0; color: #0D8496; font-weight: bold;">📝 CONTEXTE: ${contextSource.toUpperCase()}</p>
+        </div>`
+          : ""
       }
       
       <div style="margin-bottom: 25px;">

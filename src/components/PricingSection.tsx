@@ -2,19 +2,18 @@ import { ArrowRight, Check, FileText, CreditCard } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useModal } from "@/hooks/use-modal";
 import { siteConfig } from "@/config/siteConfig";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 import { OptimizedImage } from "./OptimizedImage";
 import FadeInSection from "./animations/FadeInSection";
 import PricingCard from "./pricing/PricingCard";
 import PayPalPaymentButton from "./pricing/PayPalPaymentButton";
 import StripePaymentButton from "./pricing/StripePaymentButton.tsx";
-import DemandeAccompagnementDialog from "./pricing/QuoteFormDialog";
 import ContactButton from "./ContactButton";
+import { Button } from "@/components/ui/button";
 
 const PricingSection = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'paypal' | 'stripe'>('paypal');
+  const { openModal } = useModal();
 
   const particularFeatures = [
     { text: "Évaluation initiale gratuite" },
@@ -99,21 +98,17 @@ const PricingSection = () => {
             price="Sur devis" 
             features={professionalFeatures}
             cta={
-              <Dialog>
-                <DialogTrigger asChild onClick={() => setIsDialogOpen(true)}>
-                  <div>
-                    <ContactButton 
-                      variant="default" 
-                      size="lg" 
-                      className="w-full" 
-                      text="Demander un devis" 
-                      iconType="quote" 
-                      modalType="quote"
-                    />
-                  </div>
-                </DialogTrigger>
-                <DemandeAccompagnementDialog isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
-              </Dialog>
+              <ContactButton 
+                variant="default"
+                size="lg"
+                text="Demander un devis"
+                iconType="quote"
+                modalType="quote"
+                context="devis-pro"
+                className="w-full"
+                hoverAnimation="medium"
+                clickAnimation="scale"
+              />
             }
           />
         </div>

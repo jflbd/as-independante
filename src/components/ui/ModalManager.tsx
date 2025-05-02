@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import DemandeAccompagnementDialog from '../pricing/QuoteFormDialog';
 import { ModalContext } from '@/contexts/ModalContext';
 import ContactForm from '../ContactForm';
 
@@ -9,7 +8,13 @@ const ModalManager: React.FC = () => {
   
   // Utilisé pour générer un ID unique pour chaque dialog
   const contactFormDescId = React.useId();
-  
+  const quoteFormDescId = React.useId();
+
+  // La fonction directe qui fermera immédiatement la modale
+  const handleCloseModal = () => {
+    closeModal();
+  };
+
   return (
     <>
       {/* Modale de Contact */}
@@ -27,12 +32,7 @@ const ModalManager: React.FC = () => {
           <div className="flex flex-col space-y-4">
             {/* Transmettre le contexte, les détails et le message prérempli si disponibles */}
             <ContactForm 
-              onSuccess={() => {
-                // Retarder la fermeture pour permettre d'afficher le message de succès pendant quelques secondes
-                setTimeout(() => {
-                  closeModal();
-                }, 5000);
-              }}
+              onSuccess={handleCloseModal} // On utilise maintenant la fonction directe
               contextSource={modalData?.context || ''}
               contextDetails={modalData?.errorDetails || null}
               prefilledMessage={typeof modalData?.prefilledMessage === 'string' ? modalData.prefilledMessage : ''}
@@ -42,13 +42,28 @@ const ModalManager: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Modale de Demande de Devis */}
-      {activeModal === 'quote' && (
-        <DemandeAccompagnementDialog 
-          isOpen={true} 
-          setIsOpen={(open) => !open && closeModal()} 
-        />
-      )}
+      {/* Modale de Demande de Devis - Utilise aussi ContactForm mais avec formType="quote" */}
+      <Dialog open={activeModal === 'quote'} onOpenChange={(open) => !open && closeModal()}>
+        <DialogContent 
+          className="sm:max-w-[500px]" 
+          aria-describedby={quoteFormDescId}
+        >
+          <DialogHeader>
+            <DialogTitle>Demande de devis</DialogTitle>
+            <DialogDescription id={quoteFormDescId}>
+              Complétez ce formulaire pour recevoir un devis personnalisé.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col space-y-4">
+            <ContactForm 
+              onSuccess={handleCloseModal} // On utilise maintenant la fonction directe
+              contextSource={modalData?.context || 'quote'}
+              prefilledMessage=""
+              formType="quote"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

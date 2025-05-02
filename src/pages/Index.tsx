@@ -9,7 +9,7 @@ import MissionsSection from "@/components/MissionsSection";
 import ReferentielSection from "@/components/ReferentielSection";
 import DeontologieSection from "@/components/DeontologieSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import SafeLink from "@/components/SafeLink";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import EbookHero from "@/components/EbookHero";
@@ -26,6 +26,36 @@ import { Button } from "@/components/ui/button";
 const Index = () => {
   const observerInitialized = useRef(false);
   const location = useLocation();
+  const [navbarHeight, setNavbarHeight] = useState(0);
+  
+  // Effet pour mesurer la hauteur de la navbar et ajuster le padding-top de notre page
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      const navElement = document.querySelector('nav');
+      if (navElement) {
+        const height = navElement.getBoundingClientRect().height;
+        if (height > 0 && height !== navbarHeight) {
+          setNavbarHeight(height);
+        }
+      }
+    };
+    
+    // Mesurer la hauteur au chargement et lors des redimensionnements
+    updateNavbarHeight();
+    window.addEventListener('resize', updateNavbarHeight);
+    
+    // Utiliser différents délais pour capturer la hauteur après tous les rendus possibles
+    const timeouts = [
+      setTimeout(updateNavbarHeight, 100),
+      setTimeout(updateNavbarHeight, 300),
+      setTimeout(updateNavbarHeight, 500)
+    ];
+    
+    return () => {
+      window.removeEventListener('resize', updateNavbarHeight);
+      timeouts.forEach(timeout => clearTimeout(timeout));
+    };
+  }, [navbarHeight]);
   
   useEffect(() => {
     if (observerInitialized.current) return;
@@ -135,6 +165,14 @@ const Index = () => {
         <meta property="og:url" content={siteConfig.url} />
         <meta name="keywords" content={siteConfig.keywords} />
         <link rel="canonical" href={siteConfig.url} />
+        {/* Style pour résoudre le problème de double padding */}
+        <style type="text/css">
+          {`
+            body {
+              padding-top: 0 !important; /* S'assurer que le body n'a pas de padding-top */
+            }
+          `}
+        </style>
       </Helmet>
       
       {/* Ajout des boutons de navigation */}
@@ -153,107 +191,110 @@ const Index = () => {
       <div className="min-h-screen relative">
         <NavBar />
         
-        <header id="accueil" className="pt-10 pb-12 md:pb-10 relative bg-gradient-to-b from-white to-section-light">
-          <ParallaxScroll strength={0.2} direction="right" className="absolute top-16 right-10">
-            <div className="text-primary/40 animate-pulse-gentle">
-              <Sparkles size={40} />
-            </div>
-          </ParallaxScroll>
-          <ParallaxScroll strength={0.1} direction="left" className="absolute bottom-8 left-10">
-            <div className="text-secondary/40 animate-pulse-gentle" style={{ animationDelay: "1s" }}>
-              <Heart size={30} />
-            </div>
-          </ParallaxScroll>
-          
-          <div className="container px-4 mx-auto">
-            <div className="max-w-5xl mx-auto">
-              <div className="flex flex-col md:flex-row items-center gap-8">
-                <FadeInSection type="fade" direction="up" className="flex-1 text-center mx-auto max-w-2xl">
-                  <span className="inline-block px-3 py-1 text-xs font-medium text-primary bg-primary/20 rounded-full mb-4">
-                    <Sparkles className="inline mr-1 h-3 w-3" /> Accompagnement professionnel
-                  </span>
-                  <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight">
-                    Un accompagnement social personnalisé et professionnel en {siteConfig.contact.region}
-                  </h1>
-                  <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600">
-                    Diplômée d'État depuis 2009, je vous accompagne dans vos démarches sociales avec bienveillance et professionnalisme, que vous soyez un particulier ou un professionnel.
-                  </p>
-                  <SafeLink
-                    to="#contact"
-                  >
-                    <Button 
-                      size="lg"
-                      className="bg-primary hover:bg-primary/90 text-white px-6 py-6"
-                      hoverAnimation="strong"
-                      clickAnimation="bounce"
-                      onClick={() => scrollToSectionWithOffset('contact')}
-                    >
-                      Me contacter
-                      <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-                    </Button>
-                  </SafeLink>
-                </FadeInSection>
+        {/* Nous utilisons un div avec un style dynamique pour le padding-top */}
+        <div style={{ paddingTop: `${navbarHeight}px` }}>
+          <header id="accueil" className="pt-5 md:pt-10 pb-12 md:pb-10 relative bg-gradient-to-b from-white to-section-light">
+            <ParallaxScroll strength={0.2} direction="right" className="absolute top-16 right-10">
+              <div className="text-primary/40 animate-pulse-gentle">
+                <Sparkles size={40} />
               </div>
-              
-              <StaggeredReveal staggerDelay={150} initialDelay={300} className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-                {serviceCards.map((card, index) => (
-                  <div 
-                    key={index} 
-                    className={`bg-white p-6 shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 ${card.borderColor} flex flex-col h-full`} style={{ borderRadius: '0.5rem' }}
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-br ${card.gradientFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
-                    <div className={`absolute -right-4 -bottom-4 ${card.decorationColor} transform rotate-12 group-hover:scale-110 transition-transform`}>
-                      {card.decorationIcon}
+            </ParallaxScroll>
+            <ParallaxScroll strength={0.1} direction="left" className="absolute bottom-8 left-10">
+              <div className="text-secondary/40 animate-pulse-gentle" style={{ animationDelay: "1s" }}>
+                <Heart size={30} />
+              </div>
+            </ParallaxScroll>
+            
+            <div className="container px-4 mx-auto">
+              <div className="max-w-5xl mx-auto">
+                <div className="flex flex-col md:flex-row items-center gap-8">
+                  <FadeInSection type="fade" direction="up" className="flex-1 text-center mx-auto max-w-2xl">
+                    <span className="inline-block px-3 py-1 text-xs font-medium text-primary bg-primary/20 rounded-full mb-4">
+                      <Sparkles className="inline mr-1 h-3 w-3" /> Accompagnement professionnel
+                    </span>
+                    <h1 className="mb-4 md:mb-6 text-3xl md:text-5xl font-serif font-bold leading-tight">
+                      Un accompagnement social personnalisé et professionnel en {siteConfig.contact.region}
+                    </h1>
+                    <p className="mb-6 md:mb-8 text-base md:text-lg text-gray-600">
+                      Diplômée d'État depuis 2009, je vous accompagne dans vos démarches sociales avec bienveillance et professionnalisme, que vous soyez un particulier ou un professionnel.
+                    </p>
+                    <SafeLink
+                      to="#contact"
+                    >
+                      <Button 
+                        size="lg"
+                        className="bg-primary hover:bg-primary/90 text-white px-6 py-6"
+                        hoverAnimation="strong"
+                        clickAnimation="bounce"
+                        onClick={() => scrollToSectionWithOffset('contact')}
+                      >
+                        Me contacter
+                        <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                      </Button>
+                    </SafeLink>
+                  </FadeInSection>
+                </div>
+                
+                <StaggeredReveal staggerDelay={150} initialDelay={300} className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {serviceCards.map((card, index) => (
+                    <div 
+                      key={index} 
+                      className={`bg-white p-6 shadow-md hover:shadow-lg transition-all group relative overflow-hidden border-t-4 ${card.borderColor} flex flex-col h-full`} style={{ borderRadius: '0.5rem' }}
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${card.gradientFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
+                      <div className={`absolute -right-4 -bottom-4 ${card.decorationColor} transform rotate-12 group-hover:scale-110 transition-transform`}>
+                        {card.decorationIcon}
+                      </div>
+                      <OptimizedImage 
+                        src={card.image} 
+                        alt={card.alt} 
+                        className="w-full h-48 object-cover object-center rounded-md mb-4"
+                        width={600}
+                        height={400}
+                      />
+                      <div className="flex items-center mb-3">
+                        {card.icon}
+                        <h3 className="text-xl font-semibold text-primary">{card.title}</h3>
+                      </div>
+                      <p className="text-gray-600 relative z-10 flex-grow">{card.description}</p>
                     </div>
-                    <OptimizedImage 
-                      src={card.image} 
-                      alt={card.alt} 
-                      className="w-full h-48 object-cover object-center rounded-md mb-4"
-                      width={600}
-                      height={400}
-                    />
-                    <div className="flex items-center mb-3">
-                      {card.icon}
-                      <h3 className="text-xl font-semibold text-primary">{card.title}</h3>
-                    </div>
-                    <p className="text-gray-600 relative z-10 flex-grow">{card.description}</p>
-                  </div>
-                ))}
-              </StaggeredReveal>
+                  ))}
+                </StaggeredReveal>
+              </div>
             </div>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-section-dark to-transparent"></div>
-        </header>
+            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-section-dark to-transparent"></div>
+          </header>
 
-        <main className="relative z-10">
-          <AboutSection />
-          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
-          
-          <MissionsSection />
-          <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
-          
-          <TestimonialsSection />
-          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
-          
-          <ServicesSection />
-          <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
-          
-          <ReferentielSection />
-          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
-          
-          <DeontologieSection />
-          <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+          <main className="relative z-10">
+            <AboutSection />
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+            
+            <MissionsSection />
+            <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+            
+            <TestimonialsSection />
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+            
+            <ServicesSection />
+            <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+            
+            <ReferentielSection />
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+            
+            <DeontologieSection />
+            <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
 
-          {/* <EbookHero />
-          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div> */}
-          
-          <PricingSection />
-          <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
-          
-          <ContactSection />
-        </main>
+            {/* <EbookHero />
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div> */}
+            
+            <PricingSection />
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+            
+            <ContactSection />
+          </main>
 
-        <Footer />
+          <Footer />
+        </div>
       </div>
     </>
   );

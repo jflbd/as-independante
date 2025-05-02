@@ -70,7 +70,7 @@ const ContactSection = () => {
         <FadeInSection type="scale" delay={200} className="max-w-xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 p-6 md:p-8">
             <h3 className="text-xl font-bold mb-6 text-center">Formulaire de contact</h3>
-            <ContactForm />
+            <ContactForm isHomepage={true} />
             
             {/* Note explicative sous le formulaire */}
             <div className="mt-4 text-center text-sm text-gray-500">
