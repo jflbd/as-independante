@@ -16,10 +16,23 @@ export function formatDate(date: Date): string {
   }).format(date)
 }
 
+// Interface pour typer correctement les styles sauvegardés
+interface SavedStyles {
+  overflow?: string;
+  position?: string;
+  top?: string;
+  width?: string;
+  paddingRight?: string;
+  height?: string;
+  overflow_html?: string;
+  scrollBehavior?: string;
+  [key: string]: string | undefined;
+}
+
 // Variables pour le verrouillage du défilement
 let scrollPosition = 0;
 let scrollLocked = false;
-let originalStyle = {};
+let originalStyle: SavedStyles = {};
 
 /**
  * Verrouille le défilement du body tout en préservant la position de défilement actuelle

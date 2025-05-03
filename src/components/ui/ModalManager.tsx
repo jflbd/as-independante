@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { ModalContext } from '@/contexts/ModalContext';
+import { ModalContext } from '@/contexts/ModalContextTypes';
 import ContactForm from '../ContactForm';
 
 const ModalManager: React.FC = () => {

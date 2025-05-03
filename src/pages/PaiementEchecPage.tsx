@@ -4,7 +4,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, Home, HelpCircle, RefreshCw, ArrowUpLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/siteConfig';
-import { ModalContext, ModalProvider } from '@/contexts/ModalContext';
+import { ModalContext } from '@/contexts/ModalContextTypes';
+import { ModalProvider } from '@/contexts/ModalContext';
 import ModalManager from '@/components/ui/ModalManager';
 
 interface ErrorDetails {

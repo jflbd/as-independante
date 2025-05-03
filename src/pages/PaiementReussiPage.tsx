@@ -5,7 +5,8 @@ import { CheckCircle, Calendar, ArrowRight, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/siteConfig';
 import { OptimizedImage } from '@/components/OptimizedImage';
-import { ModalContext, ModalProvider } from '@/contexts/ModalContext';
+import { ModalContext } from '@/contexts/ModalContextTypes';
+import { ModalProvider } from '@/contexts/ModalContext';
 import ModalManager from '@/components/ui/ModalManager';
 
 // Définition du type pour canvas-confetti
@@ -160,11 +161,16 @@ const PaiementReussiPageContent = () => {
   
   // Fonction pour ouvrir la modale de contact avec les détails de la transaction
   const handleContactClick = () => {
+    // Conversion du montant en nombre si c'est une chaîne
+    const amountAsNumber = typeof paymentDetails?.amount === 'string' 
+      ? parseFloat(paymentDetails.amount) || 0 
+      : paymentDetails?.amount || 0;
+    
     // Utilisation de la nouvelle propriété transactionDetails plutôt que prefilledMessage
     openModal('contact', {
       context: 'successful_payment',
       transactionDetails: {
-        amount: paymentDetails?.amount,
+        amount: amountAsNumber,
         description: paymentDetails?.description || 'Non spécifiée',
         date: new Date().toLocaleDateString('fr-FR'),
         transactionId: transactionId,
