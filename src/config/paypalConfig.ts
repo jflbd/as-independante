@@ -2,8 +2,11 @@
 export const paypalConfig = {
   // Récupère le client ID depuis les variables d'environnement
   clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID || 'AZLVmuBjvzf8X1Tn33Hw0fz5m4PpBYqAoXmWsCDAVZdwd3F_KWLv4ojfHshrogmeLhhTl2Z4uzbvr8aY',
-  // Mode test activé par défaut en développement
-  testMode: import.meta.env.DEV || import.meta.env.VITE_APP_ENV === 'development' || false,
+  
+  // Mode test activé uniquement si nous sommes explicitement en développement
+  // La condition est modifiée pour éviter les problèmes sur Vercel
+  testMode: import.meta.env.VITE_APP_ENV !== 'production',
+  
   // Options de style pour les boutons PayPal
   styles: {
     standard: {
@@ -31,14 +34,14 @@ export const paypalConfig = {
   },
   
   // Options de debug pour les Smart Payment Buttons
-  debug: true,
+  debug: import.meta.env.VITE_APP_ENV !== 'production',
   
   // Configuration des options pour le SDK PayPal
   sdkOptions: {
     clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
     currency: "EUR",
     intent: "capture",
-    debug: true,
+    debug: import.meta.env.VITE_APP_ENV !== 'production',
     components: "buttons,marks"
   },
   

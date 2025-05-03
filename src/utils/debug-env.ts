@@ -34,7 +34,8 @@ export function logEnvironmentVariables() {
       'Client ID:',
       `${paypalClientId.substring(0, 10)}...${paypalClientId.substring(paypalClientId.length - 5)}`
     );
-    console.log('Mode test:', import.meta.env.DEV || import.meta.env.VITE_APP_ENV === 'development' ? 'Activé' : 'Désactivé');
+    // Utiliser la même logique que dans paypalConfig.ts
+    console.log('Mode test:', import.meta.env.VITE_APP_ENV !== 'production' ? 'Activé' : 'Désactivé');
   } else {
     console.log('Client ID: NON DÉFINI - Vérifiez vos fichiers .env');
   }

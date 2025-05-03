@@ -17,7 +17,8 @@ const stripeKeyWarning = () => {
 
 export const stripeConfig = {
   publishableKey: stripeKeyWarning(),
-  testMode: import.meta.env.MODE !== 'production',
+  // Utilisation de la même logique que pour PayPal pour déterminer le mode test
+  testMode: import.meta.env.VITE_APP_ENV !== 'production',
   appearance: {
     theme: 'stripe' as const,
     variables: {
