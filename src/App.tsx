@@ -13,6 +13,7 @@ import TelechargementPage from './pages/TelechargementPage';
 import { ebookConfig } from './config/ebookConfig';
 import { useScrollToTop } from './hooks/useScrollToTop';
 import { ScrollUnlocker } from './components/ui/ScrollUnlocker';
+import NotFound from './pages/NotFound';
 
 function App() {
   // Active le défilement vers le haut à chaque changement de page pour toutes les routes
@@ -40,7 +41,7 @@ function App() {
         <Route path="/paiement-echec" element={<PaiementEchecPage />} />
         <Route path="/paiement-annule" element={<PaiementAnnulePage />} />
         <Route path="/telechargement/:token" element={<TelechargementPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

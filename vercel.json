@@ -107,8 +107,10 @@
       "permanent": false
     }
   ],
-  "env": {
-    "DEBUG": "true",
-    "VITE_APP_DEBUG": "true"
-  }
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }

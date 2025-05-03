@@ -729,10 +729,11 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
             )}
           </Button>
         </div>
+        
       </form>
       
-      {/* Bouton placé en dehors de la div rouge pour l'affichage des erreurs */}
-      {formStatus === 'error' && (
+      {/* Bouton placé en dehors de la div rouge pour l'affichage des erreurs - uniquement pour les modales */}
+      {formStatus === 'error' && inModal && (
         <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20">
           <Button
             onClick={handleResetForm}

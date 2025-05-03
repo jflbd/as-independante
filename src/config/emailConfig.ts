@@ -4,9 +4,7 @@
 export const emailConfig = {
   // URL de l'endpoint de la fonction serverless
   // Utilisation du chemin relatif `/api/send-email` en production
-  sendEmailEndpoint: process.env.NODE_ENV === 'production' || !import.meta.env.DEV
-    ? '/api/send-email'
-    : 'http://localhost:3000/api/send-email',
+  sendEmailEndpoint: '/api/send-email',  // Toujours utiliser un chemin relatif pour éviter les problèmes de CSP
     
   // Configuration des templates d'emails
   templates: {
