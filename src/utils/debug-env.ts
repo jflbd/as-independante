@@ -58,6 +58,8 @@ export function logEnvironmentVariables() {
     } else {
       console.log('Clé secrète: NON DÉFINIE - Vérifiez vos fichiers .env');
     }
+    // Ajouter l'affichage du mode test pour Stripe
+    console.log('Mode test:', import.meta.env.VITE_APP_ENV !== 'production' ? 'Activé' : 'Désactivé');
   } else {
     console.log('Clé publique: NON DÉFINIE - Vérifiez vos fichiers .env');
   }
