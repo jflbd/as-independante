@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import AppLayout from './components/AppLayout';
 import Index from './pages/Index';
 import LegalNotices from './pages/LegalNotices';
@@ -20,6 +20,8 @@ function App() {
   // Active le défilement vers le haut à chaque changement de page pour toutes les routes
   useScrollToTop();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [shouldShow404, setShouldShow404] = useState(false);
   
   // Intercepter le paramètre notfound de l'URL
   useEffect(() => {
@@ -27,16 +29,15 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const notfoundPath = urlParams.get('notfound');
     
-    // Si on a le paramètre notfound, on enlève le paramètre de l'URL
-    // mais on maintient l'affichage de la page 404
+    // Si on a le paramètre notfound, naviguer vers la page 404
     if (notfoundPath) {
-      // Mettre à jour l'URL pour enlever le paramètre sans recharger la page
-      window.history.replaceState({}, '', '/404');
+      // On utilise navigate au lieu de window.history.replaceState pour forcer le rendu du composant 404
+      navigate('/404', { replace: true, state: { path: notfoundPath } });
       
       // Logging pour le débogage
       console.log(`Page 404 affichée pour: ${notfoundPath}`);
     }
-  }, [location]);
+  }, [navigate]);
   
   // Contrôle d'accès à la page Ebook
   const EbookRouteHandler = () => {
