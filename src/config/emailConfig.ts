@@ -6,7 +6,7 @@ export const emailConfig = {
   // Utilisation du chemin relatif `/api/send-email` en production
   sendEmailEndpoint: process.env.NODE_ENV === 'production' || !import.meta.env.DEV
     ? '/api/send-email'
-    : 'http://localhost:8080/api/send-email',
+    : 'http://localhost:3000/api/send-email',
     
   // Configuration des templates d'emails
   templates: {
