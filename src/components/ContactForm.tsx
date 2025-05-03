@@ -556,79 +556,75 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
   const renderQuoteForm = () => {
     return (
       <>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div>
-            <label htmlFor="name" className="block text-gray-700 mb-2">Nom et prénom</label>
+            <label htmlFor="name" className="block text-gray-700 mb-1 sm:mb-2 text-sm sm:text-base">Nom et prénom</label>
             <input 
               id="name"
               name="name"
               type="text"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-sm sm:text-base"
               required
               disabled={isSubmitting}
-              placeholder="Votre nom complet"
             />
           </div>
           
           <div>
-            <label htmlFor="company" className="block text-gray-700 mb-2">Entreprise / Organisation</label>
+            <label htmlFor="company" className="block text-gray-700 mb-1 sm:mb-2 text-sm sm:text-base">Entreprise / Organisation</label>
             <input 
               id="company"
               name="company"
               type="text"
               value={formData.company || ''}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-sm sm:text-base"
               required
               disabled={isSubmitting}
-              placeholder="Entreprise/Organisation"
             />
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
           <div>
-            <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
+            <label htmlFor="email" className="block text-gray-700 mb-1 sm:mb-2 text-sm sm:text-base">Email</label>
             <input 
               id="email"
               name="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-sm sm:text-base"
               required
               disabled={isSubmitting}
-              placeholder="votre.email@example.com"
             />
           </div>
           
           <div>
-            <label htmlFor="phone" className="block text-gray-700 mb-2">Téléphone</label>
+            <label htmlFor="phone" className="block text-gray-700 mb-1 sm:mb-2 text-sm sm:text-base">Téléphone</label>
             <input 
               id="phone"
               name="phone"
               type="tel"
               value={formData.phone || ''}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-sm sm:text-base"
               required
               disabled={isSubmitting}
-              placeholder="Votre téléphone"
             />
           </div>
         </div>
         
-        <div className="mt-6">
-          <label htmlFor="message" className="block text-gray-700 mb-2">Votre besoin d'accompagnement</label>
+        <div className="mt-4 md:mt-6">
+          <label htmlFor="message" className="block text-gray-700 mb-1 sm:mb-2 text-sm sm:text-base">Votre besoin d'accompagnement</label>
           <textarea 
             id="message"
             name="message"
-            rows={5}
-            value={formData.message || ''}
+            rows={4}
+            value={formData.message}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+            className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary resize-none text-sm sm:text-base"
             required
             disabled={isSubmitting}
             placeholder="Décrivez brièvement votre situation et vos attentes..."

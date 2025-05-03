@@ -1,173 +1,100 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { forceUnlockScroll } from '@/lib/utils';
 
 /**
- * Composant de sécurité qui restaure le défilement de la page dans tous les cas.
- * Il détecte lorsque le défilement est bloqué de manière incorrecte et le restaure.
+ * Composant de sécurité qui restaure le défilement de la page si nécessaire
+ * Détecte automatiquement si le défilement est bloqué incorrectement et le restaure
  */
 export const ScrollUnlocker = () => {
+  // Référence pour suivre si des vérifications sont en cours
+  const isCheckingRef = useRef(false);
+  
   // Fonction optimisée pour vérifier et corriger le verrouillage du scroll
   const checkAndFixScrollLock = useCallback(() => {
-    if (typeof window !== 'undefined' && document) {
+    if (isCheckingRef.current || typeof window === 'undefined') return;
+    
+    isCheckingRef.current = true;
+    
+    try {
       const body = document.body;
       const html = document.documentElement;
       
-      // Vérifier si une modale de Radix UI ou autre composant modal est actuellement ouverte
-      const isRadixModalOpen = document.querySelector('[data-state="open"]');
-      const isDialogOpen = document.querySelector('[role="dialog"][aria-modal="true"]');
-      const isTarteAuCitronOpen = document.getElementById('tarteaucitron')?.style.display === 'block' || 
-                                 document.getElementById('tarteaucitronAlertBig')?.style.display === 'block';
+      // 1. Vérifier si une modale est actuellement ouverte
+      const hasOpenModal = 
+        document.querySelector('[data-state="open"]') || // Dialog de Radix UI
+        document.querySelector('[role="dialog"][aria-modal="true"]') || // Dialogue standard
+        document.getElementById('tarteaucitronAlertBig')?.style.display === 'block'; // TarteAuCitron
       
-      // Signes que le défilement pourrait être bloqué incorrectement
-      const isScrollLocked = 
+      // 2. Vérifier si le défilement semble bloqué
+      const hasScrollLock = 
         body.style.overflow === 'hidden' || 
         body.style.position === 'fixed' ||
         body.classList.contains('scroll-locked') ||
         body.classList.contains('modal-open') ||
         html.style.overflow === 'hidden' ||
-        html.style.position === 'fixed' ||
-        html.hasAttribute('data-scroll-locked') ||
-        body.hasAttribute('data-scroll-locked');
+        html.getAttribute('data-scroll-locked') === 'true';
       
-      // Test fonctionnel de la capacité de défilement
-      const canScroll = document.documentElement.scrollHeight > window.innerHeight && 
-                       !isRadixModalOpen && 
-                       !isDialogOpen &&
-                       !isTarteAuCitronOpen;
-      
-      // Si le défilement semble bloqué mais qu'aucune modale n'est ouverte, débloquer
-      if (isScrollLocked && canScroll) {
-        console.log('ScrollUnlocker: Déverrouillage forcé du défilement');
+      // 3. Si le défilement est bloqué mais qu'aucune modale n'est ouverte, débloquer
+      if (hasScrollLock && !hasOpenModal) {
+        console.log('ScrollUnlocker: Déverrouillage du défilement bloqué incorrectement');
         forceUnlockScroll();
-        
-        // Tentative de restauration supplémentaire des propriétés
-        body.style.overflow = '';
-        body.style.position = '';
-        body.style.top = '';
-        body.style.width = '';
-        body.style.paddingRight = '';
-        body.style.height = '';
-        html.style.overflow = '';
-        html.style.height = '';
-        html.style.position = '';
-        
-        // Restaurer le corps en cas de classe tarteaucitron
-        body.classList.remove('tarteaucitron-modal-open');
-        
-        // Essayer de rétablir le comportement normal de défilement
-        setTimeout(() => {
-          window.scrollTo(0, window.scrollY || 0);
-        }, 10);
       }
+    } finally {
+      isCheckingRef.current = false;
     }
   }, []);
 
   useEffect(() => {
-    // Fonction qui vérifie l'état avec une série de délais croissants
-    const checkWithDelays = () => {
-      // Exécuter immédiatement
-      checkAndFixScrollLock();
-      
-      // Puis avec des délais progressifs pour capturer différents timings de fermeture
-      setTimeout(checkAndFixScrollLock, 100);
-      setTimeout(checkAndFixScrollLock, 300);
-      setTimeout(checkAndFixScrollLock, 800);
-    };
+    // Exécuter la vérification à l'initialisation
+    checkAndFixScrollLock();
     
-    // Vérifier au chargement initial
-    checkWithDelays();
+    // Vérifications périodiques et sur des événements clés
+    const checkWithDelay = () => setTimeout(checkAndFixScrollLock, 300);
     
-    // Capturer les événements qui pourraient indiquer une fermeture de modal
-    const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        checkWithDelays();
-      }
-    };
+    // Événements susceptibles d'affecter le défilement
+    window.addEventListener('resize', checkWithDelay);
+    window.addEventListener('orientationchange', checkWithDelay);
+    window.addEventListener('popstate', checkWithDelay);
+    window.addEventListener('pageshow', checkWithDelay);
     
-    // Délégation d'événements pour capturer les clics sur des boutons de fermeture
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      
-      // Vérifier si le clic est sur un bouton de fermeture potentiel
-      if (target.closest('[aria-label*="close" i], [aria-label*="fermer" i], .close-button, .close, [data-close], #tarteaucitronClosePanel, #tarteaucitronCloseCross, .tarteaucitronDeny')) {
-        checkWithDelays();
-      } else {
-        // Pour tout autre clic, vérifier avec un léger délai
-        setTimeout(checkAndFixScrollLock, 300);
-      }
-    };
+    // Vérification lors d'un clic (potentielle fermeture de modale)
+    document.addEventListener('click', checkWithDelay);
     
-    // Observer les changements dans le DOM qui pourraient indiquer qu'une modal a été fermée
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        // Si des nœuds sont supprimés, cela pourrait être une modal qui se ferme
-        if (mutation.removedNodes.length > 0) {
-          checkWithDelays();
-          break;
-        }
-        
-        // Si des attributs de style ou de classe changent sur body ou html
-        if (mutation.type === 'attributes' && 
-            (mutation.target === document.body || mutation.target === document.documentElement)) {
-          checkWithDelays();
-          break;
-        }
-        
-        // Si l'affichage de tarteaucitron change
-        if (mutation.type === 'attributes' && 
-            (mutation.target as HTMLElement).id === 'tarteaucitron' && 
-            (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
-          checkWithDelays();
-          break;
-        }
-      }
+    // Vérification lors de l'appui sur Echap
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') checkWithDelay();
     });
     
-    // Observer le body et le html pour les changements d'attributs
-    observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'class'] });
-    
-    // Observer le document pour les changements de structure qui pourraient indiquer une modal fermée
-    observer.observe(document.body, { childList: true, subtree: true });
-    
-    // Observer spécifiquement tarteaucitron
-    const tarteaucitronElem = document.getElementById('tarteaucitron');
-    if (tarteaucitronElem) {
-      observer.observe(tarteaucitronElem, { attributes: true });
-    }
-    
-    // Écouter les événements tarteaucitron
-    window.addEventListener('tac.close_panel', checkWithDelays);
-    window.addEventListener('tac.close_alert', checkWithDelays);
-    
-    // Ajouter les écouteurs d'événements
-    window.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('click', handleClick);
-    window.addEventListener('resize', checkAndFixScrollLock);
-    window.addEventListener('popstate', checkWithDelays);
-    window.addEventListener('hashchange', checkWithDelays);
-    window.addEventListener('pagehide', forceUnlockScroll);
-    window.addEventListener('pageshow', checkWithDelays);
-    
-    // Vérification périodique pour les cas persistants
+    // Vérification périodique en arrière-plan (toutes les 3 secondes)
     const interval = setInterval(checkAndFixScrollLock, 3000);
+    
+    // Observer les changements aux attributs style/class de body et html
+    const observer = new MutationObserver(checkWithDelay);
+    observer.observe(document.body, { 
+      attributes: true, 
+      attributeFilter: ['style', 'class']
+    });
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['style', 'class'] 
+    });
     
     return () => {
       // Nettoyage
-      window.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('click', handleClick);
-      window.removeEventListener('resize', checkAndFixScrollLock);
-      window.removeEventListener('popstate', checkWithDelays);
-      window.removeEventListener('hashchange', checkWithDelays);
-      window.removeEventListener('pagehide', forceUnlockScroll);
-      window.removeEventListener('pageshow', checkWithDelays);
-      window.removeEventListener('tac.close_panel', checkWithDelays);
-      window.removeEventListener('tac.close_alert', checkWithDelays);
-      observer.disconnect();
+      window.removeEventListener('resize', checkWithDelay);
+      window.removeEventListener('orientationchange', checkWithDelay);
+      window.removeEventListener('popstate', checkWithDelay);
+      window.removeEventListener('pageshow', checkWithDelay);
+      document.removeEventListener('click', checkWithDelay);
+      
       clearInterval(interval);
+      observer.disconnect();
+      
+      // Force un déverrouillage au démontage
       forceUnlockScroll();
     };
   }, [checkAndFixScrollLock]);
   
-  return null; // Ce composant ne rend rien visuellement
+  // Ce composant ne rend rien visuellement
+  return null;
 };

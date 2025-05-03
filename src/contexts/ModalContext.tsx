@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import React, { createContext, useState, ReactNode, useEffect, useCallback, useRef } from 'react';
 import { lockScroll, unlockScroll, forceUnlockScroll } from '@/lib/utils';
 
 export type ModalType = 'contact' | 'legal' | 'quote' | null;
@@ -12,13 +12,15 @@ interface ErrorDetails {
 
 interface ModalData {
   section?: string;
-  context?: string; // Pour identifier la source du contact (ex: 'payment_error')
-  errorDetails?: ErrorDetails; // Pour les détails d'erreur de paiement
+  context?: string;
+  errorDetails?: ErrorDetails;
+  prefilledMessage?: string;
+  transactionDetails?: Record<string, any>;
   [key: string]: unknown;
 }
 
 export interface ModalContextType {
-  openModal: (modalType: ModalType, initialData?: ModalData) => void;
+  openModal: (modalType: ModalType, initialData?: ModalData | null) => void;
   closeModal: () => void;
   activeModal: ModalType;
   modalData: ModalData | null;
@@ -37,43 +39,39 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [modalData, setModalData] = useState<ModalData | null>(null);
   const [isUnlocking, setIsUnlocking] = useState(false);
+  
+  // Référence pour la position de défilement
+  const scrollPositionRef = useRef<number>(0);
 
-  // Fonction pour déverrouiller le scroll de manière fiable
+  // Fonction pour s'assurer que le déverrouillage est complet
   const ensureScrollUnlocked = useCallback(() => {
-    // Marquer le début du processus de déverrouillage
+    if (isUnlocking) return;
+    
     setIsUnlocking(true);
-
-    // Déverrouillage principal
     unlockScroll();
-
-    // Double vérification avec un délai
+    
+    // Double vérification après un court délai
     setTimeout(() => {
-      // Si le scroll est toujours bloqué, forcer le déverrouillage
       if (document.body.style.overflow === 'hidden' || 
-          document.body.style.position === 'fixed' || 
-          document.documentElement.hasAttribute('data-scroll-locked')) {
-        console.log("Déverrouillage forcé après délai");
+          document.body.style.position === 'fixed') {
         forceUnlockScroll();
       }
       setIsUnlocking(false);
-    }, 300);
-  }, []);
+    }, 100);
+  }, [isUnlocking]);
 
-  // S'assurer que le défilement est toujours restauré lors du démontage du composant
+  // Nettoyage lors du démontage
   useEffect(() => {
-    return () => {
-      // Si le composant est démonté, s'assurer de libérer le défilement
-      ensureScrollUnlocked();
-    };
+    return () => ensureScrollUnlocked();
   }, [ensureScrollUnlocked]);
 
-  // Gestion des changements d'état de la modal
+  // Gestion des changements d'état de la modale
   useEffect(() => {
     if (activeModal) {
-      // Verrouiller le défilement quand une modale est active
+      // Mémoriser la position actuelle avant de verrouiller
+      scrollPositionRef.current = window.scrollY;
       lockScroll();
-    } else if (activeModal === null && !isUnlocking) {
-      // Déverrouiller le défilement quand aucune modale n'est active
+    } else if (!isUnlocking) {
       ensureScrollUnlocked();
     }
   }, [activeModal, ensureScrollUnlocked, isUnlocking]);
@@ -87,20 +85,46 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeModal]);
 
   const openModal = (modalType: ModalType, initialData: ModalData | null = null) => {
-    setActiveModal(modalType);
-    setModalData(initialData);
+    // Enregistrer la position actuelle de défilement
+    scrollPositionRef.current = window.scrollY;
+    
+    // Mettre à jour l'état - délai minimal pour éviter les problèmes de rendu
+    setTimeout(() => {
+      setActiveModal(modalType);
+      setModalData(initialData);
+    }, 10);
   };
 
   const closeModal = () => {
+    // Réinitialiser l'état des modales
     setActiveModal(null);
     setModalData(null);
-    ensureScrollUnlocked();
+    
+    // Déverrouillage progressif
+    setIsUnlocking(true);
+    unlockScroll();
+    
+    // Restauration de la position avec temporisation
+    const savedPosition = scrollPositionRef.current;
+    setTimeout(() => {
+      // Restaurer la position de défilement
+      if (savedPosition > 0) {
+        window.scrollTo(0, savedPosition);
+      }
+      
+      // Vérification finale
+      setTimeout(() => {
+        if (document.body.style.overflow === 'hidden' || 
+            document.body.style.position === 'fixed') {
+          forceUnlockScroll();
+        }
+        setIsUnlocking(false);
+      }, 50);
+    }, 20);
   };
 
   return (

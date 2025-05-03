@@ -13,6 +13,9 @@ import {
 const CookieBanner = () => {
   const { consent, setConsent, showBanner, setShowBanner } = useCookieConsent();
   const [showDetails, setShowDetails] = useState(false);
+  
+  // Générer un ID unique pour la description du dialogue
+  const cookiePolicyDescriptionId = "cookie-policy-description";
 
   if (!showBanner) return null;
 
@@ -48,10 +51,13 @@ const CookieBanner = () => {
                   En savoir plus sur notre politique de cookies
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+              <DialogContent 
+                className="max-w-3xl max-h-[80vh] overflow-y-auto"
+                aria-describedby={cookiePolicyDescriptionId}
+              >
                 <DialogHeader>
                   <DialogTitle>Politique de cookies</DialogTitle>
-                  <DialogDescription>
+                  <DialogDescription id={cookiePolicyDescriptionId}>
                     Informations détaillées sur notre utilisation des cookies
                   </DialogDescription>
                 </DialogHeader>

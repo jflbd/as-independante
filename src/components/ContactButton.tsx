@@ -13,7 +13,7 @@ interface ContactButtonProps {
   context?: string;
   hoverAnimation?: "subtle" | "medium" | "strong" | "none";
   clickAnimation?: "bounce" | "scale" | "glow" | "none";
-  onClick?: () => void; // Nouvelle prop pour permettre des actions supplémentaires au clic
+  onClick?: (e: React.MouseEvent) => void; // Nouvelle prop pour permettre des actions supplémentaires au clic
 }
 
 const ContactButton: React.FC<ContactButtonProps> = ({ 
@@ -30,7 +30,10 @@ const ContactButton: React.FC<ContactButtonProps> = ({
 }) => {
   const { openModal } = useModal();
   
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Empêcher le comportement par défaut qui peut causer un défilement vers le haut
+    e.preventDefault();
+    
     // Si un contexte est fourni, le passer à la fonction d'ouverture de la modale
     if (context) {
       console.log(`ContactButton: ouverture modale avec contexte="${context}"`);
@@ -38,10 +41,10 @@ const ContactButton: React.FC<ContactButtonProps> = ({
     } else {
       openModal(modalType);
     }
-
-    // Exécuter l'action supplémentaire si fournie
+    
+    // Si un gestionnaire onClick personnalisé est fourni, l'appeler aussi
     if (onClick) {
-      onClick();
+      onClick(e);
     }
   };
   
