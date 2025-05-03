@@ -21,8 +21,10 @@ async function convertToWebP(filePath) {
     const webpPath = filePath.substring(0, filePath.lastIndexOf(".")) + ".webp";
     console.log(`Conversion de ${filePath} vers ${webpPath}...`);
 
-    // Conversion vers WebP avec une qualité de 80%
-    await sharp(filePath).webp({ quality: 80 }).toFile(webpPath);
+    // Conversion vers WebP avec une qualité augmentée à 90%
+    await sharp(filePath)
+      .webp({ quality: 90, lossless: false, effort: 4 })
+      .toFile(webpPath);
 
     console.log(`✓ Converti: ${path.basename(webpPath)}`);
   } catch (error) {

@@ -356,91 +356,103 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
     
     if (formStatus === 'success') {
       return (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#e0f7e6] z-10 px-6 py-8 text-center">
-          <div className="bg-[#c1f8d2] rounded-full p-6 mb-6">
-            <div className="h-24 w-24 rounded-full bg-[#23a54c]/20 flex items-center justify-center">
-              <CheckCircle2 className="h-12 w-12 text-[#23a54c]" />
+        <>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#e0f7e6] z-10 px-6 py-8 text-center rounded-t-lg">
+            <div className="bg-[#c1f8d2] rounded-full p-6 mb-6">
+              <div className="h-24 w-24 rounded-full bg-[#23a54c]/20 flex items-center justify-center">
+                <CheckCircle2 className="h-12 w-12 text-[#23a54c]" />
+              </div>
             </div>
+            <h3 className="text-xl font-bold text-[#166534] mb-3">Demande envoyée avec succès !</h3>
+            <p className="text-[#166534] text-lg mb-5">Je vous répondrai dans les plus brefs délais.</p>
+            
+            <p className="text-[#15803d] mb-6">
+              {inModal ? 
+                `Cette fenêtre se fermera automatiquement dans ${countdown} secondes...` : 
+                `Ce message disparaîtra dans ${countdown} secondes...`
+              }
+            </p>
           </div>
-          <h3 className="text-3xl font-bold text-[#166534] mb-3">Demande envoyée avec succès !</h3>
-          <p className="text-[#166534] text-lg mb-5">Je vous répondrai dans les plus brefs délais.</p>
-          
-          <p className="text-[#15803d] mb-6">
-            {inModal ? 
-              `Cette fenêtre se fermera automatiquement dans ${countdown} secondes...` : 
-              `Ce message disparaîtra dans ${countdown} secondes...`
-            }
-          </p>
           
           {onSuccess && (
-            <Button
-              type="button"
-              onClick={() => {
-                // Appeler directement onSuccess sans setTimeout pour fermer immédiatement la modale
-                if (onSuccess) onSuccess();
-              }}
-              className="bg-[#0d8496] hover:bg-[#065964] text-white px-8 py-3 rounded-md text-base font-medium"
-            >
-              Fermer maintenant
-            </Button>
+            <div className="absolute bottom-0 left-0 right-0 z-20 flex justify-center bg-white py-4 border-t border-gray-200 rounded-b-lg">
+              <Button
+                type="button"
+                onClick={() => {
+                  if (onSuccess) onSuccess();
+                }}
+                className="bg-[#0d8496] hover:bg-[#065964] text-white px-8 py-3 rounded-md text-base font-medium"
+              >
+                Fermer maintenant
+              </Button>
+            </div>
           )}
-        </div>
+        </>
       );
     }
     
     // Garder le même style pour success_pending
     if (formStatus === 'success_pending') {
       return (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-yellow-50 z-10 px-6 py-8 text-center">
-          <div className="bg-yellow-200 rounded-full p-6 mb-4">
-            <Clock className="h-16 w-16 text-yellow-600" />
+        <>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-yellow-50 z-10 px-6 py-8 text-center rounded-t-lg">
+            <div className="bg-yellow-200 rounded-full p-6 mb-4">
+              <Clock className="h-16 w-16 text-yellow-600" />
+            </div>
+            <h3 className="text-xl font-bold text-yellow-800 mb-2">Message en cours de traitement</h3>
+            <p className="text-yellow-700 mb-4">Votre message est en cours d'envoi et sera traité dès que possible.</p>
+            <p className="text-yellow-600 text-sm mb-6">
+              {inModal ? 
+                `Cette fenêtre se fermera automatiquement dans ${countdown} secondes...` : 
+                `Ce message disparaîtra dans ${countdown} secondes...`
+              }
+            </p>
           </div>
-          <h3 className="text-2xl font-bold text-yellow-800 mb-2">Message en cours de traitement</h3>
-          <p className="text-yellow-700 mb-4">Votre message est en cours d'envoi et sera traité dès que possible.</p>
-          <p className="text-yellow-600 text-sm mb-6">
-            {inModal ? 
-              `Cette fenêtre se fermera automatiquement dans ${countdown} secondes...` : 
-              `Ce message disparaîtra dans ${countdown} secondes...`
-            }
-          </p>
+          
           {onSuccess && (
-            <Button
-              type="button"
-              onClick={() => {
-                // Appeler directement onSuccess sans setTimeout pour fermer immédiatement la modale
-                if (onSuccess) onSuccess();
-              }}
-              className="bg-[#0d8496] hover:bg-[#065964] text-white px-8"
-            >
-              Fermer maintenant
-            </Button>
+            <div className="absolute bottom-0 left-0 right-0 z-20 flex justify-center bg-white py-4 border-t border-gray-200 rounded-b-lg">
+              <Button
+                type="button"
+                onClick={() => {
+                  if (onSuccess) onSuccess();
+                }}
+                className="bg-[#0d8496] hover:bg-[#065964] text-white px-8 py-3 rounded-md text-base font-medium"
+              >
+                Fermer maintenant
+              </Button>
+            </div>
           )}
-        </div>
+        </>
       );
     }
     
     if (formStatus === 'error') {
       return (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-50 z-10 px-6 py-8 text-center">
-          <div className="bg-red-200 rounded-full p-6 mb-4">
-            <AlertCircle className="h-16 w-16 text-red-600" />
+        <>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-50 z-10 px-6 py-8 text-center rounded-t-lg">
+            <div className="bg-red-200 rounded-full p-6 mb-4">
+              <AlertCircle className="h-16 w-16 text-red-600" />
+            </div>
+            <h3 className="text-xl font-bold text-red-800 mb-2">Erreur lors de l'envoi</h3>
+            <p className="text-red-700 mb-4">{errorMessage}</p>
+            <p className="text-red-600 text-sm mb-6">
+              {inModal ? 
+                `Le formulaire sera réinitialisé dans ${countdown} secondes...` : 
+                `Ce message disparaîtra dans ${countdown} secondes...`
+              }
+            </p>
           </div>
-          <h3 className="text-2xl font-bold text-red-800 mb-2">Erreur lors de l'envoi</h3>
-          <p className="text-red-700 mb-4">{errorMessage}</p>
-          <p className="text-red-600 text-sm mb-6">
-          {inModal ? 
-              `Le formulaire sera réinitialisé dans ${countdown} secondes...` : 
-              `Ce message disparaîtra dans ${countdown} secondes...`
-            }
-          </p>
-          <Button
-            onClick={handleResetForm}
-            className="bg-red-600 hover:bg-red-700 text-white px-8 flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Réessayer maintenant
-          </Button>
-        </div>
+          
+          <div className="absolute bottom-0 left-0 right-0 z-20 flex justify-center bg-white py-4 border-t border-gray-200 rounded-b-lg">
+            <Button
+              onClick={handleResetForm}
+              className="bg-red-600 hover:bg-red-700 text-white px-8 flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Réessayer maintenant
+            </Button>
+          </div>
+        </>
       );
     }
     
@@ -718,6 +730,49 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
           </Button>
         </div>
       </form>
+      
+      {/* Bouton placé en dehors de la div rouge pour l'affichage des erreurs */}
+      {formStatus === 'error' && (
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20">
+          <Button
+            onClick={handleResetForm}
+            className="bg-red-600 hover:bg-red-700 text-white px-8 flex items-center gap-2 shadow-lg"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Réessayer maintenant
+          </Button>
+        </div>
+      )}
+      
+      {/* Bouton placé en dehors de la div verte pour le cas de succès */}
+      {formStatus === 'success' && onSuccess && (
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20">
+          <Button
+            type="button"
+            onClick={() => {
+              if (onSuccess) onSuccess();
+            }}
+            className="bg-[#0d8496] hover:bg-[#065964] text-white px-8 py-3 rounded-md text-base font-medium shadow-lg"
+          >
+            Fermer maintenant
+          </Button>
+        </div>
+      )}
+      
+      {/* Bouton placé en dehors de la div jaune pour le cas de succès en attente */}
+      {formStatus === 'success_pending' && onSuccess && (
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20">
+          <Button
+            type="button"
+            onClick={() => {
+              if (onSuccess) onSuccess();
+            }}
+            className="bg-[#0d8496] hover:bg-[#065964] text-white px-8 shadow-lg"
+          >
+            Fermer maintenant
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

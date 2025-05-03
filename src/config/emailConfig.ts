@@ -3,12 +3,10 @@
  */
 export const emailConfig = {
   // URL de l'endpoint de la fonction serverless
-  // Pour résoudre le problème de port, on force l'utilisation du port 8080 en développement
-  sendEmailEndpoint: import.meta.env.DEV 
-    ? 'http://localhost:8080/api/send-email'
-    : (import.meta.env.VITE_API_BASE_URL 
-       ? `${import.meta.env.VITE_API_BASE_URL}/send-email` 
-       : '/api/send-email'),
+  // Utilisation du chemin relatif `/api/send-email` en production
+  sendEmailEndpoint: process.env.NODE_ENV === 'production' || !import.meta.env.DEV
+    ? '/api/send-email'
+    : 'http://localhost:8080/api/send-email',
     
   // Configuration des templates d'emails
   templates: {
