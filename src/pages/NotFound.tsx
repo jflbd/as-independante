@@ -2,6 +2,7 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { OptimizedImage } from "../components/OptimizedImage";
 import { ArrowLeft, Home, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/siteConfig";
 import { scrollToSectionWithNavOffset } from "@/utils/scroll-utils";
 
@@ -29,6 +30,10 @@ const NotFound = () => {
       
       scrollToSectionWithNavOffset('contact', navbarHeight, 20);
     }, 500); // Délai pour permettre le chargement de la page
+  };
+  
+  const goToHome = () => {
+    navigate('/');
   };
 
   return (
@@ -79,15 +84,28 @@ const NotFound = () => {
               </ul>
             </div>
             
-            {/* Boutons d'action */}
+            {/* Boutons d'action avec les animations du site */}
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <Link 
-                to="/" 
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-white hover:bg-secondary transition-colors duration-300"
+              <Button 
+                onClick={goToHome}
+                className="flex items-center justify-center gap-2"
+                hoverAnimation="medium"
+                clickAnimation="bounce"
               >
                 <Home size={18} />
                 <span>Page d'accueil</span>
-              </Link>
+              </Button>
+              
+              <Button 
+                variant="secondary"
+                onClick={navigateToContact}
+                className="flex items-center justify-center gap-2"
+                hoverAnimation="medium"
+                clickAnimation="bounce"
+              >
+                <AlertCircle size={18} />
+                <span>Besoin d'aide?</span>
+              </Button>
             </div>
           </div>
         </div>
