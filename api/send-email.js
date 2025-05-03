@@ -7,6 +7,18 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
 
+  // Vérifier si le mode debug est activé
+  const isDebugMode =
+    process.env.DEBUG === "true" || process.env.VITE_APP_DEBUG === "true";
+
+  if (isDebugMode) {
+    console.log("🛠️ MODE DEBUG ACTIVÉ - Logs détaillés activés");
+    console.log(
+      "📝 Headers de la requête:",
+      JSON.stringify(req.headers, null, 2)
+    );
+  }
+
   // Gérer les requêtes OPTIONS (pre-flight CORS)
   if (req.method === "OPTIONS") {
     return res.status(200).json({ message: "Méthode autorisée" });
@@ -30,6 +42,18 @@ export default async function handler(req, res) {
       contextSource,
       transactionDetails,
     } = req.body;
+
+    if (isDebugMode) {
+      console.log("📩 Données de la requête reçues:", {
+        name,
+        email,
+        subject,
+        messageLength: message ? message.length : 0,
+        formType,
+        contextSource,
+        hasTransactionDetails: !!transactionDetails,
+      });
+    }
 
     // Récupérer l'URL de référence (referer) pour déterminer d'où vient la demande
     const referer = req.headers.referer || "";
@@ -73,6 +97,23 @@ export default async function handler(req, res) {
       `   - EMAIL_SERVICE: ${process.env.EMAIL_SERVICE || "Non défini"}`
     );
 
+    // Log de toutes les variables d'environnement en mode debug
+    if (isDebugMode) {
+      console.log("🔍 Variables d'environnement disponibles:");
+      const envVars = Object.keys(process.env)
+        .filter(
+          (key) =>
+            !key.includes("PASSWORD") &&
+            !key.includes("SECRET") &&
+            !key.includes("KEY")
+        )
+        .reduce((obj, key) => {
+          obj[key] = process.env[key];
+          return obj;
+        }, {});
+      console.log(JSON.stringify(envVars, null, 2));
+    }
+
     // Vérification des paramètres de configuration et définition de valeurs par défaut si nécessaire
     let emailUser = process.env.EMAIL_USER;
     let emailPassword = process.env.EMAIL_PASSWORD;
@@ -101,6 +142,12 @@ export default async function handler(req, res) {
             "Les paramètres d'email ne sont pas correctement configurés sur le serveur",
           details:
             "Vérifiez que EMAIL_USER et EMAIL_PASSWORD sont définis dans les variables d'environnement",
+          debug: isDebugMode
+            ? {
+                availableEnvVars: Object.keys(process.env),
+                referer,
+              }
+            : undefined,
         });
       }
     }
@@ -154,16 +201,24 @@ export default async function handler(req, res) {
         ciphers: "SSLv3",
         rejectUnauthorized: false,
       },
-      debug: process.env.NODE_ENV !== "production", // Mode débogage uniquement en développement
+      debug: isDebugMode || process.env.NODE_ENV !== "production", // Mode débogage activé explicitement
+      logger: isDebugMode, // Activer le logger nodemailer en mode debug
     };
 
-    console.log("📧 Configuration du transporteur SMTP:", {
-      service: transporterConfig.service,
-      host: transporterConfig.host,
-      port: transporterConfig.port,
-      secure: transporterConfig.secure,
-      auth: { user: transporterConfig.auth.user, pass: "********" },
-    });
+    if (isDebugMode) {
+      console.log("📧 Configuration du transporteur SMTP détaillée:", {
+        ...transporterConfig,
+        auth: { user: transporterConfig.auth.user, pass: "********" },
+      });
+    } else {
+      console.log("📧 Configuration du transporteur SMTP:", {
+        service: transporterConfig.service,
+        host: transporterConfig.host,
+        port: transporterConfig.port,
+        secure: transporterConfig.secure,
+        auth: { user: transporterConfig.auth.user, pass: "********" },
+      });
+    }
 
     const transporter = nodemailer.createTransport(transporterConfig);
 
@@ -183,6 +238,15 @@ export default async function handler(req, res) {
       transporter.verify(function (error, success) {
         if (error) {
           console.error("❌ Échec de la vérification du serveur SMTP:", error);
+          if (isDebugMode) {
+            console.error("Détails complets de l'erreur de vérification:", {
+              message: error.message,
+              code: error.code,
+              command: error.command,
+              responseCode: error.responseCode,
+              response: error.response,
+            });
+          }
           reject(error);
         } else {
           console.log("✅ Serveur SMTP prêt à accepter des messages");
@@ -195,6 +259,15 @@ export default async function handler(req, res) {
     console.log("🔄 Envoi de l'email en cours...");
     const info = await transporter.sendMail(mailOptions);
     console.log("✅ Email envoyé avec succès:", info.messageId);
+
+    if (isDebugMode) {
+      console.log("📧 Informations complètes de l'envoi:", {
+        messageId: info.messageId,
+        envelope: info.envelope,
+        accepted: info.accepted,
+        response: info.response,
+      });
+    }
 
     // Retourner une réponse positive
     return res.status(200).json({
@@ -239,7 +312,7 @@ export default async function handler(req, res) {
       statusCode = 502;
     }
 
-    return res.status(statusCode).json({
+    const errorResponse = {
       status: "error",
       message: errorMessage,
       details: errorDetails,
@@ -248,7 +321,25 @@ export default async function handler(req, res) {
         error.code === "EAUTH"
           ? "Pour Gmail, allez sur https://myaccount.google.com/apppasswords pour créer un mot de passe d'application."
           : "Vérifiez les paramètres EMAIL_* dans vos variables d'environnement.",
-    });
+    };
+
+    // Ajouter des informations de debug supplémentaires si le mode debug est activé
+    if (isDebugMode) {
+      errorResponse.debug = {
+        stack: error.stack,
+        command: error.command,
+        responseCode: error.responseCode,
+        response: error.response,
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        service: process.env.EMAIL_SERVICE,
+        secure: process.env.EMAIL_SECURE === "true",
+        isVercelEnvironment: !!process.env.VERCEL,
+        nodeEnv: process.env.NODE_ENV,
+      };
+    }
+
+    return res.status(statusCode).json(errorResponse);
   }
 }
 

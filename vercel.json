@@ -106,5 +106,9 @@
       "destination": "/ebooks/guide-assistante-sociale-independante.pdf",
       "permanent": false
     }
-  ]
+  ],
+  "env": {
+    "DEBUG": "true",
+    "VITE_APP_DEBUG": "true"
+  }
 }
