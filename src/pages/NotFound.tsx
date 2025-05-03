@@ -1,11 +1,13 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { OptimizedImage } from "../components/OptimizedImage";
 import { ArrowLeft, Home, AlertCircle } from "lucide-react";
 import { siteConfig } from "@/config/siteConfig";
+import { scrollToSectionWithNavOffset } from "@/utils/scroll-utils";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Log l'erreur pour des fins d'analyse
@@ -14,6 +16,20 @@ const NotFound = () => {
       location.pathname
     );
   }, [location.pathname]);
+
+  // Fonction pour naviguer vers l'accueil et défiler vers la section contact
+  const navigateToContact = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/');
+    
+    // Après navigation vers l'accueil, faire défiler vers la section contact
+    setTimeout(() => {
+      const navbarElement = document.querySelector('nav');
+      const navbarHeight = navbarElement ? navbarElement.getBoundingClientRect().height : 70;
+      
+      scrollToSectionWithNavOffset('contact', navbarHeight, 20);
+    }, 500); // Délai pour permettre le chargement de la page
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50 px-4">
@@ -78,7 +94,7 @@ const NotFound = () => {
         
         {/* Bande de contact en bas */}
         <div className="p-4 bg-gradient-to-r from-primary via-accent to-secondary text-white text-center">
-          <p>Besoin d'aide pour retrouver votre chemin ? <Link to="/?section=contact" className="font-medium underline hover:text-white/80">Contactez-moi</Link></p>
+          <p>Besoin d'aide pour retrouver votre chemin ? <a onClick={navigateToContact} href="#contact" className="font-medium underline hover:text-white/80 cursor-pointer">Contactez-moi</a></p>
         </div>
       </div>
     </div>
