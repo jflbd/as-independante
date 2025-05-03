@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page introuvable - Rachel Gervais</title>
+  <script>
+    // Rediriger vers l'application React avec une route spéciale pour la page 404
+    window.location.href = "/?notfound=" + window.location.pathname;
+  </script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(to bottom, white, #f0f4f8);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0D8496;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+    .loading {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(13,132,150,0.2);
+      border-radius: 50%;
+      border-top-color: #0D8496;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Page introuvable</h1>
+    <p>Redirection vers la page d'erreur personnalisée...</p>
+    <div class="loading"></div>
+  </div>
+</body>
+</html>

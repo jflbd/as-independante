@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import AppLayout from './components/AppLayout';
 import Index from './pages/Index';
 import LegalNotices from './pages/LegalNotices';
@@ -18,6 +19,24 @@ import NotFound from './pages/NotFound';
 function App() {
   // Active le défilement vers le haut à chaque changement de page pour toutes les routes
   useScrollToTop();
+  const location = useLocation();
+  
+  // Intercepter le paramètre notfound de l'URL
+  useEffect(() => {
+    // Vérifier si on arrive depuis la redirection 404.html
+    const urlParams = new URLSearchParams(window.location.search);
+    const notfoundPath = urlParams.get('notfound');
+    
+    // Si on a le paramètre notfound, on enlève le paramètre de l'URL
+    // mais on maintient l'affichage de la page 404
+    if (notfoundPath) {
+      // Mettre à jour l'URL pour enlever le paramètre sans recharger la page
+      window.history.replaceState({}, '', '/404');
+      
+      // Logging pour le débogage
+      console.log(`Page 404 affichée pour: ${notfoundPath}`);
+    }
+  }, [location]);
   
   // Contrôle d'accès à la page Ebook
   const EbookRouteHandler = () => {
@@ -41,6 +60,7 @@ function App() {
         <Route path="/paiement-echec" element={<PaiementEchecPage />} />
         <Route path="/paiement-annule" element={<PaiementAnnulePage />} />
         <Route path="/telechargement/:token" element={<TelechargementPage />} />
+        <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
