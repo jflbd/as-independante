@@ -82,7 +82,30 @@ export function useEmail(): EmailHookReturn {
         });
         
         clearTimeout(timeoutId);
-        responseData = await response.json();
+        
+        // Log de la réponse brute pour le débogage
+        const responseText = await response.text();
+        console.log("Réponse brute:", responseText);
+        
+        // Essayer de parser la réponse en JSON, avec une gestion d'erreur spécifique
+        try {
+          responseData = responseText ? JSON.parse(responseText) : { message: "Aucune réponse du serveur" };
+        } catch (parseError) {
+          console.error("Erreur de parsing JSON:", parseError);
+          
+          // Messages d'erreur personnalisés selon le contenu de la réponse
+          if (responseText.includes("Internal Server Error")) {
+            throw new Error("Le serveur a rencontré une erreur interne. Merci de réessayer plus tard.");
+          } else if (responseText.includes("Bad Gateway")) {
+            throw new Error("Problème de connexion au serveur d'email. Merci de réessayer plus tard.");
+          } else if (responseText.includes("Gateway Timeout")) {
+            throw new Error("Délai d'attente dépassé. Le serveur met trop de temps à répondre.");
+          } else if (responseText.length === 0) {
+            throw new Error("Le serveur n'a pas renvoyé de réponse. Vérifiez votre connexion internet.");
+          } else {
+            throw new Error(`Erreur inattendue du serveur: ${responseText.substring(0, 100)}`);
+          }
+        }
         
         // Log détaillé de la réponse pour le débogage
         console.log("Réponse du serveur d'email:", { 
@@ -92,7 +115,27 @@ export function useEmail(): EmailHookReturn {
         });
         
         if (!response.ok) {
-          throw new Error(responseData.message || emailConfig.messages.error);
+          // Messages d'erreur adaptés selon le code de statut HTTP
+          switch (response.status) {
+            case 400:
+              throw new Error(responseData.message || "Données incorrectes. Vérifiez les informations saisies.");
+            case 401:
+            case 403:
+              throw new Error("Erreur d'authentification avec le serveur d'email.");
+            case 404:
+              throw new Error("Le service d'envoi d'email est actuellement indisponible.");
+            case 429:
+              throw new Error("Trop de tentatives d'envoi. Veuillez réessayer dans quelques minutes.");
+            case 500:
+              throw new Error("Le serveur a rencontré une erreur lors du traitement de votre demande.");
+            case 502:
+              throw new Error("Le serveur de messagerie est temporairement indisponible.");
+            case 503:
+            case 504:
+              throw new Error("Le service d'envoi d'email est actuellement surchargé. Veuillez réessayer plus tard.");
+            default:
+              throw new Error(responseData.message || emailConfig.messages.error);
+          }
         }
         
         requestSucceeded = true;
@@ -107,7 +150,7 @@ export function useEmail(): EmailHookReturn {
         // Si l'erreur est une erreur d'abandon (timeout), on retourne un message spécifique
         if (fetchError.name === 'AbortError') {
           console.log("Délai d'attente dépassé pour l'envoi d'email");
-          throw new Error("Le serveur met trop de temps à répondre. Veuillez réessayer.");
+          throw new Error("Le serveur met trop de temps à répondre. Veuillez réessayer ultérieurement.");
         } else {
           // Relancer l'erreur pour qu'elle soit traitée par le bloc catch externe
           throw fetchError;
@@ -115,10 +158,21 @@ export function useEmail(): EmailHookReturn {
       }
       
     } catch (err) {
-      console.error("Erreur lors de l'envoi d'email:", err);
+      console.error("Erreur détaillée lors de l'envoi d'email:", err);
       
       // Message d'erreur détaillé
-      const errorMessage = err instanceof Error ? err.message : emailConfig.messages.networkError;
+      let errorMessage = emailConfig.messages.networkError;
+      
+      if (err instanceof Error) {
+        // Amélioration des messages d'erreur réseau spécifiques
+        if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+          errorMessage = "Impossible de se connecter au serveur d'email. Vérifiez votre connexion internet.";
+        } else if (err.message.includes("timeout") || err.message.includes("Timeout")) {
+          errorMessage = "Le serveur met trop de temps à répondre. Veuillez réessayer ultérieurement.";
+        } else {
+          errorMessage = err.message; // Utiliser le message d'erreur original s'il est informatif
+        }
+      }
       
       setError(errorMessage);
       setSuccess(false); // S'assurer que success est à false en cas d'erreur

@@ -206,6 +206,20 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("❌ Erreur d'envoi d'email:", error);
+    // Afficher plus de détails pour faciliter le débogage
+    console.error(
+      "Détails complets de l'erreur:",
+      JSON.stringify(
+        {
+          message: error.message,
+          code: error.code,
+          command: error.command,
+          stack: error.stack,
+        },
+        null,
+        2
+      )
+    );
 
     // Messages d'erreur personnalisés en fonction du type d'erreur
     let errorMessage = "Erreur lors de l'envoi du message";
@@ -229,6 +243,7 @@ export default async function handler(req, res) {
       status: "error",
       message: errorMessage,
       details: errorDetails,
+      errorCode: error.code || "UNKNOWN",
       troubleshooting:
         error.code === "EAUTH"
           ? "Pour Gmail, allez sur https://myaccount.google.com/apppasswords pour créer un mot de passe d'application."
@@ -374,7 +389,15 @@ function formatEmailHtml(data) {
       }
       
       ${
-        contextSource && !["ebook_page", "home", "devis-pro", "quote", "payment_error", "successful_payment"].includes(contextSource)
+        contextSource &&
+        ![
+          "ebook_page",
+          "home",
+          "devis-pro",
+          "quote",
+          "payment_error",
+          "successful_payment",
+        ].includes(contextSource)
           ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
           <p style="margin: 0; color: #0D8496; font-weight: bold;">📝 CONTEXTE: ${contextSource.toUpperCase()}</p>
         </div>`

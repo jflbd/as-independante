@@ -48,6 +48,7 @@ const ContactForm = ({
   formType = 'contact', // Par défaut, on utilise le formulaire de contact standard
   isHomepage = false, // Par défaut, on suppose que ce n'est pas sur la page d'accueil
 }: ContactFormProps) => {
+  
   // Déterminer si on utilise le formulaire de devis basé sur le formType OU le contextSource
   const isQuoteForm = formType === 'quote' || contextSource === 'devis-pro';
   
@@ -106,6 +107,9 @@ const ContactForm = ({
         }, 10000);
       }
     } else if (formStatus === 'error') {
+      // Réinitialiser le compteur lorsque le message d'erreur s'affiche
+      setCountdown(8);
+      
       // Réinitialiser le formulaire après 10 secondes en cas d'erreur
       errorTimeout = window.setTimeout(() => {
         handleResetForm();
@@ -122,7 +126,7 @@ const ContactForm = ({
   useEffect(() => {
     let countdownInterval: number;
     
-    if (formStatus === 'success' || formStatus === 'success_pending') {
+    if (formStatus === 'success' || formStatus === 'success_pending' || formStatus === 'error') {
       // Démarrer le compteur de décompte
       countdownInterval = window.setInterval(() => {
         setCountdown(currentCount => {
@@ -278,9 +282,6 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
       }
       
       // Utilisation de notre système d'envoi d'email personnalisé
-
-      // Vérifier booleen homepage
-      console.log("isHomepage:", isHomepage);
       
       const result = await sendEmail(emailData);
       
@@ -365,7 +366,10 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
           <p className="text-[#166534] text-lg mb-5">Je vous répondrai dans les plus brefs délais.</p>
           
           <p className="text-[#15803d] mb-6">
-            Cette fenêtre se fermera automatiquement dans <span className="font-bold">{countdown}</span> secondes...
+            {inModal ? 
+              `Cette fenêtre se fermera automatiquement dans ${countdown} secondes...` : 
+              `Ce message disparaîtra dans ${countdown} secondes...`
+            }
           </p>
           
           {onSuccess && (
@@ -393,7 +397,12 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
           </div>
           <h3 className="text-2xl font-bold text-yellow-800 mb-2">Message en cours de traitement</h3>
           <p className="text-yellow-700 mb-4">Votre message est en cours d'envoi et sera traité dès que possible.</p>
-          <p className="text-yellow-600 text-sm mb-6">Cette fenêtre se fermera automatiquement dans quelques secondes...</p>
+          <p className="text-yellow-600 text-sm mb-6">
+            {inModal ? 
+              `Cette fenêtre se fermera automatiquement dans ${countdown} secondes...` : 
+              `Ce message disparaîtra dans ${countdown} secondes...`
+            }
+          </p>
           {onSuccess && (
             <Button
               type="button"
@@ -418,7 +427,12 @@ Méthode: ${paymentMethod || 'Non spécifiée'}
           </div>
           <h3 className="text-2xl font-bold text-red-800 mb-2">Erreur lors de l'envoi</h3>
           <p className="text-red-700 mb-4">{errorMessage}</p>
-          <p className="text-red-600 text-sm mb-6">Le formulaire sera réinitialisé dans quelques secondes...</p>
+          <p className="text-red-600 text-sm mb-6">
+          {inModal ? 
+              `Le formulaire sera réinitialisé dans ${countdown} secondes...` : 
+              `Ce message disparaîtra dans ${countdown} secondes...`
+            }
+          </p>
           <Button
             onClick={handleResetForm}
             className="bg-red-600 hover:bg-red-700 text-white px-8 flex items-center gap-2"
