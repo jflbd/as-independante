@@ -217,9 +217,9 @@ const PayPalCheckoutForm: React.FC<PayPalCheckoutFormProps> = ({ paymentDetails 
                     
                     // Double sécurité en cas de non-redirection automatique
                     setTimeout(() => {
-                      if (document.location.pathname !== '/paiement-reussi') {
+                      if (document.location.pathname !== '/paiement-reussi' && !document.location.hash.includes('/paiement-reussi')) {
                         console.log("Redirection forcée après délai...");
-                        window.location.href = '/paiement-reussi';
+                        window.location.href = `${window.location.origin}/#/paiement-reussi`;
                       }
                     }, 2000);
                   })
@@ -237,8 +237,8 @@ const PayPalCheckoutForm: React.FC<PayPalCheckoutFormProps> = ({ paymentDetails 
                 };
                 sessionStorage.setItem('cancelledPaymentContext', JSON.stringify(contextInfo));
                 
-                // Rediriger vers la page d'annulation
-                window.location.href = '/paiement-annule';
+                // Rediriger vers la page d'annulation en utilisant la route du hash pour une meilleure compatibilité
+                window.location.href = `${window.location.origin}/#/paiement-annule`;
               }}
               onError={(err) => {
                 console.error("Erreur PayPal:", err);

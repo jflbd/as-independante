@@ -93,7 +93,7 @@ const NotFound = () => {
                 clickAnimation="bounce"
               >
                 <Home size={18} />
-                <span>Page d'accueil</span>
+                <span>Retour à l'accueil</span>
               </Button>
               
               <Button 
@@ -108,11 +108,6 @@ const NotFound = () => {
               </Button>
             </div>
           </div>
-        </div>
-        
-        {/* Bande de contact en bas */}
-        <div className="p-4 bg-gradient-to-r from-primary via-accent to-secondary text-white text-center">
-          <p>Besoin d'aide pour retrouver votre chemin ? <a onClick={navigateToContact} href="#contact" className="font-medium underline hover:text-white/80 cursor-pointer">Contactez-moi</a></p>
         </div>
       </div>
     </div>

@@ -280,8 +280,8 @@ const CheckoutPage: React.FC = () => {
                       };
                       sessionStorage.setItem('cancelledPaymentContext', JSON.stringify(contextInfo));
                     }
-                    // Rediriger vers la page d'annulation
-                    window.location.href = '/paiement-annule';
+                    // Rediriger vers la page d'annulation avec hash pour compatibilité
+                    window.location.href = `${window.location.origin}/#/paiement-annule`;
                   }
                 }}
                 className="text-gray-600 hover:text-red-600 underline text-sm font-medium transition-colors"

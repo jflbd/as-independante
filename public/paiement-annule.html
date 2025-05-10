@@ -4,37 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0D8496">
-  <title>Page introuvable - Rachel Gervais</title>
+  <title>Redirection vers paiement annulé - Rachel Gervais</title>
   <link rel="icon" href="/favicon.ico">
-  <meta http-equiv="refresh" content="1.5;url=/" />
+  <meta http-equiv="refresh" content="0;url=/#/paiement-annule" />
   <script>
-    // Rediriger vers l'application React avec une route spéciale pour la page 404
-    // Léger délai pour permettre à la page de s'afficher avant la redirection
-    setTimeout(function() {
-      // Liste des routes SPA connues à préserver
-      var spaRoutes = [
-        '/paiement-reussi',
-        '/paiement-annule',
-        '/paiement-echec',
-        '/checkout',
-        '/telechargement'
-      ];
-      
-      var path = window.location.pathname;
-      
-      // Vérifier si nous sommes sur une route SPA connue
-      var isSpaRoute = spaRoutes.some(function(route) {
-        return path.startsWith(route);
-      });
-      
-      if (isSpaRoute) {
-        // Si c'est une route SPA, rediriger directement vers cette route
-        window.location.href = window.location.origin + path;
-      } else {
-        // Sinon, comportement par défaut avec page 404
-        window.location.href = "/?notfound=" + encodeURIComponent(path);
-      }
-    }, 800);
+    // Redirection immédiate vers la route SPA
+    window.location.href = window.location.origin + "/#/paiement-annule";
   </script>
   <style>
     * {
@@ -107,8 +82,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>Page introuvable</h1>
-    <p>Redirection vers la page d'erreur personnalisée...</p>
+    <h1>Redirection en cours...</h1>
+    <p>Vous êtes redirigé vers la page de paiement annulé.</p>
     <div class="loading"></div>
   </div>
 </body>

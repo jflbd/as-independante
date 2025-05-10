@@ -119,6 +119,18 @@
       "destination": "/api/:path*"
     },
     {
+      "source": "/paiement-annule",
+      "destination": "/paiement-annule.html"
+    },
+    {
+      "source": "/paiement-reussi",
+      "destination": "/paiement-reussi.html"
+    },
+    {
+      "source": "/paiement-echec",
+      "destination": "/paiement-echec.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

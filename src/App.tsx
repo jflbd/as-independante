@@ -44,6 +44,18 @@ function App() {
     return ebookConfig.isEbookAvailable ? <EbookPage /> : <EbookComingSoonPage />;
   };
   
+  // Détecter si on utilise des routes en mode hash (compatibilité pour les redirections de paiement)
+  useEffect(() => {
+    // Si on arrive avec un hash qui ressemble à une route (e.g. /#/paiement-annule)
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#/')) {
+      const route = hash.substring(1); // enlever le # du début
+      console.log(`Détection de route en mode hash: ${route}`);
+      // Rediriger vers la route normale
+      navigate(route, { replace: true });
+    }
+  }, [navigate, location.hash]);
+  
   return (
     <>
       {/* Composant de sécurité pour restaurer le défilement en cas de problème */}
