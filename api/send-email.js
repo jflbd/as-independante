@@ -464,7 +464,7 @@ function formatEmailHtml(data) {
       }
       
       ${
-        contextSource === "payment_error"
+        contextSource === "paiement_erreur"
           ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #fde8e8; border-left: 4px solid #e02424; border-radius: 4px;">
           <p style="margin: 0; color: #e02424; font-weight: bold;">⚠️ CONTACT SUITE À UNE ERREUR DE PAIEMENT</p>
         </div>`
@@ -472,7 +472,7 @@ function formatEmailHtml(data) {
       }
       
       ${
-        contextSource === "successful_payment"
+        contextSource === "paiement_reussi"
           ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #ecfdf5; border-left: 4px solid #047857; border-radius: 4px;">
           <p style="margin: 0; color: #047857; font-weight: bold;">✅ CONTACT APRÈS UN PAIEMENT RÉUSSI</p>
         </div>`
@@ -486,8 +486,8 @@ function formatEmailHtml(data) {
           "home",
           "devis-pro",
           "quote",
-          "payment_error",
-          "successful_payment",
+          "paiement_erreur",
+          "paiement_reussi",
         ].includes(contextSource)
           ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
           <p style="margin: 0; color: #0D8496; font-weight: bold;">📝 CONTEXTE: ${contextSource.toUpperCase()}</p>

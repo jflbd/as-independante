@@ -131,7 +131,7 @@ const PaiementEchecPageContent = () => {
     console.log("Ouverture de la modale de contact avec erreur:", errorDetails);
     // Ouvrir la modal de contact avec des données contextuelles
     openModal("contact", {
-      context: "payment_error",
+      context: "paiement_erreur",
       transactionDetails: {
         description: 'Paiement échoué',
         date: new Date().toLocaleDateString('fr-FR'),

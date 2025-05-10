@@ -73,7 +73,7 @@ const PaiementAnnulePageContent = () => {
   const handleOpenContactModal = () => {
     console.log("Ouverture de la modale pour paiement annulé");
     openModal("contact", {
-      context: "payment_cancelled",
+      context: "paiement_annule",
       transactionDetails: {
         description: 'Paiement annulé',
         date: new Date().toLocaleDateString('fr-FR'),

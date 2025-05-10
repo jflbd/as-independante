@@ -20,7 +20,7 @@ interface EmailData {
   company?: string;       // Entreprise ou organisation (optionnel)
   formType?: string;      // Type de formulaire (ex: "Contact général", "Demande de devis")
   transactionDetails?: TransactionDetails; // Détails de la transaction si applicable
-  contextSource?: string; // Source du contexte (ex: "payment_error", "ebook_download")
+  contextSource?: string; // Source du contexte (ex: "paiement_erreur", "ebook_download")
   // Champs supplémentaires génériques pour la flexibilité
   [key: string]: string | number | boolean | TransactionDetails | undefined;
 }
