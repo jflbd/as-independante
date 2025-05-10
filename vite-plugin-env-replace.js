@@ -15,22 +15,23 @@ function getEnvValue(key, env) {
   if (process.env && process.env[key]) {
     return process.env[key];
   }
-  
+
   // Puis dans l'objet env passé
   if (env && env[key]) {
     return env[key];
   }
-  
+
   // Valeurs par défaut pour certaines variables importantes
   const defaults = {
-    'VITE_APP_TITLE': 'Rachel Gervais - Assistante Sociale Indépendante',
-    'VITE_APP_DESCRIPTION': 'Rachel Gervais, assistante sociale diplômée d\'État depuis 2009, vous accompagne dans vos démarches sociales en Normandie.',
-    'VITE_APP_KEYWORDS': 'assistante sociale, Normandie, accompagnement social',
-    'VITE_APP_URL': 'https://www.as-independante.fr'
+    VITE_APP_TITLE: "Rachel Gervais - Assistante Sociale Indépendante",
+    VITE_APP_DESCRIPTION:
+      "Rachel Gervais, assistante sociale diplômée d'État depuis 2009, vous accompagne dans vos démarches sociales en Normandie.",
+    VITE_APP_KEYWORDS: "assistante sociale, Normandie, accompagnement social",
+    VITE_APP_URL: "https://www.as-independante.fr",
   };
-  
+
   // Retourner la valeur par défaut ou une chaîne vide
-  return defaults[key] || '';
+  return defaults[key] || "";
 }
 
 /**
@@ -38,20 +39,22 @@ function getEnvValue(key, env) {
  */
 export default function envReplace() {
   return {
-    name: 'vite-plugin-env-replace',
-    
+    name: "vite-plugin-env-replace",
+
     // Transforme le HTML avant qu'il ne soit traité
     transformIndexHtml(html) {
-      console.log('🔄 Remplacement des variables d\'environnement dans index.html');
-      
+      console.log(
+        "🔄 Remplacement des variables d'environnement dans index.html"
+      );
+
       // Remplace tous les %VARIABLE% par leur valeur correspondante
       return html.replace(/%(\w+)%/g, (match, key) => {
         const value = getEnvValue(key, process.env);
-        
-        if (!value && key.startsWith('VITE_')) {
+
+        if (!value && key.startsWith("VITE_")) {
           console.warn(`⚠️ Variable d'environnement manquante: ${key}`);
         }
-        
+
         return value;
       });
     },

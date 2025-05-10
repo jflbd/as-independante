@@ -7,20 +7,20 @@
  */
 
 const requiredEnvVars = [
-  'VITE_APP_TITLE',
-  'VITE_APP_DESCRIPTION',
-  'VITE_APP_KEYWORDS',
-  'VITE_APP_URL',
+  "VITE_APP_TITLE",
+  "VITE_APP_DESCRIPTION",
+  "VITE_APP_KEYWORDS",
+  "VITE_APP_URL",
 ];
 
 const optionalEnvVars = [
-  'VITE_CONTACT_EMAIL',
-  'VITE_CONTACT_PHONE',
-  'VITE_SOCIAL_FACEBOOK',
-  'VITE_LEGAL_SIRET',
-  'VITE_PAYPAL_CLIENT_ID',
-  'VITE_STRIPE_PUBLISHABLE_KEY',
-  'VITE_APP_ENV',
+  "VITE_CONTACT_EMAIL",
+  "VITE_CONTACT_PHONE",
+  "VITE_SOCIAL_FACEBOOK",
+  "VITE_LEGAL_SIRET",
+  "VITE_PAYPAL_CLIENT_ID",
+  "VITE_STRIPE_PUBLISHABLE_KEY",
+  "VITE_APP_ENV",
 ];
 
 // Vérification des variables d'environnement requises
@@ -33,10 +33,15 @@ for (const envVar of requiredEnvVars) {
 
 // Affichage des résultats
 if (missingVars.length > 0) {
-  console.error('\x1b[31m%s\x1b[0m', '❌ Variables d\'environnement manquantes :');
-  console.error('\x1b[33m%s\x1b[0m', missingVars.join('\n'));
-  
-  console.log('\x1b[36m%s\x1b[0m', `
+  console.error(
+    "\x1b[31m%s\x1b[0m",
+    "❌ Variables d'environnement manquantes :"
+  );
+  console.error("\x1b[33m%s\x1b[0m", missingVars.join("\n"));
+
+  console.log(
+    "\x1b[36m%s\x1b[0m",
+    `
 Pour les déploiements Vercel, vous pouvez configurer ces variables de deux façons :
 
 1. Dans l'interface Vercel :
@@ -54,14 +59,18 @@ Pour les déploiements Vercel, vous pouvez configurer ces variables de deux faç
      }
 
 Note: La méthode 1 est préférable pour les informations sensibles.
-`);
-  
+`
+  );
+
   // Sortie avec un code d'erreur si nous ne sommes pas en CI
   if (!process.env.CI) {
     process.exit(1);
   }
 } else {
-  console.log('\x1b[32m%s\x1b[0m', '✅ Toutes les variables d\'environnement requises sont définies');
+  console.log(
+    "\x1b[32m%s\x1b[0m",
+    "✅ Toutes les variables d'environnement requises sont définies"
+  );
 }
 
 // Vérification des variables optionnelles
@@ -73,7 +82,13 @@ for (const envVar of optionalEnvVars) {
 }
 
 if (missingOptionalVars.length > 0) {
-  console.log('\x1b[33m%s\x1b[0m', `⚠️ Variables d'environnement optionnelles non définies :`);
-  console.log('\x1b[33m%s\x1b[0m', missingOptionalVars.join('\n'));
-  console.log('\x1b[36m%s\x1b[0m', 'Ces variables sont optionnelles mais recommandées pour une configuration complète.');
+  console.log(
+    "\x1b[33m%s\x1b[0m",
+    `⚠️ Variables d'environnement optionnelles non définies :`
+  );
+  console.log("\x1b[33m%s\x1b[0m", missingOptionalVars.join("\n"));
+  console.log(
+    "\x1b[36m%s\x1b[0m",
+    "Ces variables sont optionnelles mais recommandées pour une configuration complète."
+  );
 }
