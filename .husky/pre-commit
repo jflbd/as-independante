@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+echo "🔒 Vérification de sécurité avant commit..."
+npm run security-check
+
+# Si le script de sécurité échoue, demander confirmation avant de continuer
+if [ $? -ne 0 ]; then
+  echo "⚠️  Des problèmes de sécurité ont été détectés. Voulez-vous continuer quand même ? (y/N) "
+  read -r response
+  if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+    echo "Commit annulé."
+    exit 1
+  fi
+  echo "⚠️ Commit autorisé malgré les problèmes de sécurité."
+fi
+
+# Continuer avec les autres vérifications
+npm run lint

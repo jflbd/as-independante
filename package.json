@@ -19,7 +19,9 @@
     "convert-images": "node scripts/convert-to-webp.js",
     "optimize-images": "npm run convert-images && node scripts/optimize-images.js",
     "generate-favicons": "node scripts/generate-favicons.js",
-    "prepare-assets": "npm run generate-favicons && npm run optimize-images"
+    "prepare-assets": "npm run generate-favicons && npm run optimize-images",
+    "security-check": "bash scripts/security-check.sh",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -104,6 +106,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "husky": "^9.1.7",
     "postcss": "^8.4.47",
     "postcss-nesting": "^13.0.1",
     "sharp": "^0.34.1",

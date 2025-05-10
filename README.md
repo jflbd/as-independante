@@ -232,6 +232,16 @@ Le projet intègre plusieurs optimisations pour une expérience utilisateur opti
 - **Architecture serverless** : Traitement backend sans serveur dédié pour une meilleure scalabilité
 - **Préchargement intelligent** : Préchargement des ressources critiques pour une navigation fluide
 
+## 🔒 Sécurité
+
+Le projet met l'accent sur la sécurité à plusieurs niveaux :
+
+- **Paiements sécurisés** : Intégration sécurisée de Stripe et PayPal pour les transactions
+- **Protection RGPD** : Conformité complète avec la réglementation européenne sur les données
+- **HTTPS obligatoire** : Toutes les communications sont chiffrées
+- **Dépendances surveillées** : Contrôle régulier des vulnérabilités dans les dépendances
+- **Documentation de sécurité** : Voir le fichier [SECURITY.md](./SECURITY.md) pour les détails sur les vulnérabilités connues et les mesures d'atténuation
+
 ## 🔄 Mises à jour récentes
 
 - Migration de Netlify vers Vercel pour améliorer les performances et la fiabilité
@@ -241,6 +251,7 @@ Le projet intègre plusieurs optimisations pour une expérience utilisateur opti
 - Amélioration de la gestion des cookies avec TarteAuCitron
 - Optimisation mobile de l'expérience de paiement PayPal et Stripe
 - Correction de bugs mineurs dans le processus de checkout
+- Ajout d'un document SECURITY.md concernant une vulnérabilité de esbuild dans l'environnement de développement
 
 ## 📜 Licence
 

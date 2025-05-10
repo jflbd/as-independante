@@ -40,7 +40,7 @@ export const services = [
       { title: "VOUS ÊTES SENSIBLE AUX TAUX D'ABSENTÉISME DE VOS SALARIÉS", description: "Vous êtes conscient qu'une situation personnelle difficile peut avoir un impact sur la situation professionnelle et l'activité au sein de l'entreprise." },
       { title: "VOUS SOUHAITEZ TRAVAILLER AU SEIN D'UNE AMBIANCE BIENVEILLANTE", description: "Vous avez besoin de médiation afin de faciliter le dialogue avec vos employés." },
       { title: "VOUS ÊTES UN BAILLEUR OU UNE AGENCE IMMOBILIÈRE", description: "Vous souhaitez prévenir les expulsions locatives." },
-      { title: "VOUS ÊTES UNE ASSOCIATION D'AIDE À DOMICILE", description: "Vos salariés ont besoin d'un appui pour répondre aux différentes questions des bénéficiaires et de leurs familles." },
+      { title: "VOUS ÊTES UNE ENTREPRISE D'AIDE À LA PERSONNE", description: "Vos salariés ont besoin d'un appui pour répondre aux différentes questions des bénéficiaires et de leurs familles." },
       { title: "VOUS ÊTES UNE COLLECTIVITÉ", description: "Vous souhaitez apporter un service de qualité à vos agents." },
     ],
     companies: [
@@ -61,7 +61,7 @@ export const services = [
         description: "Mon intervention se fait par le biais d'entretiens psycho-sociaux afin d'apporter une écoute, un soutien et des conseils. Cette mission repose également sur des Interventions Sociales d'Intérêt Collectif (ISIC), par la mise en place d'animations, de temps d'échange, de recueil des souhaits des résidents par des groupes de parole… Il s'agit aussi de faire remonter les besoins et d'effectuer, si besoin, de la médiation."
       },
       {
-        type: "Vous êtes une association d'aide à domicile :",
+        type: "Vous êtes une entreprise d'aide à la personne :",
         description: "Mes missions ont pour but de rompre l'isolement et favoriser le lien social en mobilisant l'environnement global de la personne (territoire,famille, amis, réseau de professionnels, associations…). L'objectif est aussi de représenter un soutien à vos salariés, n'ayant pas toujours les réponses aux questions des personnes ou de leur famille. Ma mission est aussi de préparer la personne à une éventuelle entrée en maison de retraite et de soutenir sa famille par la constitution des démarches administratives (dossiers de demande d'entrée en maison de retraite, EHPA ou EHPAD, demande de mise sous protection…)"
       }
     ],

@@ -8,11 +8,13 @@ import ParallaxScroll from "./animations/ParallaxScroll";
 const AboutSection = () => {
   const advantages = [
     "Garantie de la qualité des interventions par une professionnelle diplômée d'État",
-    "Souplesse d'intervention",
+    "Assistante sociale libérale interentreprise, j’interviens auprès de salariés, particuliers et structures",
+    "Souplesse d'intervention, en présentiel ou à distance",
     "Disponibilité et délais de rendez-vous rapides",
-    "Un interlocuteur unique",
-    "Proximité et confidentialité",
-    "Accompagnement sur mesure, à votre rythme"
+    "Un interlocuteur unique, à l’écoute de vos besoins",
+    "Proximité et confidentialité assurées",
+    "Accompagnement sur mesure, à votre rythme",
+    "Partenaire de plusieurs associations et compagnies d’assurances, j’interviens aussi auprès de leurs publics"
   ];
 
   const background = [
@@ -20,7 +22,7 @@ const AboutSection = () => {
     "Formation à l'IRTS (Institut Régional des Travailleurs Sociaux)",
     "Expérience en centre médico-social, CMP enfants/adolescents, et accueil de jour pour personnes sans domicile fixe",
     "7 ans d'intervention sociale auprès des personnes en grande précarité",
-    "Expérience en tant que responsable du service logement du CCAS de Caen",
+    "Expérience en tant que responsable du service communal du logement du CCAS de Caen",
     "Démission de la fonction publique en 2018 pour exercer en tant qu'assistante sociale indépendante"
   ];
 
