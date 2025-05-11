@@ -12,6 +12,8 @@ import PaiementReussiPage from './pages/PaiementReussiPage';
 import PaiementEchecPage from './pages/PaiementEchecPage';
 import PaiementAnnulePage from './pages/PaiementAnnulePage';
 import TelechargementPage from './pages/TelechargementPage';
+import Sitemap from './pages/Sitemap';
+import BlogLinkMainPage from './pages/BlogLinkMainPage';
 import { ebookConfig } from './config/ebookConfig';
 import { useScrollToTop } from './hooks/useScrollToTop';
 import { ScrollUnlocker } from './components/ui/ScrollUnlocker';
@@ -65,6 +67,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/mentions-legales" element={<LegalNotices />} />
+        <Route path="/sitemap" element={<Sitemap />} />
+        <Route path="/blog" element={<BlogLinkMainPage />} />
+        <Route path="/blog/:articleId" element={<BlogLinkMainPage />} />
         <Route path="/ebook" element={<EbookRouteHandler />} />
         <Route path="/acheter-ebook" element={
           ebookConfig.isEbookAvailable ? <AcheterEbookPage /> : <Navigate to="/ebook" replace />

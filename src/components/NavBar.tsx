@@ -236,6 +236,7 @@ const NavBar = () => {
     { id: "referentiel", label: "Cadre d'intervention" },
     { id: "deontologie", label: "Déontologie" },
     { id: "pricing", label: "Tarifs" },
+    // { id: "blog", label: "Blog", isExternal: true, path: "/blog" },
     { id: "contact", label: "Contact" },
   ];
 
@@ -329,26 +330,42 @@ const NavBar = () => {
                       )}
                     </div>
                   ) : (
-                    <SafeLink 
-                      key={item.id}
-                      to={`#${item.id}`} 
-                      className={`
-                        px-1 sm:px-1.5 md:px-2 lg:px-3 py-2 text-[10px] md:text-xs lg:text-sm rounded-full transition-all duration-300 
-                        ${activeSection === item.id 
-                          ? "text-white font-semibold bg-primary shadow-md transform -translate-y-0.5" 
-                          : "text-gray-600 hover:text-primary hover:bg-primary/5"}
-                      `}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToSection(item.id);
-                      }}
-                      aria-label={`Naviguer vers la section ${item.label}`}
-                      aria-current={activeSection === item.id ? "page" : undefined}
-                    >
-                      <span className="relative whitespace-nowrap">
-                        {item.label}
-                      </span>
-                    </SafeLink>
+                    item.isExternal ? (
+                      <Link 
+                        key={item.id}
+                        to={item.path || '/'} 
+                        className={`
+                          px-1 sm:px-1.5 md:px-2 lg:px-3 py-2 text-[10px] md:text-xs lg:text-sm rounded-full transition-all duration-300 
+                          text-gray-600 hover:text-primary hover:bg-primary/5
+                        `}
+                        aria-label={`Naviguer vers ${item.label}`}
+                      >
+                        <span className="relative whitespace-nowrap">
+                          {item.label}
+                        </span>
+                      </Link>
+                    ) : (
+                      <SafeLink 
+                        key={item.id}
+                        to={`#${item.id}`} 
+                        className={`
+                          px-1 sm:px-1.5 md:px-2 lg:px-3 py-2 text-[10px] md:text-xs lg:text-sm rounded-full transition-all duration-300 
+                          ${activeSection === item.id 
+                            ? "text-white font-semibold bg-primary shadow-md transform -translate-y-0.5" 
+                            : "text-gray-600 hover:text-primary hover:bg-primary/5"}
+                        `}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          scrollToSection(item.id);
+                        }}
+                        aria-label={`Naviguer vers la section ${item.label}`}
+                        aria-current={activeSection === item.id ? "page" : undefined}
+                      >
+                        <span className="relative whitespace-nowrap">
+                          {item.label}
+                        </span>
+                      </SafeLink>
+                    )
                   )
                 ))}
               </div>
@@ -396,7 +413,16 @@ const NavBar = () => {
               >
                 <div className="py-0 px-4 flex flex-col space-y-3 pt-2">
                   {mainNavItems.map((item) => (
-                    item.hasDropdown ? (
+                    item.isExternal ? (
+                      <Link
+                        key={item.id}
+                        to={item.path || '/'}
+                        className="flex items-center px-3 py-3 rounded-lg text-gray-700 hover:bg-primary/5 hover:text-primary"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <span>{item.label}</span>
+                      </Link>
+                    ) : item.hasDropdown ? (
                       <div key={item.id}>
                         <button
                           className={`

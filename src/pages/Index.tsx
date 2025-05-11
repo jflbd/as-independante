@@ -9,6 +9,9 @@ import MissionsSection from "@/components/MissionsSection";
 import ReferentielSection from "@/components/ReferentielSection";
 import DeontologieSection from "@/components/DeontologieSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import FAQSection from "@/components/FAQSection";
+import SEOSchema from "@/components/SEOSchema";
+import LocalSEOCitations from "@/components/LocalSEOCitations";
 import { useEffect, useRef, useState } from "react";
 import SafeLink from "@/components/SafeLink";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -175,6 +178,9 @@ const Index = () => {
         </style>
       </Helmet>
       
+      {/* Ajout des schémas structurés pour le SEO */}
+      <SEOSchema pageType="HomePage" />
+      
       {/* Ajout des boutons de navigation */}
       <ScrollButtons />
       
@@ -290,7 +296,15 @@ const Index = () => {
             <PricingSection />
             <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
             
+            <FAQSection />
+            <div className="w-full h-4 bg-gradient-to-r from-accent/10 via-secondary/10 to-primary/10"></div>
+            
+            {/* Ajout d'une section pour le référencement local */}
+            <LocalSEOCitations />
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+            
             <ContactSection />
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
           </main>
 
           <Footer />

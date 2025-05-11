@@ -1,4 +1,39 @@
 
+# Robots.txt optimisé pour Google Search Console - www.as-independante.fr
+# Last updated: 11-05-2025
+
+# Instructions pour tous les robots
 User-agent: *
 Allow: /
+
+# Instructions spécifiques pour Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Instructions spécifiques pour Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Interdictions globales - Répertoires et fichiers techniques
+Disallow: /api/
+Disallow: /scripts/
+Disallow: /src/
+Disallow: /*?*
+Disallow: /checkout
+Disallow: /paiement-*
+Disallow: /telechargement/*
+Disallow: /test-*
+
+# Autorisation explicite des sections importantes
+Allow: /sitemap
+Allow: /ebook
+Allow: /blog/
+Allow: /mentions-legales
+Allow: /blog/role-assistante-sociale-independante
+Allow: /blog/aides-sociales-normandie
+Allow: /blog/preparer-rendez-vous-assistante-sociale
+
+# Liens vers les sitemaps (principal et spécifiques)
 Sitemap: https://www.as-independante.fr/sitemap.xml

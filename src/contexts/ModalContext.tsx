@@ -2,6 +2,9 @@ import React, { useState, ReactNode, useEffect, useCallback, useRef } from 'reac
 import { lockScroll, unlockScroll, forceUnlockScroll } from '@/lib/utils';
 import { ModalContext, ModalType, ModalData } from './ModalContextTypes';
 
+// Export du contexte pour l'utiliser dans d'autres composants
+export { ModalContext };
+
 export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [modalData, setModalData] = useState<ModalData | null>(null);

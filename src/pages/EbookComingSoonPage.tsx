@@ -97,7 +97,7 @@ const EbookComingSoonPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       <Helmet>
-        <title>Ebook bientôt disponible - {siteConfig.name}</title>
+        <title>Ebook bientôt disponible | {siteConfig.name}</title>
         <meta name="description" content={`Le guide ${ebookConfig.title} sera bientôt disponible ! Inscrivez-vous pour être notifié(e) dès sa sortie.`} />
       </Helmet>
       

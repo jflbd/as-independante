@@ -3,7 +3,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import SafeLink from '@/components/SafeLink';
 import { siteConfig } from '@/config/siteConfig';
 import { SiFacebook } from '@icons-pack/react-simple-icons';
-import { Book, Lock, FileText } from 'lucide-react';
+import { Book, Lock, FileText, Map } from 'lucide-react';
 import { scrollToTop, scrollToSectionWithNavOffset, navigateToLegalSection } from '@/utils/scroll-utils';
 
 const FooterSchemaOrgScript: React.FC = () => (
@@ -219,6 +219,17 @@ const Footer: React.FC = () => {
         id: "footer-contact" 
       },
       { 
+        name: "Blog", 
+        url: "/blog", 
+        id: "footer-blog", 
+        icon: <FileText className="h-4 w-4 mr-1" /> 
+      },
+      { 
+        name: "Plan du site", 
+        url: "/sitemap", 
+        id: "footer-sitemap" 
+      },
+      { 
         name: "Ebook", 
         url: location.pathname === '/ebook' ? "#" : "/ebook", 
         id: "footer-ebook", 
@@ -299,6 +310,15 @@ const Footer: React.FC = () => {
                         Version complète
                       </SmoothScrollLink>
                     </li>
+                    <li>
+                      <SmoothScrollLink 
+                        to="/sitemap" 
+                        className="text-sm text-gray-600 hover:text-primary transition-colors hover:underline flex items-center"
+                      >
+                        <Map className="h-4 w-4 mr-1" />
+                        Plan du site
+                      </SmoothScrollLink>
+                    </li>
                   </ul>
                 </nav>
               </div>
@@ -306,8 +326,8 @@ const Footer: React.FC = () => {
               {/* Colonne 3: Contact */}
               <div itemScope itemType="https://schema.org/Organization">
                 <h2 className="text-lg font-semibold mb-4 text-primary">Contact</h2>
-                <div className="space-y-3">
-                  <div>
+                <div>
+                  <div className="mb-3">
                     <a 
                       href={`mailto:${siteConfig.contact.email}`} 
                       className="text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
@@ -358,8 +378,23 @@ const Footer: React.FC = () => {
               </div>
             </div>
             
+            {/* Zone SEO - Villes d'intervention */}
+            <div className="py-4 mt-2 border-t border-gray-200">
+              <h2 className="text-sm font-semibold mb-3 text-gray-700">Zones d'intervention en Normandie</h2>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Caen</Link>
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Rouen</Link>
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Le Havre</Link>
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Bayeux</Link>
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Deauville</Link>
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Lisieux</Link>
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Honfleur</Link>
+                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Falaise</Link>
+              </div>
+            </div>
+            
             {/* Copyright et mentions légales */}
-            <div className="pt-4 mt-4 border-t border-gray-200">
+            <div className="pt-4 mt-1 border-t border-gray-200">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div className="text-sm text-gray-500">
                   &copy; {copyrightYears} <span itemProp="copyrightHolder">{siteConfig.name}</span>. Tous droits réservés.

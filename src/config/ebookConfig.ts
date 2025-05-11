@@ -1,6 +1,6 @@
 export const ebookConfig = {
     // Variable pour contrôler l'accès à l'ebook
-    isEbookAvailable: true, // Mettre à true pour activer l'accès, false pour afficher la page d'attente
+    isEbookAvailable: false, // Mettre à true pour activer l'accès, false pour afficher la page d'attente
     
     title: "Le guide essentiel pour devenir travailleur social en libéral",
     subtitle: "Toutes les étapes pour réussir votre installation et votre pratique",

@@ -261,6 +261,38 @@ Ce projet est la propriété de JFL et ne peut être utilisé sans autorisation.
 
 Pour toute question concernant ce projet, contactez l'administrateur à [jfl-web@outlook.fr].
 
+## 🔍 SEO et Indexation
+
+Le projet intègre des outils d'optimisation pour les moteurs de recherche :
+
+### Génération automatique du sitemap et robots.txt
+
+Un système automatisé permet de générer et maintenir à jour le sitemap.xml et le fichier robots.txt :
+
+```bash
+# Générer/mettre à jour le sitemap.xml et vérifier le robots.txt
+./scripts/optimize-seo.sh
+```
+
+### Caractéristiques SEO
+
+- **Sitemap XML dynamique** : Généré automatiquement avec toutes les pages et sections importantes
+- **Robots.txt optimisé** : Instructions précises pour les robots d'indexation
+- **Données structurées** : Implémentation des schémas Schema.org pour une meilleure visibilité
+- **Balises méta dynamiques** : Titres et descriptions optimisés pour chaque page
+- **SEO local** : Optimisation pour le référencement local en Normandie (Caen, Rouen, Le Havre)
+- **URLs propres** : Structure d'URL claire et descriptive
+- **Images optimisées** : Balises alt, attributs title et compression pour le chargement rapide
+
+### Soumettre à Google Search Console
+
+Après la mise à jour du sitemap :
+
+1. Accédez à [Google Search Console](https://search.google.com/search-console)
+2. Sélectionnez votre propriété `https://www.as-independante.fr/`
+3. Dans le menu latéral, cliquez sur "Sitemaps"
+4. Entrez `sitemap.xml` et cliquez sur "Envoyer"
+
 ---
 
-Dernière mise à jour : 28 avril 2025
+Dernière mise à jour : 11 mai 2025
