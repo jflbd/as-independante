@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { emailConfig } from '../config/emailConfig';
+import { enrichEmailDataWithDebugInfo } from './use-email-debug';
 
 // Interface pour les détails de transaction
 interface TransactionDetails {
@@ -57,10 +58,10 @@ export function useEmail(): EmailHookReturn {
       const emailSubject = data.subject || emailConfig.templates.contact.subject;
 
       // Préparation des données à envoyer
-      const emailData = {
+      const emailData = enrichEmailDataWithDebugInfo({
         ...data,
         subject: emailSubject,
-      };
+      });
 
       console.log("Tentative d'envoi d'email vers:", emailConfig.sendEmailEndpoint);
       console.log("Données envoyées:", emailData);

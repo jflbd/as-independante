@@ -102,7 +102,7 @@ if (process.env.EMAIL_SECURE)
   global.process.env.EMAIL_SECURE = process.env.EMAIL_SECURE;
 
 const app = express();
-const PORT = process.env.PORT || 8080; // Modifié de 3000 à 8080 pour correspondre aux appels du frontend
+const PORT = process.env.PORT || 3000; // Utiliser le port 3000 pour correspondre au proxy de Vite
 
 // Vérifier si nous sommes dans un environnement Vercel Dev
 const isVercelDev =

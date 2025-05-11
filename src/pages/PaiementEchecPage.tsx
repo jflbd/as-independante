@@ -18,6 +18,8 @@ interface ErrorDetails {
 interface CancelledPaymentContext {
   productType?: string;
   description?: string;
+  paymentMethod?: string;
+  paymentProvider?: string;
 }
 
 const PaiementEchecPageContent = () => {
@@ -25,6 +27,7 @@ const PaiementEchecPageContent = () => {
   const location = useLocation();
   const [errorDetails, setErrorDetails] = useState<ErrorDetails | null>(null);
   const [fromEbookPage, setFromEbookPage] = useState<boolean>(false);
+  const [paymentMethod, setPaymentMethod] = useState<string>("Non spécifiée");
   const { openModal } = useContext(ModalContext);
   
   // Fonction pour naviguer vers une page avec défilement vers une ancre
@@ -49,7 +52,15 @@ const PaiementEchecPageContent = () => {
       // Récupérer les détails de l'erreur s'ils existent
       const errorData = sessionStorage.getItem('paymentError');
       if (errorData) {
-        setErrorDetails(JSON.parse(errorData));
+        const error = JSON.parse(errorData);
+        setErrorDetails(error);
+        
+        // Essayer de détecter la méthode de paiement à partir des détails d'erreur
+        if (error.type === 'paypal_error' || (error.message && error.message.toLowerCase().includes('paypal'))) {
+          setPaymentMethod('PayPal');
+        } else if (error.type === 'stripe_error' || (error.message && error.message.toLowerCase().includes('stripe'))) {
+          setPaymentMethod('Stripe');
+        }
       }
       
       // D'abord essayer de récupérer les informations d'annulation (prioritaires)
@@ -57,6 +68,14 @@ const PaiementEchecPageContent = () => {
       if (cancelContext) {
         const details = JSON.parse(cancelContext) as CancelledPaymentContext;
         setFromEbookPage(details.productType === 'ebook');
+        
+        // Récupérer la méthode de paiement si disponible
+        if (details.paymentMethod) {
+          setPaymentMethod(details.paymentMethod === 'paypal' ? 'PayPal' : 'Stripe');
+        } else if (details.paymentProvider) {
+          setPaymentMethod(details.paymentProvider === 'paypal' ? 'PayPal' : 'Stripe');
+        }
+        
         // Nettoyer après utilisation
         sessionStorage.removeItem('cancelledPaymentContext');
         return;
@@ -67,6 +86,19 @@ const PaiementEchecPageContent = () => {
       if (paymentDetails) {
         const details = JSON.parse(paymentDetails);
         setFromEbookPage(details.productType === 'ebook');
+        
+        // Déterminer la méthode de paiement
+        if (details.paymentProvider) {
+          setPaymentMethod(details.paymentProvider === 'paypal' ? 'PayPal' : 'Stripe');
+        } else if (details.paymentMethod) {
+          setPaymentMethod(details.paymentMethod);
+        } else if (window.location.href.toLowerCase().includes('paypal')) {
+          // Fallback: détecter PayPal depuis l'URL
+          setPaymentMethod('PayPal');
+        } else if (window.location.href.toLowerCase().includes('stripe')) {
+          // Fallback: détecter Stripe depuis l'URL
+          setPaymentMethod('Stripe');
+        }
       }
     } catch (error) {
       console.error("Erreur lors de la récupération des détails:", error);
@@ -135,7 +167,7 @@ const PaiementEchecPageContent = () => {
       transactionDetails: {
         description: 'Paiement échoué',
         date: new Date().toLocaleDateString('fr-FR'),
-        paymentMethod: 'Non spécifiée'
+        paymentMethod: paymentMethod
       },
       errorDetails: errorDetails // Conserver les détails d'erreur pour le contexte
     });
@@ -186,6 +218,9 @@ const PaiementEchecPageContent = () => {
             </p>
             <p className="text-gray-600 mt-2">
               {getErrorSuggestion()}
+            </p>
+            <p className="text-gray-500 text-sm mt-3">
+              Méthode de paiement : {paymentMethod}
             </p>
           </div>
           

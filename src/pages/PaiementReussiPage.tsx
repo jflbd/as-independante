@@ -168,7 +168,7 @@ const PaiementReussiPageContent = () => {
     
     // Utilisation de la nouvelle propriété transactionDetails plutôt que prefilledMessage
     openModal('contact', {
-      context: 'paiement_reussi',
+      context: 'paiement_réussi',
       transactionDetails: {
         amount: amountAsNumber,
         description: paymentDetails?.description || 'Non spécifiée',

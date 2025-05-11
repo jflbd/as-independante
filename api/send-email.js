@@ -124,14 +124,35 @@ export default async function handler(req, res) {
     if (!emailUser || !emailPassword) {
       console.error("Configuration des paramètres d'email incomplète");
 
-      // Si nous sommes en développement et que nous avons détecté les variables dans le corps de la requête .env.local
+      // Si nous sommes en développement et que nous avons détecté les variables dans le corps de la requête
       // (ceci est utile pour le débogage uniquement)
-      if (req.body._debug_env && process.env.NODE_ENV !== "production") {
+      if (
+        req.body._debug_env &&
+        (process.env.NODE_ENV !== "production" ||
+          process.env.VERCEL_ENV !== "production")
+      ) {
         console.log(
           "⚠️ Utilisation des variables de débogage (NON SÉCURISÉ, à utiliser uniquement en développement)"
         );
+        console.log("Informations d'email de débogage détectées:", {
+          email_user: req.body._debug_env.EMAIL_USER ? "✓" : "✗",
+          email_password: req.body._debug_env.EMAIL_PASSWORD ? "✓" : "✗",
+          email_host: req.body._debug_env.EMAIL_HOST,
+          email_port: req.body._debug_env.EMAIL_PORT,
+        });
+
         emailUser = req.body._debug_env.EMAIL_USER || emailUser;
         emailPassword = req.body._debug_env.EMAIL_PASSWORD || emailPassword;
+
+        // Mettre à jour également les autres paramètres s'ils sont fournis
+        if (req.body._debug_env.EMAIL_HOST)
+          process.env.EMAIL_HOST = req.body._debug_env.EMAIL_HOST;
+        if (req.body._debug_env.EMAIL_PORT)
+          process.env.EMAIL_PORT = req.body._debug_env.EMAIL_PORT;
+        if (req.body._debug_env.EMAIL_SERVICE)
+          process.env.EMAIL_SERVICE = req.body._debug_env.EMAIL_SERVICE;
+        if (req.body._debug_env.EMAIL_RECIPIENT)
+          process.env.EMAIL_RECIPIENT = req.body._debug_env.EMAIL_RECIPIENT;
       }
 
       // Si toujours pas de variables, retourner une erreur
@@ -472,7 +493,7 @@ function formatEmailHtml(data) {
       }
       
       ${
-        contextSource === "paiement_reussi"
+        contextSource === "paiement_réussi"
           ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #ecfdf5; border-left: 4px solid #047857; border-radius: 4px;">
           <p style="margin: 0; color: #047857; font-weight: bold;">✅ CONTACT APRÈS UN PAIEMENT RÉUSSI</p>
         </div>`
@@ -487,7 +508,7 @@ function formatEmailHtml(data) {
           "devis-pro",
           "quote",
           "paiement_erreur",
-          "paiement_reussi",
+          "paiement_réussi",
         ].includes(contextSource)
           ? `<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f7fa; border-left: 4px solid #0D8496; border-radius: 4px;">
           <p style="margin: 0; color: #0D8496; font-weight: bold;">📝 CONTEXTE: ${contextSource.toUpperCase()}</p>

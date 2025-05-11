@@ -13,6 +13,8 @@ import { OptimizedImage } from '@/components/OptimizedImage';
 interface CancelledPaymentContext {
   productType?: string;
   description?: string;
+  paymentMethod?: string;
+  paymentProvider?: string;
 }
 
 const PaiementAnnulePageContent = () => {
@@ -44,6 +46,12 @@ const PaiementAnnulePageContent = () => {
       if (cancelContext) {
         const details = JSON.parse(cancelContext) as CancelledPaymentContext;
         setFromEbookPage(details.productType === 'ebook');
+        
+        // Récupérer la méthode de paiement si disponible
+        if (details.paymentMethod) {
+          setPaymentMethod(details.paymentMethod === 'paypal' ? 'PayPal' : 'Stripe');
+        }
+        
         // Nettoyer après utilisation
         sessionStorage.removeItem('cancelledPaymentContext');
         return;
@@ -54,6 +62,19 @@ const PaiementAnnulePageContent = () => {
       if (paymentDetails) {
         const details = JSON.parse(paymentDetails);
         setFromEbookPage(details.productType === 'ebook');
+        
+        // Déterminer la méthode de paiement
+        if (details.paymentProvider) {
+          setPaymentMethod(details.paymentProvider === 'paypal' ? 'PayPal' : 'Stripe');
+        } else if (details.paymentMethod) {
+          setPaymentMethod(details.paymentMethod);
+        } else if (window.location.href.toLowerCase().includes('paypal')) {
+          // Fallback: détecter PayPal depuis l'URL
+          setPaymentMethod('PayPal');
+        } else if (window.location.href.toLowerCase().includes('stripe')) {
+          // Fallback: détecter Stripe depuis l'URL
+          setPaymentMethod('Stripe');
+        }
       }
     } catch (error) {
       console.error("Erreur lors de la récupération des détails:", error);
@@ -69,15 +90,18 @@ const PaiementAnnulePageContent = () => {
     }
   };
   
+  // État pour stocker la méthode de paiement
+  const [paymentMethod, setPaymentMethod] = useState<string>("Non spécifiée");
+  
   // Fonction pour ouvrir la modal de contact
   const handleOpenContactModal = () => {
     console.log("Ouverture de la modale pour paiement annulé");
     openModal("contact", {
-      context: "paiement_annule",
+      context: "paiement_annulé",
       transactionDetails: {
         description: 'Paiement annulé',
         date: new Date().toLocaleDateString('fr-FR'),
-        paymentMethod: 'Non spécifiée'
+        paymentMethod: paymentMethod
       }
     });
   };
@@ -126,6 +150,9 @@ const PaiementAnnulePageContent = () => {
             <h1 className="text-2xl md:text-3xl font-serif font-bold mb-3">Paiement annulé</h1>
             <p className="text-gray-600">
               Votre paiement a été annulé. Aucun montant n'a été débité de votre compte.
+            </p>
+            <p className="text-gray-500 text-sm mt-2">
+              Méthode de paiement : {paymentMethod}
             </p>
           </div>
           

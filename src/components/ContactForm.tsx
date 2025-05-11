@@ -22,7 +22,7 @@ interface TransactionDetails {
 }
 
 // Type pour les différents contextes possibles
-type ContextSource = 'paiement_erreur' | 'ebook_download' | 'paiement_reussi' | 'paiement_annule' | 'ebook_page' | 'quote' | 'devis-pro' | 'home' | string;
+type ContextSource = 'paiement_erreur' | 'ebook_download' | 'paiement_réussi' | 'paiement_annulé' | 'ebook_page' | 'quote' | 'devis-pro' | 'home' | string;
 
 // Type pour les détails contextuels selon la source
 type ContextDetails = ErrorDetails | Record<string, unknown> | null;

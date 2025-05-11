@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import AppLayout from './components/AppLayout';
+import DevEmailConfigHelper from './components/DevEmailConfigHelper';
 import Index from './pages/Index';
 import LegalNotices from './pages/LegalNotices';
 import EbookPage from './pages/EbookPage';
@@ -84,6 +85,8 @@ export default function WrappedApp() {
   return (
     <AppLayout>
       <App />
+      {/* Outil de configuration d'email pour le développement - visible uniquement en DEV */}
+      {process.env.NODE_ENV !== "production" && <DevEmailConfigHelper />}
     </AppLayout>
   )
 }
