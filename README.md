@@ -267,10 +267,13 @@ Le projet intègre des outils d'optimisation pour les moteurs de recherche :
 
 ### Génération automatique du sitemap et robots.txt
 
-Un système automatisé permet de générer et maintenir à jour le sitemap.xml et le fichier robots.txt :
+Le sitemap.xml et le fichier robots.txt sont générés automatiquement lors du processus de build. Ils peuvent également être générés ou mis à jour manuellement à tout moment :
 
 ```bash
-# Générer/mettre à jour le sitemap.xml et vérifier le robots.txt
+# Générer/mettre à jour manuellement le sitemap.xml et vérifier le robots.txt
+npm run generate-seo
+
+# Ou directement avec le script
 ./scripts/optimize-seo.sh
 ```
 
@@ -295,4 +298,4 @@ Après la mise à jour du sitemap :
 
 ---
 
-Dernière mise à jour : 11 mai 2025
+Dernière mise à jour : 12 mai 2025
