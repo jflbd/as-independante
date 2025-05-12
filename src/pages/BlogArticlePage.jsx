@@ -116,7 +116,7 @@ function BlogArticlePage() {
       
       <NavBar />
       
-      <div className="flex-grow pt-28 pb-12"> 
+      <div className="flex-grow pt-20 pb-12"> 
         <div className="container mx-auto px-4">
           {/* Fil d'Ariane */}
           <Breadcrumb />

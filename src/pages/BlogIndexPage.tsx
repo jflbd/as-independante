@@ -34,7 +34,7 @@ const BlogIndexPage: React.FC = () => {
       
       <NavBar />
       
-      <div className="flex-grow pt-28 pb-12"> 
+      <div className="flex-grow pt-20 pb-12"> 
         <div className="container mx-auto px-4">
           {/* Fil d'Ariane */}
           <nav className="flex py-3 text-gray-600 text-sm mb-2" aria-label="Breadcrumb">

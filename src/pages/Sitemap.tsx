@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { ArrowRight, Home, BookOpen, Phone, FileText, Clock, Calendar, CreditCard, HelpCircle, User, Briefcase, MapPin, FileQuestion, BookType } from 'lucide-react';
 import SEOSchema from '@/components/SEOSchema';
+import LocalSEOCities from '@/components/LocalSEOCities';
+import normandyCities from '@/data/normandyCities';
 
 const Sitemap = () => {
   const mainSections = [
@@ -44,11 +46,12 @@ const Sitemap = () => {
     ]},
   ];
 
+  // Utiliser la liste des villes principales de notre fichier de configuration centralisé
   const locationPages = [
     { name: 'Normandie', path: '/' },
-    { name: 'Caen', path: '/' },
-    { name: 'Rouen', path: '/' },
-    { name: 'Le Havre', path: '/' },
+    ...normandyCities
+      .filter(city => city.isMainCity)
+      .map(city => ({ name: city.name, path: city.url }))
   ];
 
   const blogArticles = [
@@ -86,7 +89,7 @@ const Sitemap = () => {
       
       <NavBar />
       
-      <div className="flex-grow pt-24 pb-12">
+      <div className="flex-grow pt-10 pb-12">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 md:p-8">
             <header className="mb-8">
@@ -164,23 +167,18 @@ const Sitemap = () => {
                 </ul>
                 
                 <h2 className="text-xl font-bold mb-4 mt-8 text-primary">Zones d'intervention</h2>
-                <div className="flex flex-wrap gap-2">
-                  {locationPages.map((location, index) => (
-                    <Link
-                      key={index}
-                      to={location.path}
-                      className="flex items-center px-3 py-2 bg-gray-100 hover:bg-primary/10 rounded-full text-sm text-gray-700 hover:text-primary transition-colors"
-                    >
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {location.name}
-                    </Link>
-                  ))}
-                </div>
+                {/* Utilisation du composant centralisé pour les villes principales */}
+                <LocalSEOCities 
+                  className="border-t-0 pt-0 py-0 mt-0" 
+                  titleClassName="sr-only" 
+                  showAllCities={false}
+                  maxCities={6}
+                />
               </div>
             </div>
             
             {/* Section SEO avec mots-clés et termes associés */}
-            <section className="mt-12 pt-8 border-t border-gray-200">
+            <section className="mt-12 p-8 border-t border-gray-200">
               <h2 className="text-lg font-semibold mb-3 text-gray-700">Services d'assistante sociale en Normandie</h2>
               <div className="text-sm text-gray-600 space-y-2">
                 <p>
@@ -193,34 +191,25 @@ const Sitemap = () => {
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                <div>
-                  <h3 className="font-medium text-gray-700 mb-2">Services disponibles dans ces villes</h3>
-                  <div className="flex flex-wrap gap-1 text-xs">
-                    <span className="px-2 py-1 bg-gray-100 rounded">Caen</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Rouen</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Le Havre</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Bayeux</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Deauville</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Honfleur</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Cabourg</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Lisieux</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Falaise</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Vire</span>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium text-gray-700 mb-2">Types d'accompagnement</h3>
-                  <div className="flex flex-wrap gap-1 text-xs">
-                    <span className="px-2 py-1 bg-gray-100 rounded">Démarches administratives</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Accès aux droits</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Aide budgétaire</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Médiation familiale</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Accompagnement personnes âgées</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Conseil aux entreprises</span>
-                    <span className="px-2 py-1 bg-gray-100 rounded">Aide à domicile</span>
-                  </div>
+              {/* Utilisation du composant centralisé LocalSEOCities */}
+              <div className="mt-6">
+                <LocalSEOCities 
+                  className="border-t-0 pt-0 pb-0" 
+                  titleClassName="text-sm font-medium text-gray-700 mb-2"
+                  maxCities={15}
+                />
+              </div>
+              
+              <div className="mt-6">
+                <h2 className="text-sm font-semibold mb-3 text-gray-700">Types d'accompagnement</h2>
+                <div className="flex flex-wrap gap-1 text-xs">
+                  <span className="px-2 py-1 bg-gray-100 rounded">Démarches administratives</span>
+                  <span className="px-2 py-1 bg-gray-100 rounded">Accès aux droits</span>
+                  <span className="px-2 py-1 bg-gray-100 rounded">Aide budgétaire</span>
+                  <span className="px-2 py-1 bg-gray-100 rounded">Médiation familiale</span>
+                  <span className="px-2 py-1 bg-gray-100 rounded">Accompagnement personnes âgées</span>
+                  <span className="px-2 py-1 bg-gray-100 rounded">Conseil aux entreprises</span>
+                  <span className="px-2 py-1 bg-gray-100 rounded">Aide à domicile</span>
                 </div>
               </div>
             </section>
