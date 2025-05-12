@@ -16,6 +16,7 @@ import {
   Phone,
   MapPin
 } from 'lucide-react';
+import LocalSEOCities from '@/components/LocalSEOCities';
 import { scrollToTop, scrollToSectionWithNavOffset, navigateToLegalSection } from '@/utils/scroll-utils';
 
 const FooterSchemaOrgScript: React.FC = () => (
@@ -388,19 +389,7 @@ const Footer: React.FC = () => {
             </div>
             
             {/* Zone SEO - Villes d'intervention */}
-            <div className="py-4 mt-2 border-t border-gray-200">
-              <h2 className="text-sm font-semibold mb-3 text-gray-700">Zones d'intervention en Normandie</h2>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Caen</Link>
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Rouen</Link>
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Le Havre</Link>
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Bayeux</Link>
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Deauville</Link>
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Lisieux</Link>
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Honfleur</Link>
-                <Link to="/" className="text-xs px-2 py-1 bg-gray-100 hover:bg-primary/10 rounded-full text-gray-600 hover:text-primary transition-colors">Falaise</Link>
-              </div>
-            </div>
+            <LocalSEOCities />
             
             {/* Copyright et mentions légales */}
             <div className="pt-4 mt-1 border-t border-gray-200">

@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { Calendar, Clock, Tag, BookOpen, ChevronRight } from 'lucide-react';
 import SEOSchema from '@/components/SEOSchema';
+import LocalSEOCities from '@/components/LocalSEOCities';
 import { blogArticles } from '@/data/blogArticles';
 
 /**
@@ -132,6 +133,13 @@ const BlogIndexPage: React.FC = () => {
               </Link>
             </div>
           </div>
+          
+          {/* Section des villes d'intervention pour SEO local */}
+          <section className="container mx-auto px-4 py-8 mt-4">
+            <LocalSEOCities 
+              titleClassName="text-center text-lg" 
+            />
+          </section>
         </div>
       </div>
       

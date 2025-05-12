@@ -12,6 +12,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import SEOSchema from "@/components/SEOSchema";
 import LocalSEOCitations from "@/components/LocalSEOCitations";
+import LocalSEOCities from "@/components/LocalSEOCities";
 import { useEffect, useRef, useState } from "react";
 import SafeLink from "@/components/SafeLink";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -305,6 +306,14 @@ const Index = () => {
             
             <ContactSection />
             <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
+            
+            {/* Section des villes d'intervention pour SEO local */}
+            <section className="container mx-auto px-4 py-8">
+              <LocalSEOCities 
+                className="border-t-0" 
+                titleClassName="text-center text-lg" 
+              />
+            </section>
           </main>
 
           <Footer />
