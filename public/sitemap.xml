@@ -7,13 +7,13 @@
         xmlns:geo="http://www.google.com/geo/schemas/sitemap/1.0">
         
   <!-- Métadonnées du sitemap -->
-  <!-- Généré le 2025-05-11 pour AS-Independante.fr -->
+  <!-- Généré le 2025-05-12 pour AS-Independante.fr -->
   <!-- Version: 2.1 -->
   
   <!-- ================= PAGE D'ACCUEIL ================= -->
   <url>
     <loc>https://www.as-independante.fr/</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -27,49 +27,49 @@
   <!-- Les sections principales de la page d'accueil sont référencées avec des ancres -->
   <url>
     <loc>https://www.as-independante.fr/#a-propos</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/#missions</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/#temoignages</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/#services</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/#referentiel</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/#deontologie</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/#pricing</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/#contact</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <geo:geo>
@@ -81,7 +81,7 @@
   <!-- Page index du blog -->
   <url>
     <loc>https://www.as-independante.fr/blog</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -89,11 +89,11 @@
   <!-- Articles de blog -->
   <url>
     <loc>https://www.as-independante.fr/blog/role-assistante-sociale-independante</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://www.as-independante.fr/assets/images/blog/assistante-sociale-independante-role.jpg</image:loc>
+      <image:loc>https://www.as-independante.fr/assets/images/blog/assistante-sociale-independante-role.svg</image:loc>
       <image:title>Le rôle d'une assistante sociale indépendante en Normandie</image:title>
       <image:caption>Découvrez le rôle spécifique d'une assistante sociale libérale et comment elle peut vous accompagner dans vos démarches sociales en Normandie.</image:caption>
     </image:image>
@@ -108,11 +108,11 @@
   </url>
   <url>
     <loc>https://www.as-independante.fr/blog/aides-sociales-normandie</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://www.as-independante.fr/assets/images/blog/aides-sociales-normandie.jpg</image:loc>
+      <image:loc>https://www.as-independante.fr/assets/images/blog/aides-sociales-normandie.svg</image:loc>
       <image:title>Guide des aides sociales disponibles en Normandie</image:title>
       <image:caption>Panorama complet des dispositifs d'aide sociale accessibles en région normande : allocations, subventions, et accompagnements disponibles.</image:caption>
     </image:image>
@@ -127,11 +127,11 @@
   </url>
   <url>
     <loc>https://www.as-independante.fr/blog/preparer-rendez-vous-assistante-sociale</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://www.as-independante.fr/assets/images/blog/preparer-rendez-vous-assistante-sociale.jpg</image:loc>
+      <image:loc>https://www.as-independante.fr/assets/images/blog/preparer-rendez-vous-assistante-sociale.svg</image:loc>
       <image:title>Comment se préparer à un rendez-vous avec une assistante sociale</image:title>
       <image:caption>Conseils pratiques pour préparer votre premier rendez-vous avec une assistante sociale et optimiser cette rencontre.</image:caption>
     </image:image>
@@ -148,13 +148,13 @@
   <!-- ================= PAGES UTILITAIRES ================= -->
   <url>
     <loc>https://www.as-independante.fr/sitemap</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/ebook</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
@@ -165,25 +165,25 @@
   </url>
   <url>
     <loc>https://www.as-independante.fr/mentions-legales</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/mentions-legales#definitions</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/mentions-legales#personal-data</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.as-independante.fr/mentions-legales#cookies</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -192,7 +192,7 @@
   <!-- Pages virtuelles pour le référencement local -->
   <url>
     <loc>https://www.as-independante.fr/#services-caen</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <geo:geo>
@@ -201,7 +201,7 @@
   </url>
   <url>
     <loc>https://www.as-independante.fr/#services-rouen</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <geo:geo>
@@ -210,7 +210,7 @@
   </url>
   <url>
     <loc>https://www.as-independante.fr/#services-lehavre</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <geo:geo>
@@ -219,7 +219,7 @@
   </url>
   <url>
     <loc>https://www.as-independante.fr/#services-normandie</loc>
-    <lastmod>2025-05-11</lastmod>
+    <lastmod>2025-05-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <geo:geo>

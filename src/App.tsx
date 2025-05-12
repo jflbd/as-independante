@@ -14,6 +14,8 @@ import PaiementAnnulePage from './pages/PaiementAnnulePage';
 import TelechargementPage from './pages/TelechargementPage';
 import Sitemap from './pages/Sitemap';
 import BlogLinkMainPage from './pages/BlogLinkMainPage';
+import BlogIndexPage from './pages/BlogIndexPage';
+import BlogArticlePage from './pages/BlogArticlePage.jsx';
 import { ebookConfig } from './config/ebookConfig';
 import { useScrollToTop } from './hooks/useScrollToTop';
 import { ScrollUnlocker } from './components/ui/ScrollUnlocker';
@@ -26,7 +28,7 @@ function App() {
   const navigate = useNavigate();
   const [shouldShow404, setShouldShow404] = useState(false);
   
-  // Intercepter le paramètre notfound de l'URL
+  // Intercepter le paramètre notfound de l'URL et gérer les routes partagées
   useEffect(() => {
     // Vérifier si on arrive depuis la redirection 404.html
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,11 +36,19 @@ function App() {
     
     // Si on a le paramètre notfound, naviguer vers la page 404
     if (notfoundPath) {
-      // On utilise navigate au lieu de window.history.replaceState pour forcer le rendu du composant 404
-      navigate('/404', { replace: true, state: { path: notfoundPath } });
+      // Avant d'afficher 404, vérifier si c'est une route d'article de blog
+      const blogArticleMatch = notfoundPath.match(/^\/blog\/([\w-]+)\/?$/i);
       
-      // Logging pour le débogage
-      console.log(`Page 404 affichée pour: ${notfoundPath}`);
+      if (blogArticleMatch) {
+        // C'est un article de blog, essayons de naviguer vers l'article correct
+        const articleId = blogArticleMatch[1];
+        console.log(`Tentative de redirection vers article de blog: ${articleId}`);
+        navigate(`/blog/${articleId}`, { replace: true });
+      } else {
+        // Sinon, afficher la page 404 comme avant
+        navigate('/404', { replace: true, state: { path: notfoundPath } });
+        console.log(`Page 404 affichée pour: ${notfoundPath}`);
+      }
     }
   }, [navigate]);
   
@@ -68,8 +78,8 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/mentions-legales" element={<LegalNotices />} />
         <Route path="/sitemap" element={<Sitemap />} />
-        <Route path="/blog" element={<BlogLinkMainPage />} />
-        <Route path="/blog/:articleId" element={<BlogLinkMainPage />} />
+        <Route path="/blog" element={<BlogIndexPage />} />
+        <Route path="/blog/:articleId" element={<BlogArticlePage />} />
         <Route path="/ebook" element={<EbookRouteHandler />} />
         <Route path="/acheter-ebook" element={
           ebookConfig.isEbookAvailable ? <AcheterEbookPage /> : <Navigate to="/ebook" replace />

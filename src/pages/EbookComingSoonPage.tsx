@@ -146,7 +146,7 @@ const EbookComingSoonPage: React.FC = () => {
                 <BookOpen className="h-8 w-8" />
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary to-secondary">
                   Bientôt disponible
                 </span>
               </h1>
@@ -171,7 +171,7 @@ const EbookComingSoonPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-lg text-gray-600 font-medium">
-                  Notre ebook est en cours de préparation
+                  Mon ebook est en cours de préparation
                 </p>
                 <div className="flex items-center justify-center space-x-1 text-primary">
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: '0s' }}></span>
@@ -274,7 +274,7 @@ const EbookComingSoonPage: React.FC = () => {
                     <Award className="h-5 w-5 mr-2 text-primary" />
                     Ce que vous découvrirez
                   </h3>
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 text-left">
                     {ebookConfig.benefits.map((benefit, index) => (
                       <li key={index} className="flex items-start">
                         <span className="text-primary mr-2">•</span> {benefit}

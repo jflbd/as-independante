@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé -->
+  <rect width="1200" height="630" fill="url(#paint0_linear)"/>
+  
+  <!-- Titre de l'article -->
+  <text x="600" y="200" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#0D8496">
+    Le rôle d'une assistante sociale indépendante
+  </text>
+  <text x="600" y="260" font-family="Arial, sans-serif" font-size="36" font-weight="normal" text-anchor="middle" fill="#333333">
+    en Normandie
+  </text>
+
+  <!-- Icône symbolique -->
+  <circle cx="600" cy="400" r="100" fill="#0D8496" opacity="0.2"/>
+  <path d="M650 400C650 376.8 628.2 358.8 600 358.8C571.8 358.8 550 376.8 550 400C550 423.2 571.8 441.2 600 441.2C628.2 441.2 650 423.2 650 400Z" fill="#0D8496"/>
+  <path d="M570 400L590 420L630 380" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Dégradé de fond -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F0F7FA"/>
+      <stop offset="1" stop-color="#E5EFF3"/>
+    </linearGradient>
+  </defs>
+</svg>

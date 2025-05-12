@@ -6,40 +6,7 @@ import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { Calendar, Clock, Tag, BookOpen, ChevronRight } from 'lucide-react';
 import SEOSchema from '@/components/SEOSchema';
-
-// Articles disponibles
-const articles = [
-  {
-    id: 'role-assistante-sociale-independante',
-    title: 'Le rôle d\'une assistante sociale indépendante en Normandie',
-    date: '11 mai 2025',
-    author: 'Rachel Gervais',
-    readTime: '5 min',
-    excerpt: 'Découvrez le rôle spécifique d\'une assistante sociale libérale et comment elle peut vous accompagner dans vos démarches sociales en Normandie.',
-    image: '/assets/images/blog/assistante-sociale-independante-role.jpg',
-    tags: ['assistante sociale libérale', 'Normandie', 'accompagnement social'],
-  },
-  {
-    id: 'aides-sociales-normandie',
-    title: 'Guide des aides sociales disponibles en Normandie',
-    date: '10 mai 2025',
-    author: 'Rachel Gervais',
-    readTime: '7 min',
-    excerpt: 'Panorama complet des dispositifs d\'aide sociale accessibles en région normande : allocations, subventions, et accompagnements disponibles.',
-    image: '/assets/images/blog/aides-sociales-normandie.jpg',
-    tags: ['aides sociales', 'Normandie', 'allocations', 'dispositifs'],
-  },
-  {
-    id: 'preparer-rendez-vous-assistante-sociale',
-    title: 'Comment se préparer à un rendez-vous avec une assistante sociale',
-    date: '9 mai 2025',
-    author: 'Rachel Gervais',
-    readTime: '4 min',
-    excerpt: 'Conseils pratiques pour préparer votre premier rendez-vous avec une assistante sociale et optimiser cette rencontre.',
-    image: '/assets/images/blog/preparer-rendez-vous-assistante-sociale.jpg',
-    tags: ['rendez-vous', 'préparation', 'consultation sociale'],
-  }
-];
+import { blogArticles } from '@/data/blogArticles';
 
 /**
  * Page d'index du blog avec articles optimisés pour le SEO
@@ -66,7 +33,7 @@ const BlogIndexPage: React.FC = () => {
       
       <NavBar />
       
-      <div className="flex-grow pt-20 pb-12">
+      <div className="flex-grow pt-28 pb-12"> 
         <div className="container mx-auto px-4">
           {/* Fil d'Ariane */}
           <nav className="flex py-3 text-gray-600 text-sm mb-2" aria-label="Breadcrumb">
@@ -97,16 +64,25 @@ const BlogIndexPage: React.FC = () => {
           
           {/* Liste des articles */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article) => (
-              <article key={article.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow">
+            {blogArticles.map((article) => (
+              <article key={article.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
                 <Link to={`/blog/${article.id}`} className="block">
-                  <div className="h-52 bg-gray-200 relative">
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                      Image de l'article (à remplacer)
-                    </div>
+                  <div className="h-40 sm:h-48 md:h-52 bg-gray-200 relative overflow-hidden">
+                    {article.image ? (
+                      <img 
+                        src={article.image} 
+                        alt={article.title}
+                        className="w-full h-full object-cover object-center"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                        Image de l'article (à remplacer)
+                      </div>
+                    )}
                   </div>
                 </Link>
-                <div className="p-5">
+                <div className="p-5 flex flex-col h-full">
                   <div className="flex flex-wrap gap-2 mb-3">
                     {article.tags.slice(0, 2).map((tag, index) => (
                       <span key={index} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
@@ -121,11 +97,11 @@ const BlogIndexPage: React.FC = () => {
                     </h2>
                   </Link>
                   
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
                     {article.excerpt}
                   </p>
                   
-                  <div className="flex justify-between text-gray-600 text-xs">
+                  <div className="flex justify-between text-gray-600 text-xs pt-2 mt-auto border-t border-gray-100">
                     <span className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
                       {article.date}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé -->
+  <rect width="1200" height="630" fill="url(#paint0_linear)"/>
+  
+  <!-- Titre de l'article -->
+  <text x="600" y="200" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#0D8496">
+    Guide des aides sociales disponibles
+  </text>
+  <text x="600" y="260" font-family="Arial, sans-serif" font-size="36" font-weight="normal" text-anchor="middle" fill="#333333">
+    en Normandie
+  </text>
+
+  <!-- Illustration symbolique -->
+  <rect x="450" y="320" width="300" height="180" rx="10" fill="#0D8496" opacity="0.1"/>
+  <line x1="480" y1="360" x2="720" y2="360" stroke="#0D8496" stroke-width="4"/>
+  <line x1="480" y1="400" x2="720" y2="400" stroke="#0D8496" stroke-width="4"/>
+  <line x1="480" y1="440" x2="650" y2="440" stroke="#0D8496" stroke-width="4"/>
+  <circle cx="450" cy="360" r="15" fill="#0D8496"/>
+  <circle cx="450" cy="400" r="15" fill="#0D8496"/>
+  <circle cx="450" cy="440" r="15" fill="#0D8496"/>
+  
+  <!-- Dégradé de fond -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F0F7FA"/>
+      <stop offset="1" stop-color="#E5EFF3"/>
+    </linearGradient>
+  </defs>
+</svg>

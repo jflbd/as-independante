@@ -3,8 +3,12 @@ import path from "path";
 import fs from "fs/promises";
 import sharp from "sharp";
 
-// Chemin vers l'image source (favicon.png dans le dossier public)
-const sourceImagePath = path.join(process.cwd(), "public", "favicon.png");
+// Chemin vers l'image source (on privilégie SVG puis PNG)
+const svgSourcePath = path.join(process.cwd(), "public", "favicon.svg");
+const pngSourcePath = path.join(process.cwd(), "public", "favicon.png");
+
+// Détermine le chemin source à utiliser (SVG ou PNG)
+let sourceImagePath;
 const faviconOutputDir = path.join(process.cwd(), "public", "favicons");
 
 // Configuration des tailles d'icônes Apple à générer
@@ -77,13 +81,40 @@ async function main() {
   try {
     console.log("Début de la génération des favicons...");
 
-    // Vérifier que l'image source existe
-    await fs.access(sourceImagePath).catch(() => {
-      throw new Error(`L'image source ${sourceImagePath} n'existe pas.`);
-    });
+    // Vérifier quelle source image utiliser (priorité au SVG)
+    try {
+      await fs.access(svgSourcePath);
+      sourceImagePath = svgSourcePath;
+      console.log("Utilisation du format SVG comme source pour les favicons");
+    } catch {
+      try {
+        await fs.access(pngSourcePath);
+        sourceImagePath = pngSourcePath;
+        console.log("Utilisation du format PNG comme source pour les favicons");
+      } catch {
+        throw new Error(
+          "Aucune image source (favicon.svg ou favicon.png) n'a été trouvée."
+        );
+      }
+    }
 
     // Créer le répertoire de sortie s'il n'existe pas
     await fs.mkdir(faviconOutputDir, { recursive: true });
+
+    // Si c'est un SVG, copier directement le SVG dans le répertoire de sortie
+    if (sourceImagePath.endsWith(".svg")) {
+      await fs.copyFile(
+        sourceImagePath,
+        path.join(faviconOutputDir, "favicon.svg")
+      );
+
+      // Et également à la racine du dossier public
+      await fs.copyFile(
+        sourceImagePath,
+        path.join(process.cwd(), "public", "favicon.svg")
+      );
+      console.log("✓ favicon.svg copié avec succès");
+    }
 
     // Générer toutes les tailles d'icônes Apple
     for (const size of appleSizes) {

@@ -43,7 +43,7 @@ const blogPages = [
       publicationDate: "2025-05-11",
     },
     image: {
-      path: "/assets/images/blog/assistante-sociale-independante-role.jpg",
+      path: "/assets/images/blog/assistante-sociale-independante-role.svg",
       title: "Le rôle d'une assistante sociale indépendante en Normandie",
       caption:
         "Découvrez le rôle spécifique d'une assistante sociale libérale et comment elle peut vous accompagner dans vos démarches sociales en Normandie.",
@@ -58,7 +58,7 @@ const blogPages = [
       publicationDate: "2025-05-10",
     },
     image: {
-      path: "/assets/images/blog/aides-sociales-normandie.jpg",
+      path: "/assets/images/blog/aides-sociales-normandie.svg",
       title: "Guide des aides sociales disponibles en Normandie",
       caption:
         "Panorama complet des dispositifs d'aide sociale accessibles en région normande : allocations, subventions, et accompagnements disponibles.",
@@ -73,7 +73,7 @@ const blogPages = [
       publicationDate: "2025-05-09",
     },
     image: {
-      path: "/assets/images/blog/preparer-rendez-vous-assistante-sociale.jpg",
+      path: "/assets/images/blog/preparer-rendez-vous-assistante-sociale.svg",
       title: "Comment se préparer à un rendez-vous avec une assistante sociale",
       caption:
         "Conseils pratiques pour préparer votre premier rendez-vous avec une assistante sociale et optimiser cette rencontre.",

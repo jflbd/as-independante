@@ -50,8 +50,17 @@ const NavBar = () => {
         const height = navRef.current.getBoundingClientRect().height;
         if (height !== navHeight && height > 0) {
           setNavHeight(height);
-          // Mettre à jour la marge du contenu principal avec un délai pour assurer la transition complète
-          document.body.style.paddingTop = `${height}px`;
+          
+          // Ne pas ajouter de padding-top sur les pages spécifiques comme blog et ebook
+          const isSpecialPage = location.pathname.startsWith('/blog') || 
+                               location.pathname.startsWith('/ebook');
+          if (!isSpecialPage) {
+            // Mettre à jour la marge du contenu principal avec un délai pour assurer la transition complète
+            document.body.style.paddingTop = `${height}px`;
+          } else {
+            // Pour les pages de blog et d'ebook, on supprime le padding
+            document.body.style.paddingTop = '0';
+          }
         }
       }
     };
@@ -100,7 +109,7 @@ const NavBar = () => {
       resizeObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [scrolled, isOpen, navHeight]); // Ajout de navHeight dans les dépendances
+  }, [scrolled, isOpen, navHeight, location.pathname]); // Ajout de navHeight et location.pathname dans les dépendances
   
   // Fermer le dropdown quand on clique ailleurs
   useEffect(() => {
@@ -130,23 +139,58 @@ const NavBar = () => {
   const scrollToSection = (sectionId: string) => {
     setIsScrolling(true);
     
-    // Fermer les menus avant de défiler
-    setTimeout(() => {
-      setIsOpen(false);
-      setShowServiceDropdown(false);
-      setShowMobileServiceDropdown(false);
+    // Fermer les menus immédiatement
+    setIsOpen(false);
+    setShowServiceDropdown(false);
+    setShowMobileServiceDropdown(false);
     
-      // Attendre que les animations de fermeture soient terminées
-      setTimeout(() => {
-        // Utiliser la fonction utilitaire de scroll
-        scrollToSectionWithNavOffset(sectionId, navHeight, 20, () => {
-          setIsScrolling(false);
-        });
-        
-        setActiveSection(sectionId);
-      }, 150);
-    }, 50);
+    // Mettre à jour la section active immédiatement
+    setActiveSection(sectionId);
+    
+    // Traitement spécial pour le blog
+    if (sectionId === "blog") {
+      window.location.href = "/blog";
+      return;
+    }
+    
+    // Attendre un court délai pour que les animations se terminent
+    setTimeout(() => {
+      // Vérifier si nous sommes sur une page autre que la page d'accueil,
+      // ou sur une page de blog ou une page spécifique qui n'est pas la page d'accueil
+      if (location.pathname !== '/' && 
+          !location.pathname.startsWith('/#') && 
+          (location.pathname.startsWith('/blog') || 
+           location.pathname.startsWith('/ebook'))) {
+        // Rediriger vers la page d'accueil avec l'ancre
+        window.location.href = `/#${sectionId}`;
+        return;
+      }
+      
+      // Si nous sommes déjà sur la page d'accueil, utiliser la fonction utilitaire de scroll
+      scrollToSectionWithNavOffset(sectionId, navHeight, 20, () => {
+        setIsScrolling(false);
+      });
+    }, 150);
   };
+
+  // Effet pour détecter si l'utilisateur est sur une page blog ou une autre page spéciale
+  useEffect(() => {
+    // Pour les pages de blog, définir blog comme section active
+    if (location.pathname.startsWith('/blog')) {
+      setActiveSection('blog');
+      return;
+    }
+    
+    // Pour les pages d'ebook, ne pas modifier la section active
+    if (location.pathname.startsWith('/ebook')) {
+      return;
+    }
+    
+    // Si on revient à la page d'accueil, réinitialiser à accueil
+    if (location.pathname === '/' || location.pathname === '/#') {
+      setActiveSection('accueil');
+    }
+  }, [location.pathname]);
 
   // Track scroll position to highlight active section and navbar background
   useEffect(() => {
@@ -156,6 +200,11 @@ const NavBar = () => {
         setScrolled(true);
       } else {
         setScrolled(false);
+      }
+      
+      // Ne pas mettre à jour la section active si nous sommes sur une page blog
+      if (location.pathname.startsWith('/blog')) {
+        return;
       }
       
       if (isScrolling) return; // Don't update during programmatic scrolling
@@ -199,7 +248,7 @@ const NavBar = () => {
     
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isScrolling, navHeight]); // Ajout de navHeight dans les dépendances
+  }, [isScrolling, navHeight, location.pathname]); // Ajout de navHeight et location.pathname dans les dépendances
 
   // Handle body scroll locking when mobile menu is open
   useEffect(() => {
@@ -219,25 +268,37 @@ const NavBar = () => {
     };
   }, [isOpen]);
 
-  const mainNavItems = [
-    { id: "accueil", label: "Accueil" },
-    { id: "a-propos", label: "Mon parcours" },
-    { id: "missions", label: "Mes missions" },
-    { id: "temoignages", label: "Témoignages" },
+  // Définir un type pour les éléments de navigation
+  type NavItem = {
+    id: string;
+    label: string;
+    hasDropdown?: boolean;
+    dropdownItems?: { id: string; label: string; icon: React.ReactNode }[];
+    isExternal?: boolean;
+    path?: string;
+  };
+  
+  const mainNavItems: NavItem[] = [
+    { id: "accueil", label: "Accueil", isExternal: false, path: "/" },
+    { id: "a-propos", label: "Mon parcours", isExternal: false, path: "/#a-propos" },
+    { id: "missions", label: "Mes missions", isExternal: false, path: "/#missions" },
+    { id: "temoignages", label: "Témoignages", isExternal: false, path: "/#temoignages" },
     { 
       id: "services", 
       label: "Mes services",
       hasDropdown: true,
+      isExternal: false,
+      path: "/#services",
       dropdownItems: [
         { id: "services-particulier", label: "Pour particuliers", icon: <User className="h-4 w-4 mr-2" /> },
         { id: "services-professionnel", label: "Pour professionnels", icon: <Building className="h-4 w-4 mr-2" /> },
       ]
     },
-    { id: "referentiel", label: "Cadre d'intervention" },
-    { id: "deontologie", label: "Déontologie" },
-    { id: "pricing", label: "Tarifs" },
-    // { id: "blog", label: "Blog", isExternal: true, path: "/blog" },
-    { id: "contact", label: "Contact" },
+    { id: "referentiel", label: "Cadre d'intervention", isExternal: false, path: "/#referentiel" },
+    { id: "deontologie", label: "Déontologie", isExternal: false, path: "/#deontologie" },
+    { id: "pricing", label: "Tarifs", isExternal: false, path: "/#pricing" },
+    { id: "blog", label: "Blog", isExternal: true, path: "/blog" },
+    { id: "contact", label: "Contact", isExternal: false, path: "/#contact" },
   ];
 
   // Fonction utilitaire pour défiler vers des sous-sections de services
@@ -336,9 +397,12 @@ const NavBar = () => {
                         to={item.path || '/'} 
                         className={`
                           px-1 sm:px-1.5 md:px-2 lg:px-3 py-2 text-[10px] md:text-xs lg:text-sm rounded-full transition-all duration-300 
-                          text-gray-600 hover:text-primary hover:bg-primary/5
+                          ${activeSection === item.id 
+                            ? "text-white font-semibold bg-primary shadow-md transform -translate-y-0.5" 
+                            : "text-gray-600 hover:text-primary hover:bg-primary/5"}
                         `}
                         aria-label={`Naviguer vers ${item.label}`}
+                        aria-current={activeSection === item.id ? "page" : undefined}
                       >
                         <span className="relative whitespace-nowrap">
                           {item.label}
@@ -417,7 +481,11 @@ const NavBar = () => {
                       <Link
                         key={item.id}
                         to={item.path || '/'}
-                        className="flex items-center px-3 py-3 rounded-lg text-gray-700 hover:bg-primary/5 hover:text-primary"
+                        className={`flex items-center px-3 py-3 rounded-lg ${
+                          activeSection === item.id 
+                            ? "bg-primary/10 text-primary font-medium" 
+                            : "text-gray-700 hover:bg-primary/5 hover:text-primary"
+                        }`}
                         onClick={() => setIsOpen(false)}
                       >
                         <span>{item.label}</span>
@@ -469,7 +537,13 @@ const NavBar = () => {
                         `}
                         onClick={(e) => {
                           e.preventDefault();
-                          scrollToSection(item.id);
+                          // Si nous sommes sur une autre page que l'accueil, rediriger
+                          if (location.pathname !== '/') {
+                            window.location.href = `/#${item.id}`;
+                          } else {
+                            // Sinon, défiler vers la section
+                            scrollToSection(item.id);
+                          }
                           setIsOpen(false);
                         }}
                       >
@@ -490,11 +564,17 @@ const NavBar = () => {
                         e.stopPropagation(); // Empêcher la propagation de l'événement
                         setIsOpen(false); // Ferme le menu mobile
                         setTimeout(() => {
-                          // Défilement vers la section contact
-                          scrollToSectionWithNavOffset("contact", navHeight, 20, () => {
-                            setIsScrolling(false);
-                          });
-                          setActiveSection("contact");
+                          // Vérifier si nous sommes sur une page autre que l'accueil
+                          if (location.pathname !== '/') {
+                            // Rediriger vers la page d'accueil avec l'ancre contact
+                            window.location.href = '/#contact';
+                          } else {
+                            // Sinon, défiler vers la section contact
+                            scrollToSectionWithNavOffset("contact", navHeight, 20, () => {
+                              setIsScrolling(false);
+                            });
+                            setActiveSection("contact");
+                          }
                         }, 150); // Délai pour permettre la fermeture du menu
                       }}
                     >

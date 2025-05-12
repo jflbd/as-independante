@@ -3,7 +3,19 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import SafeLink from '@/components/SafeLink';
 import { siteConfig } from '@/config/siteConfig';
 import { SiFacebook } from '@icons-pack/react-simple-icons';
-import { Book, Lock, FileText, Map } from 'lucide-react';
+import { 
+  Book, 
+  Lock, 
+  FileText, 
+  Map, 
+  Home, 
+  Briefcase, 
+  Star, 
+  MessageCircle,
+  Mail,
+  Phone,
+  MapPin
+} from 'lucide-react';
 import { scrollToTop, scrollToSectionWithNavOffset, navigateToLegalSection } from '@/utils/scroll-utils';
 
 const FooterSchemaOrgScript: React.FC = () => (
@@ -201,22 +213,26 @@ const Footer: React.FC = () => {
       { 
         name: "Accueil", 
         url: "/", 
-        id: "footer-home" 
+        id: "footer-home",
+        icon: <Home className="h-4 w-4 mr-1" /> 
       },
       { 
         name: "Services", 
         url: isHomePage ? "#services" : "/#services", 
-        id: "footer-services" 
+        id: "footer-services",
+        icon: <Briefcase className="h-4 w-4 mr-1" /> 
       },
       { 
         name: "Témoignages", 
         url: isHomePage ? "#temoignages" : "/#temoignages", 
-        id: "footer-testimonials" 
+        id: "footer-testimonials",
+        icon: <Star className="h-4 w-4 mr-1" /> 
       },
       { 
         name: "Contact", 
         url: isHomePage ? "#contact" : "/#contact", 
-        id: "footer-contact" 
+        id: "footer-contact",
+        icon: <MessageCircle className="h-4 w-4 mr-1" /> 
       },
       { 
         name: "Blog", 
@@ -227,7 +243,8 @@ const Footer: React.FC = () => {
       { 
         name: "Plan du site", 
         url: "/sitemap", 
-        id: "footer-sitemap" 
+        id: "footer-sitemap",
+        icon: <Map className="h-4 w-4 mr-1" /> 
       },
       { 
         name: "Ebook", 
@@ -310,15 +327,6 @@ const Footer: React.FC = () => {
                         Version complète
                       </SmoothScrollLink>
                     </li>
-                    <li>
-                      <SmoothScrollLink 
-                        to="/sitemap" 
-                        className="text-sm text-gray-600 hover:text-primary transition-colors hover:underline flex items-center"
-                      >
-                        <Map className="h-4 w-4 mr-1" />
-                        Plan du site
-                      </SmoothScrollLink>
-                    </li>
                   </ul>
                 </nav>
               </div>
@@ -326,55 +334,56 @@ const Footer: React.FC = () => {
               {/* Colonne 3: Contact */}
               <div itemScope itemType="https://schema.org/Organization">
                 <h2 className="text-lg font-semibold mb-4 text-primary">Contact</h2>
-                <div>
-                  <div className="mb-3">
+                <ul className="space-y-3">
+                  <li>
                     <a 
                       href={`mailto:${siteConfig.contact.email}`} 
                       className="text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
                       itemProp="email"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
+                      <span className="bg-gray-50 p-1.5 rounded-full inline-flex items-center justify-center">
+                        <Mail className="h-4 w-4 text-primary" />
+                      </span>
                       <span>{siteConfig.contact.email}</span>
                     </a>
-                  </div>
-                  <div>
+                  </li>
+                  <li>
                     <a 
                       href={`tel:${siteConfig.contact.phone.replace(/\s/g, '')}`} 
                       className="text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
                       itemProp="telephone"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
+                      <span className="bg-gray-50 p-1.5 rounded-full inline-flex items-center justify-center">
+                        <Phone className="h-4 w-4 text-primary" />
+                      </span>
                       <span>{siteConfig.contact.phone}</span>
                     </a>
-                  </div>
-                  <div itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
-                    <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+                  </li>
+                  <li itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
+                    <div className="text-sm text-gray-600 flex items-center gap-2">
+                      <span className="bg-gray-50 p-1.5 rounded-full inline-flex items-center justify-center">
+                        <MapPin className="h-4 w-4 text-primary" />
+                      </span>
                       <span>
                         <span itemProp="addressRegion">{siteConfig.contact.region}</span>, 
                         <span itemProp="addressCountry">{siteConfig.contact.country}</span>
                       </span>
-                    </p>
-                  </div>
-                  <div>
+                    </div>
+                  </li>
+                  <li className="pt-1">
                     <SafeLink 
                       to={siteConfig.social.facebook} 
                       external={true}
-                      className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors group"
+                      className="text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2 group"
                       aria-label="Rejoignez-moi sur Facebook"
                     >
-                      <SiFacebook className="h-5 w-5 text-[#1877F2] transition-transform group-hover:scale-110" />
-                      <span className="text-sm">Facebook</span>
+                      <span className="bg-gray-50 p-1.5 rounded-full inline-flex items-center justify-center">
+                        <SiFacebook className="h-4 w-4 text-[#1877F2] transition-transform group-hover:scale-110" />
+                      </span>
+                      <span>Facebook</span>
                     </SafeLink>
-                  </div>
-                </div>
+                  </li>
+                </ul>
               </div>
             </div>
             

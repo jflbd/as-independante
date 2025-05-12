@@ -41,7 +41,11 @@ const RelatedLinks: React.FC<RelatedLinksProps> = ({
                   {link.text}
                 </a>
               ) : (
-                <Link to={link.url} className="text-primary hover:underline font-medium">
+                <Link 
+                  to={link.url} 
+                  className="text-primary hover:underline font-medium"
+                  onClick={() => console.log(`Navigation vers: ${link.url}`)} // Aide au débogage
+                >
                   {link.text}
                 </Link>
               )}

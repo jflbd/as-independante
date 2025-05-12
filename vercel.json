@@ -131,6 +131,18 @@
       "destination": "/paiement-echec.html"
     },
     {
+      "source": "/blog",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog/:articleId",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog/:articleId/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

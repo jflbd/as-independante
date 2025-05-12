@@ -17,19 +17,27 @@
         '/paiement-annule',
         '/paiement-echec',
         '/checkout',
-        '/telechargement'
+        '/telechargement',
+        '/blog'
       ];
       
       var path = window.location.pathname;
       
+      // Traitement spécial pour les URL partagées sur les réseaux sociaux qui peuvent contenir des paramètres
+      var cleanPath = path.split('?')[0].split('#')[0];
+      
       // Vérifier si nous sommes sur une route SPA connue
       var isSpaRoute = spaRoutes.some(function(route) {
-        return path.startsWith(route);
+        return cleanPath === route || cleanPath.startsWith(route + '/');
       });
       
-      if (isSpaRoute) {
-        // Si c'est une route SPA, rediriger directement vers cette route
-        window.location.href = window.location.origin + path;
+      // Vérifier spécifiquement les routes d'articles de blog (format /blog/article-id)
+      var isBlogArticle = /^\/blog\/[\w-]+\/?$/i.test(cleanPath);
+      
+      if (isSpaRoute || isBlogArticle) {
+        // Si c'est une route SPA ou un article de blog, rediriger directement vers cette route
+        console.log("Redirection vers route SPA: " + cleanPath);
+        window.location.href = window.location.origin + cleanPath;
       } else {
         // Sinon, comportement par défaut avec page 404
         window.location.href = "/?notfound=" + encodeURIComponent(path);

@@ -29,7 +29,7 @@ const BlogLinkMainPage: React.FC = () => {
 
       <NavBar />
 
-      <main className="flex-grow pt-24 pb-12 bg-gray-50">
+      <main className="flex-grow 0 pb-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <Breadcrumb />
           
