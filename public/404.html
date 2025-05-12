@@ -26,6 +26,11 @@
       // Traitement spécial pour les URL partagées sur les réseaux sociaux qui peuvent contenir des paramètres
       var cleanPath = path.split('?')[0].split('#')[0];
       
+      // Supprimer le trailing slash pour uniformiser les URLs
+      if (cleanPath !== '/' && cleanPath.endsWith('/')) {
+        cleanPath = cleanPath.slice(0, -1);
+      }
+      
       // Vérifier si nous sommes sur une route SPA connue
       var isSpaRoute = spaRoutes.some(function(route) {
         return cleanPath === route || cleanPath.startsWith(route + '/');
@@ -35,9 +40,10 @@
       var isBlogArticle = /^\/blog\/[\w-]+\/?$/i.test(cleanPath);
       
       if (isSpaRoute || isBlogArticle) {
-        // Si c'est une route SPA ou un article de blog, rediriger directement vers cette route
-        console.log("Redirection vers route SPA: " + cleanPath);
-        window.location.href = window.location.origin + cleanPath;
+        // Si c'est une route SPA ou un article de blog, rediriger directement vers l'application
+        console.log("Redirection vers l'application React pour la route: " + cleanPath);
+        // Utiliser le hash pour éviter une autre requête serveur qui pourrait causer une boucle
+        window.location.replace(window.location.origin + '/#' + cleanPath);
       } else {
         // Sinon, comportement par défaut avec page 404
         window.location.href = "/?notfound=" + encodeURIComponent(path);

@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "env": {
-    "VITE_APP_TITLE": "Rachel Gervais - Assistante Sociale Indépendante",
+    "VITE_APP_TITLE": "Rachel Gervais | Assistante Sociale Indépendante",
     "VITE_APP_DESCRIPTION": "Rachel Gervais, assistante sociale diplômée d'État depuis 2009, vous accompagne dans vos démarches sociales en Normandie.",
     "VITE_APP_KEYWORDS": "assistante sociale, Normandie, accompagnement social",
     "VITE_APP_URL": "https://www.as-independante.fr"

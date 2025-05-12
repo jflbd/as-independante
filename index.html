@@ -59,6 +59,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
+    <!-- Script pour gérer l'actualisation des pages SPA, notamment les articles de blog -->
+    <script>
+      (function() {
+        // Cette fonction aide à gérer le rechargement de pages d'articles de blog
+        // et évite les boucles de redirection 404
+        var path = window.location.pathname;
+        var isBlogArticle = /^\/blog\/[\w-]+\/?$/i.test(path);
+        
+        // Si nous sommes sur une page d'article de blog et que c'est un rechargement direct
+        // (pas une navigation via l'historique)
+        if (isBlogArticle && performance.navigation && performance.navigation.type === 1) {
+          // Stocker la route actuelle dans le localStorage pour pouvoir y revenir
+          localStorage.setItem('lastBlogRoute', path);
+          console.log('Route blog sauvegardée pour actualisation: ' + path);
+        }
+      })();
+    </script>
+    
     <!-- Configuration pour applications web sur appareils mobiles -->
     <meta name="theme-color" content="#0D8496" />
     <meta name="apple-mobile-web-app-capable" content="yes">

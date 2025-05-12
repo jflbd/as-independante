@@ -57,15 +57,25 @@ function App() {
     return ebookConfig.isEbookAvailable ? <EbookPage /> : <EbookComingSoonPage />;
   };
   
-  // Détecter si on utilise des routes en mode hash (compatibilité pour les redirections de paiement)
+  // Détecter si on utilise des routes en mode hash (compatibilité pour les redirections de paiement et actualisations blog)
   useEffect(() => {
-    // Si on arrive avec un hash qui ressemble à une route (e.g. /#/paiement-annule)
+    // Si on arrive avec un hash qui ressemble à une route (e.g. /#/paiement-annule ou /#/blog/article-id)
     const hash = window.location.hash;
     if (hash && hash.startsWith('#/')) {
       const route = hash.substring(1); // enlever le # du début
       console.log(`Détection de route en mode hash: ${route}`);
-      // Rediriger vers la route normale
-      navigate(route, { replace: true });
+      
+      // Vérifier si c'est une route d'article de blog
+      const isBlogArticle = route.startsWith('blog/') && route.split('/').length >= 2;
+      
+      if (isBlogArticle) {
+        console.log(`Détection d'un article de blog via hash: ${route}`);
+        // Pour les articles de blog, naviguer avec replace: true pour éviter des problèmes d'historique
+        navigate(route, { replace: true });
+      } else {
+        // Pour les autres routes, navigation normale
+        navigate(route, { replace: true });
+      }
     }
   }, [navigate, location.hash]);
   
