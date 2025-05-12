@@ -305,15 +305,7 @@ const Index = () => {
             <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
             
             <ContactSection />
-            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>
-            
-            {/* Section des villes d'intervention pour SEO local */}
-            <section className="container mx-auto px-4 py-8">
-              <LocalSEOCities 
-                className="border-t-0" 
-                titleClassName="text-center text-lg" 
-              />
-            </section>
+            <div className="w-full h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10"></div>            
           </main>
 
           <Footer />
