@@ -397,7 +397,7 @@ const Footer: React.FC = () => {
                 <div className="text-sm text-gray-500">
                   &copy; {copyrightYears} <span itemProp="copyrightHolder">{siteConfig.name}</span>. Tous droits réservés.
                 </div>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-gray-400 sm:pr-20 md:pr-24">
                   Site réalisé avec <span className="text-red-400">♥</span> par {siteConfig.freelance}
                 </div>
               </div>
