@@ -5,6 +5,7 @@ import { ArrowLeft, Home, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/siteConfig";
 import { scrollToSectionWithNavOffset } from "@/utils/scroll-utils";
+import ScrollButtons from "@/components/ScrollButtons";
 
 const NotFound = () => {
   const location = useLocation();
@@ -110,6 +111,9 @@ const NotFound = () => {
           </div>
         </div>
       </div>
+      
+      {/* Ajout du composant ScrollButtons avec forceHide=true pour éviter l'affichage des flèches */}
+      <ScrollButtons forceHide={true} includeHomeButton={true} onHomeClick={goToHome} />
     </div>
   );
 };

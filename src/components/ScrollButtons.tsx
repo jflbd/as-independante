@@ -5,35 +5,43 @@ import { scrollToTop, scrollToBottom } from '../utils/scroll-utils';
 interface ScrollButtonsProps {
   includeHomeButton?: boolean;
   onHomeClick?: () => void;
+  forceHide?: boolean; // Propriété pour forcer la dissimulation des boutons
 }
 
-const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false, onHomeClick }) => {
+const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false, onHomeClick, forceHide = false }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [documentHeight, setDocumentHeight] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
-  const [showButtons, setShowButtons] = useState(true); // On commence par les afficher par défaut
+  const [showButtons, setShowButtons] = useState(false) // On commence par les cacher par défaut
   
   // Seuils pour déterminer si on est en haut, au milieu ou en bas de la page
   const TOP_THRESHOLD = 200; // En pixels depuis le haut
   const BOTTOM_THRESHOLD = 200; // En pixels depuis le bas
   
   useEffect(() => {
-    // Fonction pour mettre à jour les dimensions
+    // Fonction pour mettre à jour les dimensions et vérifier le besoin de défilement
     const updateDimensions = () => {
-      const docHeight = Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight
-      );
+      // Méthode ultra-fiable pour détecter si une page nécessite du défilement
+      const hasVerticalScroll = document.documentElement.scrollHeight > window.innerHeight;
+      
+      // Pour les diagnostics - obtenir la hauteur avec différentes méthodes
+      const heightValues = {
+        body: document.body.scrollHeight,
+        documentElement: document.documentElement.scrollHeight,
+        innerHeight: window.innerHeight,
+        clientHeight: document.documentElement.clientHeight,
+        bodyOffset: document.body.offsetHeight
+      };
+      
+      // Calculer la hauteur du document pour compatibilité avec le reste du code
+      const docHeight = document.documentElement.scrollHeight;
       setDocumentHeight(docHeight);
       setViewportHeight(window.innerHeight);
       
-      // N'afficher les boutons que si la page nécessite du défilement
-      // (comparer la hauteur du document à la hauteur de la fenêtre)
-      const needsScrolling = docHeight > window.innerHeight + 50; // ajout d'une marge de 50px
-      console.log(`ScrollButtons: Document height: ${docHeight}, Viewport height: ${window.innerHeight}, Needs scrolling: ${needsScrolling}`);
+      // Détection plus précise avec une marge d'erreur minime
+      const needsScrolling = docHeight > window.innerHeight + 5;
+      
+      console.log(`ScrollButtons: Heights:`, heightValues, `Needs scrolling: ${needsScrolling}`);
       setShowButtons(needsScrolling);
     };
     
@@ -46,22 +54,48 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
     updateDimensions();
     updateScrollPosition();
     
+    // Effectuer des vérifications supplémentaires après le chargement complet
+    // pour s'assurer que tous les éléments sont rendus correctement
+    window.addEventListener('load', updateDimensions);
+    
+    // Vérification différée pour capturer les images et autres ressources chargées
+    const timeoutIds = [
+      setTimeout(updateDimensions, 100),
+      setTimeout(updateDimensions, 500),
+      setTimeout(updateDimensions, 1000)
+    ];
+    
     // Ajouter les écouteurs d'événements
     window.addEventListener('scroll', updateScrollPosition, { passive: true });
     window.addEventListener('resize', updateDimensions, { passive: true });
     
-    // Nettoyer les écouteurs d'événements
+    // Écouter les changements du DOM qui pourraient affecter la hauteur
+    const observer = new MutationObserver(() => {
+      setTimeout(updateDimensions, 50);
+    });
+    
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true, 
+      attributes: true 
+    });
+    
+    // Nettoyer les écouteurs d'événements et observer
     return () => {
       window.removeEventListener('scroll', updateScrollPosition);
       window.removeEventListener('resize', updateDimensions);
+      window.removeEventListener('load', updateDimensions);
+      timeoutIds.forEach(id => clearTimeout(id));
+      observer.disconnect();
     };
   }, [includeHomeButton]);
   
   const isAtTop = scrollPosition < TOP_THRESHOLD;
+  // Calcul plus précis pour déterminer si on est en bas de la page
   const isAtBottom = documentHeight - (scrollPosition + viewportHeight) < BOTTOM_THRESHOLD;
   
-  // Ne rien afficher si showButtons est faux, sauf éventuellement le bouton Accueil
-  if (!showButtons && !includeHomeButton) {
+  // Ne rien afficher si forceHide est vrai ou si showButtons est faux (sauf pour le bouton Accueil)
+  if ((forceHide || !showButtons) && !includeHomeButton) {
     return null;
   }
   
