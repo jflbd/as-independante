@@ -30,8 +30,11 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
       setDocumentHeight(docHeight);
       setViewportHeight(window.innerHeight);
       
-      // Toujours afficher les boutons, quelle que soit la hauteur de la page
-      setShowButtons(true);
+      // N'afficher les boutons que si la page nécessite du défilement
+      // (comparer la hauteur du document à la hauteur de la fenêtre)
+      const needsScrolling = docHeight > window.innerHeight + 50; // ajout d'une marge de 50px
+      console.log(`ScrollButtons: Document height: ${docHeight}, Viewport height: ${window.innerHeight}, Needs scrolling: ${needsScrolling}`);
+      setShowButtons(needsScrolling);
     };
     
     // Fonction pour mettre à jour la position de défilement
@@ -57,10 +60,14 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
   const isAtTop = scrollPosition < TOP_THRESHOLD;
   const isAtBottom = documentHeight - (scrollPosition + viewportHeight) < BOTTOM_THRESHOLD;
   
-  // Toujours afficher les boutons
+  // Ne rien afficher si showButtons est faux, sauf éventuellement le bouton Accueil
+  if (!showButtons && !includeHomeButton) {
+    return null;
+  }
+  
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
-      {/* Bouton d'accueil si demandé */}
+      {/* Bouton d'accueil si demandé - toujours affiché si includeHomeButton est vrai */}
       {includeHomeButton && (
         <button 
           onClick={onHomeClick}
@@ -71,8 +78,8 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
         </button>
       )}
       
-      {/* Bouton de défilement vers le haut (visible si non au sommet) */}
-      {!isAtTop && (
+      {/* Bouton de défilement vers le haut (visible si page nécessite défilement ET non au sommet) */}
+      {showButtons && !isAtTop && (
         <button 
           onClick={() => scrollToTop()}
           className="flex items-center justify-center w-12 h-12 bg-primary hover:bg-primary text-white rounded-full shadow-xl transition-all hover:shadow-2xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -82,8 +89,8 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
         </button>
       )}
       
-      {/* Bouton de défilement vers le bas (visible si non en bas) */}
-      {!isAtBottom && (
+      {/* Bouton de défilement vers le bas (visible si page nécessite défilement ET non en bas) */}
+      {showButtons && !isAtBottom && (
         <button 
           onClick={() => scrollToBottom()}
           className="flex items-center justify-center w-12 h-12 bg-primary hover:bg-primary text-white rounded-full shadow-xl transition-all hover:shadow-2xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
