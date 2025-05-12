@@ -67,12 +67,26 @@
         var path = window.location.pathname;
         var isBlogArticle = /^\/blog\/[\w-]+\/?$/i.test(path);
         
-        // Si nous sommes sur une page d'article de blog et que c'est un rechargement direct
-        // (pas une navigation via l'historique)
-        if (isBlogArticle && performance.navigation && performance.navigation.type === 1) {
+        // Si nous sommes sur une page d'article de blog
+        if (isBlogArticle) {
+          // Nettoyer le chemin (supprimer le trailing slash)
+          var cleanPath = path;
+          if (cleanPath !== '/' && cleanPath.endsWith('/')) {
+            cleanPath = cleanPath.slice(0, -1);
+          }
+          
           // Stocker la route actuelle dans le localStorage pour pouvoir y revenir
-          localStorage.setItem('lastBlogRoute', path);
-          console.log('Route blog sauvegardée pour actualisation: ' + path);
+          localStorage.setItem('lastBlogRoute', cleanPath);
+          console.log('Route blog identifiée: ' + cleanPath);
+          
+          // Si c'est un rechargement direct de page
+          if (performance.navigation && performance.navigation.type === 1) {
+            console.log('Actualisation d\'un article, optimisation du chargement...');
+            // Essayer d'interrompre le cycle de chargement normal pour éviter un flash de page 404
+            window.stop();
+            // Rediriger immédiatement avec la méthode hash pour éviter un cycle serveur
+            window.location.replace(window.location.origin + '/#' + cleanPath);
+          }
         }
       })();
     </script>

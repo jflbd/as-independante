@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0D8496">
-  <title>Page introuvable - Rachel Gervais</title>
+  <title>Redirection - Rachel Gervais</title>
   <link rel="icon" href="/favicon.ico">
-  <meta http-equiv="refresh" content="1.5;url=/" />
+  <!-- Aucun meta refresh pour éviter l'affichage indésirable -->
   <script>
-    // Rediriger vers l'application React avec une route spéciale pour la page 404
-    // Léger délai pour permettre à la page de s'afficher avant la redirection
-    setTimeout(function() {
+    // Redirection immédiate pour éviter l'affichage de la page 404
+    (function() {
       // Liste des routes SPA connues à préserver
       var spaRoutes = [
         '/paiement-reussi',
@@ -46,9 +45,9 @@
         window.location.replace(window.location.origin + '/#' + cleanPath);
       } else {
         // Sinon, comportement par défaut avec page 404
-        window.location.href = "/?notfound=" + encodeURIComponent(path);
+        window.location.replace("/?notfound=" + encodeURIComponent(path));
       }
-    }, 800);
+    })();
   </script>
   <style>
     * {
@@ -61,10 +60,11 @@
     }
     body {
       font-family: 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(to bottom, white, #f0f4f8);
+      background: white;
       margin: 0;
       padding: 0;
       min-height: 100vh;
+      opacity: 0; /* Cacher le contenu de la page */
       display: flex;
       justify-content: center;
       align-items: center;

@@ -70,8 +70,11 @@ function App() {
       
       if (isBlogArticle) {
         console.log(`Détection d'un article de blog via hash: ${route}`);
-        // Pour les articles de blog, naviguer avec replace: true pour éviter des problèmes d'historique
-        navigate(route, { replace: true });
+        // Petit délai pour s'assurer que le routeur React est prêt
+        setTimeout(() => {
+          // Pour les articles de blog, naviguer avec replace: true pour éviter des problèmes d'historique
+          navigate(route, { replace: true });
+        }, 50);
       } else {
         // Pour les autres routes, navigation normale
         navigate(route, { replace: true });

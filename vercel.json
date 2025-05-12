@@ -136,10 +136,16 @@
     },
     {
       "source": "/blog/:articleId",
+      "has": [
+        { "type": "header", "key": "Accept", "value": "text/html" }
+      ],
       "destination": "/index.html"
     },
     {
       "source": "/blog/:articleId/",
+      "has": [
+        { "type": "header", "key": "Accept", "value": "text/html" }
+      ],
       "destination": "/index.html"
     },
     {
