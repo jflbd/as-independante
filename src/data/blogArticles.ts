@@ -22,7 +22,7 @@ export const blogArticles: BlogArticle[] = [
   {
     id: 'role-assistante-sociale-independante',
     title: 'Le rôle d\'une assistante sociale indépendante en Normandie',
-    date: '11 mai 2025',
+    date: '11 janvier 2025',
     author: 'Rachel Gervais',
     readTime: '5 min',
     excerpt: 'Découvrez le rôle spécifique d\'une assistante sociale libérale et comment elle peut vous accompagner dans vos démarches sociales en Normandie.',
@@ -130,7 +130,7 @@ En tant qu'assistante sociale indépendante en Normandie, mon objectif est de vo
   {
     id: 'aides-sociales-normandie',
     title: 'Guide des aides sociales disponibles en Normandie',
-    date: '10 mai 2025',
+    date: '10 octobre 2024',
     author: 'Rachel Gervais',
     readTime: '7 min',
     excerpt: 'Panorama complet des dispositifs d\'aide sociale accessibles en région normande : allocations, subventions, et accompagnements disponibles.',
@@ -260,7 +260,7 @@ Ce guide n'est pas exhaustif et les dispositifs évoluent régulièrement. Pour 
   {
     id: 'preparer-rendez-vous-assistante-sociale',
     title: 'Comment se préparer à un rendez-vous avec une assistante sociale',
-    date: '9 mai 2025',
+    date: '9 mai 2024',
     author: 'Rachel Gervais',
     readTime: '4 min',
     excerpt: 'Conseils pratiques pour préparer votre premier rendez-vous avec une assistante sociale et optimiser cette rencontre.',

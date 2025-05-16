@@ -81,7 +81,7 @@ const AboutSection = () => {
                 <div className="bg-accent/20 rounded-full w-full h-full z-0"></div>
               </ParallaxScroll>
               <OptimizedImage 
-                src="/assets/images/section2-parcours.png"
+                src="/assets/images/section2-parcours-rachel.jpeg"
                 alt="Rachel Gervais, Assistante sociale indépendante" 
                 className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
                 width={600}
