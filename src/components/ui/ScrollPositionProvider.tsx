@@ -1,11 +1,5 @@
-import React, { createContext, useRef, ReactNode } from 'react';
-
-export interface ScrollPositionContextType {
-  saveScrollPosition: () => void;
-  restoreScrollPosition: () => void;
-}
-
-export const ScrollPositionContext = createContext<ScrollPositionContextType | undefined>(undefined);
+import React, { useRef, ReactNode } from 'react';
+import { ScrollPositionContext, ScrollPositionContextType } from '../../contexts/ScrollPositionContext';
 
 interface ScrollPositionProviderProps {
   children: ReactNode;
