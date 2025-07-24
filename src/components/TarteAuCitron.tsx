@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useCookieConsent } from '../contexts/CookieConsentContext';
+import { useCookieConsent } from '../hooks/use-cookie-consent';
 
 type TarteAuCitronOptions = {
   privacyUrl: string;

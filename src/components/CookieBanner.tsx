@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, Cookie, Info } from "lucide-react";
-import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import { useCookieConsent } from "@/hooks/use-cookie-consent";
 import {
   Dialog,
   DialogContent,

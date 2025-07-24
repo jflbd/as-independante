@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { useLegalModal } from '@/contexts/LegalModalContext';
+import { useLegalModal } from '@/hooks/use-legal-modal';
 
 // Importation des composants légaux
 import LegalDefinitions from './LegalDefinitions';
