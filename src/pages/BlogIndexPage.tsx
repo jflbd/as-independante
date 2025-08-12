@@ -8,6 +8,9 @@ import { Calendar, Clock, Tag, BookOpen, ChevronRight } from 'lucide-react';
 import SEOSchema from '@/components/SEOSchema';
 import LocalSEOCities from '@/components/LocalSEOCities';
 import { blogArticles } from '@/data/blogArticles';
+import { OptimizedImage } from '@/components/OptimizedImage';
+import { format, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 /**
  * Page d'index du blog avec articles optimisés pour le SEO
@@ -70,11 +73,11 @@ const BlogIndexPage: React.FC = () => {
                 <Link to={`/blog/${article.id}`} className="block">
                   <div className="h-40 sm:h-48 md:h-52 bg-gray-200 relative overflow-hidden">
                     {article.image ? (
-                      <img 
+                      <OptimizedImage
                         src={article.image} 
                         alt={article.title}
                         className="w-full h-full object-cover object-center"
-                        loading="lazy"
+                        objectFit="cover"
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-gray-400">
@@ -105,7 +108,7 @@ const BlogIndexPage: React.FC = () => {
                   <div className="flex justify-between text-gray-600 text-xs pt-2 mt-auto border-t border-gray-100">
                     <span className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
-                      {article.date}
+                      {format(parseISO(article.date), "d MMMM yyyy", { locale: fr })}
                     </span>
                     <span className="flex items-center">
                       <Clock className="h-3 w-3 mr-1" />

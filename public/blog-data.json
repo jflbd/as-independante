@@ -1,0 +1,71 @@
+[
+  {
+    "id": "role-assistante-sociale-independante",
+    "title": "Le rôle d'une assistante sociale indépendante en Normandie",
+    "date": "2025-01-11",
+    "author": "Rachel Gervais",
+    "readTime": "5 min",
+    "excerpt": "Découvrez le rôle spécifique d'une assistante sociale libérale et comment elle peut vous accompagner dans vos démarches sociales en Normandie.",
+    "image": "/assets/images/blog/assistante-sociale-independante-role.svg",
+    "tags": ["assistante sociale libérale", "Normandie", "accompagnement social"],
+    "content": "...\n",
+    "relatedArticles": [
+      {
+        "title": "Guide des aides sociales disponibles en Normandie",
+        "url": "/blog/aides-sociales-normandie",
+        "description": "Un panorama complet des dispositifs d'aide disponibles dans notre région."
+      },
+      {
+        "title": "Comment se préparer à un rendez-vous avec une assistante sociale",
+        "url": "/blog/preparer-rendez-vous-assistante-sociale",
+        "description": "Conseils pratiques pour optimiser votre première rencontre."
+      }
+    ]
+  },
+  {
+    "id": "aides-sociales-normandie",
+    "title": "Guide des aides sociales disponibles en Normandie",
+    "date": "2024-10-10",
+    "author": "Rachel Gervais",
+    "readTime": "7 min",
+    "excerpt": "Panorama complet des dispositifs d'aide sociale accessibles en région normande : allocations, subventions, et accompagnements disponibles.",
+    "image": "/assets/images/blog/aides-sociales-normandie.svg",
+    "tags": ["aides sociales", "Normandie", "allocations", "dispositifs"],
+    "content": "...\n",
+    "relatedArticles": [
+      {
+        "title": "Le rôle d'une assistante sociale indépendante en Normandie",
+        "url": "/blog/role-assistante-sociale-independante",
+        "description": "Découvrez comment une assistante sociale libérale peut vous accompagner"
+      },
+      {
+        "title": "Comment se préparer à un rendez-vous avec une assistante sociale",
+        "url": "/blog/preparer-rendez-vous-assistante-sociale",
+        "description": "Conseils pratiques pour optimiser votre première rencontre."
+      }
+    ]
+  },
+  {
+    "id": "preparer-rendez-vous-assistante-sociale",
+    "title": "Comment se préparer à un rendez-vous avec une assistante sociale",
+    "date": "2024-05-09",
+    "author": "Rachel Gervais",
+    "readTime": "4 min",
+    "excerpt": "Conseils pratiques pour préparer votre premier rendez-vous avec une assistante sociale et optimiser cette rencontre.",
+    "image": "/assets/images/blog/preparer-rendez-vous-assistante-sociale.svg",
+    "tags": ["rendez-vous", "préparation", "consultation sociale"],
+    "content": "...\n",
+    "relatedArticles": [
+      {
+        "title": "Le rôle d'une assistante sociale indépendante en Normandie",
+        "url": "/blog/role-assistante-sociale-independante",
+        "description": "Découvrez comment une assistante sociale libérale peut vous accompagner"
+      },
+      {
+        "title": "Guide des aides sociales disponibles en Normandie",
+        "url": "/blog/aides-sociales-normandie",
+        "description": "Un panorama complet des dispositifs d'aide disponibles dans notre région"
+      }
+    ]
+  }
+]

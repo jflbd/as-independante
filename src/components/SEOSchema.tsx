@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { siteConfig } from '@/config/siteConfig';
+import { blogArticles } from '@/data/blogArticles';
 
 interface SEOSchemaProps {
   pageType: 'HomePage' | 'ServicePage' | 'AboutPage' | 'ContactPage' | 'ArticlePage' | 'WebPage';
@@ -269,30 +270,28 @@ const SEOSchema: React.FC<SEOSchemaProps> = ({
       let name = '';
       
       // Conversion des slugs en noms lisibles
-      switch(part) {
-        case 'blog':
-          name = 'Blog';
-          break;
-        case 'ebook':
-          name = 'Guide pratique';
-          break;
-        case 'sitemap':
-          name = 'Plan du site';
-          break;
-        case 'mentions-legales':
-          name = 'Mentions légales';
-          break;
-        case 'role-assistante-sociale-independante':
-          name = 'Rôle assistante sociale indépendante';
-          break;
-        case 'aides-sociales-normandie':
-          name = 'Aides sociales en Normandie';
-          break;
-        case 'preparer-rendez-vous-assistante-sociale':
-          name = 'Préparer un rendez-vous';
-          break;
-        default:
-          name = part.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      const isBlogArticle = urlParts[index - 1] === 'blog';
+      const article = isBlogArticle ? blogArticles.find(a => a.id === part) : null;
+
+      if (article) {
+        name = article.title;
+      } else {
+        switch(part) {
+          case 'blog':
+            name = 'Blog';
+            break;
+          case 'ebook':
+            name = 'Guide pratique';
+            break;
+          case 'sitemap':
+            name = 'Plan du site';
+            break;
+          case 'mentions-legales':
+            name = 'Mentions légales';
+            break;
+          default:
+            name = part.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
       }
       
       itemListElement.push({

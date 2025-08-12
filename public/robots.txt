@@ -31,9 +31,6 @@ Allow: /sitemap
 Allow: /ebook
 Allow: /blog/
 Allow: /mentions-legales
-Allow: /blog/role-assistante-sociale-independante
-Allow: /blog/aides-sociales-normandie
-Allow: /blog/preparer-rendez-vous-assistante-sociale
 
 # Liens vers les sitemaps (principal et spécifiques)
 Sitemap: https://www.as-independante.fr/sitemap.xml

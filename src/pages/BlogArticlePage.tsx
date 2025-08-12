@@ -10,6 +10,9 @@ import SEOSchema from '@/components/SEOSchema';
 import Breadcrumb from '@/components/Breadcrumb';
 import ShareButton from '@/components/ShareButton';
 import { blogArticles } from '@/data/blogArticles';
+import { OptimizedImage } from '@/components/OptimizedImage';
+import { format, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 /**
  * Page d'article de blog individuelle pour présenter des contenus optimisés SEO
@@ -103,7 +106,7 @@ export default function BlogArticlePage() {
               <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-6">
                 <span className="flex items-center">
                   <Calendar className="h-4 w-4 mr-1" />
-                  {article.date}
+                  {format(parseISO(article.date), "d MMMM yyyy", { locale: fr })}
                 </span>
                 <span className="flex items-center">
                   <Clock className="h-4 w-4 mr-1" />
@@ -135,11 +138,12 @@ export default function BlogArticlePage() {
             {/* Image de l'article - Améliorée pour la responsivité mobile */}
             <div className="w-full h-[200px] sm:h-[250px] md:h-[400px] bg-gray-200 relative overflow-hidden">
               {article.image ? (
-                <img 
+                <OptimizedImage
                   src={article.image} 
                   alt={article.title}
                   className="w-full h-full object-cover object-center"
-                  loading="eager"
+                  priority={true}
+                  objectFit="cover"
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-gray-400">
@@ -158,7 +162,7 @@ export default function BlogArticlePage() {
               {/* Meta-données pour SEO */}
               <div className="mt-8 pt-4 border-t border-gray-200 flex justify-between items-center">
                 <div className="text-sm text-gray-600">
-                  <span>Dernière mise à jour : {article.date}</span>
+                  <span>Dernière mise à jour : {format(parseISO(article.date), "d MMMM yyyy", { locale: fr })}</span>
                 </div>
                 <ShareButton 
                   title={article.title}
