@@ -137,12 +137,6 @@ const BlogIndexPage: React.FC = () => {
             </div>
           </div>
           
-          {/* Section des villes d'intervention pour SEO local */}
-          <section className="container mx-auto px-4 py-8 mt-4">
-            <LocalSEOCities 
-              titleClassName="text-center text-lg" 
-            />
-          </section>
         </div>
       </div>
       
