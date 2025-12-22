@@ -542,7 +542,7 @@ const EbookPage: React.FC = () => {
                                         <div className="flex flex-col md:flex-row gap-6 items-center">
                                             <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10 flex-shrink-0">
                                                 <OptimizedImage
-                                                    src="/assets/avisuser/profile-user2.jpg"
+                                                    src="/assets/avisuser/profile-user2.webp"
                                                     alt="Photo de Marie L."
                                                     className="w-full h-full object-cover"
                                                     width={96}

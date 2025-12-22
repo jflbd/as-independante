@@ -1,0 +1,138 @@
+═══════════════════════════════════════════════════════════════════
+PROMPTS NANO BANANA PRO - VERSION SIMPLE
+═══════════════════════════════════════════════════════════════════
+
+COPIER-COLLER DIRECT DANS NANO BANANA PRO
+
+───────────────────────────────────────────────────────────────────
+1. PHOTO PRINCIPALE (section2-parcours-rachel.jpeg)
+───────────────────────────────────────────────────────────────────
+Professional woman from behind at office window, warm natural light, elegant business attire, confident posture, soft focus background, warm color grading, professional photography
+
+PRESET: Professional + Warm + Minimalist | HIGH Quality | 1200x1600px
+
+
+───────────────────────────────────────────────────────────────────
+2. ÉCOUTE & SOUTIEN (section1-ecoutesoutien.png)
+───────────────────────────────────────────────────────────────────
+Overhead view of supportive hands on desk, warm office consultation, soft natural light, documents and care visible, teal accents, minimalist professional space, no faces visible, French language documents visible or slightly blurred
+
+PRESET: Caring + Connection + Warm | HIGH Quality | 800x800px
+⚠️ IMPORTANT: Documents en français - SOIT pertinent au travail social (dossier, aide)
+             SOIT légèrement flouté pour confidentialité
+
+
+───────────────────────────────────────────────────────────────────
+3. ACCOMPAGNEMENT (section1-accompagnement.png)
+───────────────────────────────────────────────────────────────────
+Hands pointing at documents on desk from behind, laptop visible, helping gesture, warm office light through windows, professional workspace, plants background, teal and coral accents, no faces, French text on documents and screen blurred or related to social work
+
+PRESET: Guidance + Workspace + Warm | HIGH Quality | 800x800px
+⚠️ IMPORTANT: Texte français - SOIT pertinent (procédures, aides sociales)
+             SOIT flouté pour respecter confidentialité des dossiers
+
+
+───────────────────────────────────────────────────────────────────
+4. SOLUTIONS (section1-solutions.png)
+───────────────────────────────────────────────────────────────────
+Handshake over completed documents overhead, success moment, warm golden sunlight, office desk with laptop showing positive results, coral accent, celebratory mood, professional, no faces, French text on completed paperwork blurred or about social assistance
+
+PRESET: Success + Resolution + Warm | HIGH Quality | 800x800px
+⚠️ IMPORTANT: Texte français - SOIT pertinent (aide accordée, dossier approuvé)
+             SOIT flouté pour confidentialité
+
+
+───────────────────────────────────────────────────────────────────
+5. MISSIONS (section3-missions.png)
+───────────────────────────────────────────────────────────────────
+Modern office interior, organized workspace with laptop and documents, natural light from windows, plants and warm decor, teal and coral accents, minimalist professional aesthetic, empty inviting space, architectural photography, bright and airy, French text on desk items blurred or related to social work
+
+PRESET: Professional Space + Modern | ULTRA Quality | 1920x1080px
+⚠️ IMPORTANT: Texte français - SOIT pertinent (accompagnement, démarches)
+             SOIT intentionnellement flouté/flou pour discrétion
+
+
+───────────────────────────────────────────────────────────────────
+6. TÉMOIGNAGE 1 (testimonial-1.webp)
+───────────────────────────────────────────────────────────────────
+Silhouette of professional woman from behind, business attire, warm natural light, soft neutral background, confident posture, artistic minimalist style, 4K
+
+PRESET: Professional Silhouette + Warm | HIGH Quality | 400x400px
+
+
+───────────────────────────────────────────────────────────────────
+7. TÉMOIGNAGE 2 (testimonial-2.webp)
+───────────────────────────────────────────────────────────────────
+Professional man silhouette from behind, business shirt, warm golden window light, neutral background, confident bearing visible in posture, minimalist artistic composition, 4K
+
+PRESET: Professional Silhouette + Confident | HIGH Quality | 400x400px
+
+
+───────────────────────────────────────────────────────────────────
+8. TÉMOIGNAGE 3 (testimonial-3.webp)
+───────────────────────────────────────────────────────────────────
+Mature woman silhouette from behind, elegant professional dress, soft studio light, warm neutral background, experienced poised posture, minimalist artistic style, deep presence, 4K
+
+PRESET: Professional Silhouette + Experienced | HIGH Quality | 400x400px
+
+
+───────────────────────────────────────────────────────────────────
+9. TÉMOIGNAGE E-BOOK (profile-user2.jpg)
+───────────────────────────────────────────────────────────────────
+Young professional woman silhouette from behind, dynamic uplifted posture, casual professional clothing, warm natural light, neutral soft background, youthful energy and optimism in stance, minimalist artistic, 4K
+
+PRESET: Dynamic Silhouette + Youthful | HIGH Quality | 400x400px
+
+
+═══════════════════════════════════════════════════════════════════
+PARAMÈTRES GÉNÉRAUX NANO BANANA PRO
+═══════════════════════════════════════════════════════════════════
+
+POUR TOUS LES PROMPTS:
+- Guidance Scale: 7-9
+- Steps: 50-100
+- Model: Flux ou Stable Diffusion (par défaut)
+
+QUALITÉ:
+- HIGH = 800x800px ou plus
+- ULTRA = 1920x1080px et plus
+
+⚠️ TEXTE EN FRANÇAIS - RÈGLES IMPORTANTES:
+Les images 2, 3, 4, 5 doivent contenir du TEXTE EN FRANÇAIS
+
+DEUX OPTIONS:
+1️⃣ TEXTE LISIBLE: Pertinent au travail social
+   - "Dossier social", "Aide administrative"
+   - "Accompagnement personnalisé"
+   - "Démarches sociales"
+   - Éviter informations confidentielles réelles
+
+2️⃣ TEXTE FLOUTÉ/FLOU: Pour respecter confidentialité
+   - Documents volontairement flous/blurrés
+   - Écrans laptops partiellement visibles
+   - Texte non décryptable mais clairement français
+
+CHOIX RECOMMANDÉ: Mélange des deux pour réalisme
+
+
+═══════════════════════════════════════════════════════════════════
+AIDE-MÉMOIRE RAPIDE
+═══════════════════════════════════════════════════════════════════
+
+✅ Copier le texte du prompt (une ligne)
+✅ Coller dans Nano Banana Pro
+✅ Ajuster les paramètres (Quality, Guidance Scale)
+✅ ⚠️ TEXTE: Ajouter "blurred" OU "social work related French text"
+✅ Générer
+✅ Télécharger en PNG ou JPG
+✅ Renommer avec le nom du fichier indiqué
+✅ Placer dans: public/assets/images/ ou public/assets/avisuser/
+✅ Lancer: npm run optimize-images
+
+IMAGES AVEC TEXTE FRANÇAIS REQUIS:
+- Image 2: Écoute & Soutien (documents flouté OU pertinent)
+- Image 3: Accompagnement (documents + laptop flouté OU pertinent)
+- Image 4: Solutions (documents flouté OU pertinent + approuvé)
+- Image 5: Missions (documents + écrans flouté OU pertinent)
+
+═══════════════════════════════════════════════════════════════════

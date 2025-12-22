@@ -9,7 +9,7 @@ export const ebookConfig = {
     formattedPrice: "19,99€",
     priceAvantPromo: 29.99,
     formattedPriceAvantPromo: "29,99€",
-    coverImage: "/assets/images/ebook-cover.png",
+    coverImage: "/assets/images/ebook-cover.webp",
     accroche: "Votre compagnon indispensable pour réussir en libéral",
     description: "Un guide complet pour vous accompagner dans votre parcours de travailleur social en libéral, de l'installation à la pratique quotidienne.",
     pages: 65, // Nombre de pages du guide

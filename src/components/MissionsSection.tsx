@@ -73,7 +73,7 @@ const MissionsSection = () => {
               </ParallaxScroll>
               <div className="aspect-square w-full max-w-md relative z-10 overflow-hidden shadow-lg" style={{ borderRadius: '0.5rem' }}>
                 <OptimizedImage 
-                  src="/assets/images/section3-missions.png"
+                  src="/assets/images/section3-missions.webp"
                   alt="Accompagnement familial protecteur" 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   width={600}
