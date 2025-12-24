@@ -112,12 +112,16 @@ const isVercelDev =
 app.use(cors()); // Activer CORS pour toutes les routes
 app.use(express.json()); // Parser le JSON
 
-// Importer les fonctions d'API de manière dynamique
+// Importer les routes et fonctions d'API de manière dynamique
 let sendEmail;
+let blogArticlesRouter;
 try {
   // Import dynamique pour les modules ES
   const sendEmailModule = await import("./api/send-email.js");
   sendEmail = sendEmailModule.default;
+
+  const blogModule = await import("./api/blog-articles.js");
+  blogArticlesRouter = blogModule.default;
 } catch (e) {
   console.log("Module send-email.js non trouvé ou non compatible: ", e.message);
 }
@@ -161,6 +165,12 @@ app.get("/api/test", (req, res) => {
     },
   });
 });
+
+// Routes du blog
+if (blogArticlesRouter) {
+  app.use("/api/blog", blogArticlesRouter);
+  console.log("✅ Routes du blog intégrées sur /api/blog");
+}
 
 // Ne démarrer le serveur que si nous ne sommes pas dans Vercel Dev
 // ou si aucune autre instance n'est en cours d'exécution

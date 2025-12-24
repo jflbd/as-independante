@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { siteConfig } from '@/config/siteConfig';
@@ -7,7 +7,6 @@ import NavBar from '@/components/NavBar';
 import { Calendar, Clock, Tag, BookOpen, ChevronRight } from 'lucide-react';
 import SEOSchema from '@/components/SEOSchema';
 import LocalSEOCities from '@/components/LocalSEOCities';
-import { blogArticles } from '@/data/blogArticles';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -16,6 +15,26 @@ import { fr } from 'date-fns/locale';
  * Page d'index du blog avec articles optimisés pour le SEO
  */
 const BlogIndexPage: React.FC = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        const response = await fetch(`${apiUrl}/api/blog`);
+        const data = await response.json();
+        setArticles(data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des articles:', error);
+        setArticles([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Helmet>
@@ -68,7 +87,12 @@ const BlogIndexPage: React.FC = () => {
           
           {/* Liste des articles */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogArticles.map((article) => (
+            {loading ? (
+              <div className="col-span-full text-center py-8">Chargement des articles...</div>
+            ) : articles.length === 0 ? (
+              <div className="col-span-full text-center py-8 text-gray-600">Aucun article disponible pour le moment.</div>
+            ) : (
+              articles.map((article) => (
               <article key={article.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
                 <Link to={`/blog/${article.id}`} className="block">
                   <div className="h-40 sm:h-48 md:h-52 bg-gray-200 relative overflow-hidden">
@@ -117,7 +141,8 @@ const BlogIndexPage: React.FC = () => {
                   </div>
                 </div>
               </article>
-            ))}
+            ))
+            )}
           </div>
           
           {/* Message d'encouragement */}

@@ -16,6 +16,7 @@ import Sitemap from './pages/Sitemap';
 import BlogLinkMainPage from './pages/BlogLinkMainPage';
 import BlogIndexPage from './pages/BlogIndexPage';
 import BlogArticlePage from './pages/BlogArticlePage.jsx';
+import AdminPage from './pages/AdminPage';
 import { ebookConfig } from './config/ebookConfig';
 import { useScrollToTop } from './hooks/useScrollToTop';
 import { ScrollUnlocker } from './components/ui/ScrollUnlocker';
@@ -93,6 +94,7 @@ function App() {
         <Route path="/sitemap" element={<Sitemap />} />
         <Route path="/blog" element={<BlogIndexPage />} />
         <Route path="/blog/:articleId" element={<BlogArticlePage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/ebook" element={<EbookRouteHandler />} />
         <Route path="/acheter-ebook" element={
           ebookConfig.isEbookAvailable ? <AcheterEbookPage /> : <Navigate to="/ebook" replace />
