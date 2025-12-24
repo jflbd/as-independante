@@ -83,9 +83,9 @@ const AboutSection = () => {
               <OptimizedImage 
                 src="/assets/images/section2-parcours-rachel.webp"
                 alt="Rachel Gervais, Assistante sociale indépendante" 
-                className="w-full h-full object-cover rounded-lg shadow-lg relative z-10"
-                width={600}
-                height={800}
+                className="w-full h-auto object-contain rounded-lg shadow-lg relative z-10"
+                width={1024}
+                height={1536}
               />
             </div>
           </FadeInSection>
