@@ -119,6 +119,14 @@
       "destination": "/api/:path*"
     },
     {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/paiement-annule",
       "destination": "/paiement-annule.html"
     },
