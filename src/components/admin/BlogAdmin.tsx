@@ -23,6 +23,25 @@ const resolveApiUrl = () => {
 
 const API_URL = resolveApiUrl();
 
+// Convertir Markdown simple en HTML pour Quill
+const markdownToHtml = (markdown) => {
+  if (!markdown) return '';
+  if (markdown.includes('<p>') || markdown.includes('<h')) {
+    // Déjà du HTML
+    return markdown;
+  }
+  // Conversion Markdown basique
+  let html = markdown;
+  html = html.replace(/## (.*?)(?=\n|$)/g, '<h2>$1</h2>');
+  html = html.replace(/# (.*?)(?=\n|$)/g, '<h1>$1</h1>');
+  html = html.replace(/- (.*?)(?=\n|$)/g, '<li>$1</li>');
+  html = html.replace(/\n/g, '<br>');
+  // Envelopper les listes
+  html = html.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+  html = html.replace(/<\/ul><ul>/g, '');
+  return html;
+};
+
 export const BlogAdmin = () => {
   const [articles, setArticles] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -158,8 +177,8 @@ export const BlogAdmin = () => {
     console.log('Edition article:', article); // Debug
     setFormData({
       title: article.title || '',
-      excerpt: article.excerpt || '',
-      content: article.content || '',
+      excerpt: markdownToHtml(article.excerpt) || '',
+      content: markdownToHtml(article.content) || '',
       image: article.image || '',
       tags: Array.isArray(article.tags) ? article.tags.join(', ') : ''
     });
@@ -231,7 +250,7 @@ export const BlogAdmin = () => {
           )}
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            <div key={`title-${editingId}`}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Titre *
               </label>
@@ -251,7 +270,7 @@ export const BlogAdmin = () => {
                 className="bg-white title-editor"
               />
             </div>
-            <div>
+            <div key={`excerpt-${editingId}`}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Extrait
               </label>
@@ -265,7 +284,7 @@ export const BlogAdmin = () => {
                 className="bg-white"
               />
             </div>
-            <div>
+            <div key={`content-${editingId}`}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Contenu
               </label>
