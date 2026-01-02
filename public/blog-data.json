@@ -67,5 +67,125 @@
         "description": "Un panorama complet des dispositifs d'aide disponibles dans notre région"
       }
     ]
+  },
+  {
+    "id": "accompagnement-budget-energetique-janv-2025",
+    "title": "2025 : accompagner les ménages face à la hausse des coûts énergétiques",
+    "date": "2025-01-18",
+    "author": "Rachel Gervais",
+    "readTime": "6 min",
+    "excerpt": "Repérer les situations de précarité énergétique et proposer un plan d’action personnalisé : aides mobilisables, priorisation des dépenses, médiation avec les fournisseurs.",
+    "image": "/assets/images/blog/energie-budget-2025.svg",
+    "tags": ["budget", "énergie", "médiation", "aides"],
+    "content": "## Pourquoi c’est d’actualité\nEn 2025, l’augmentation des charges pèse sur les foyers modestes.\n\n## Points clés de l’accompagnement\n- Diagnostic rapide (revenus/charges, dettes en cours)\n- Aides mobilisables : FSL énergie, chèque énergie, fonds d’aide d’urgence collectivités\n- Médiation avec les fournisseurs (étalement, effacement, remise partielle)\n\n## Plan d’action pratique\n1. Lister les dettes et prioriser le maintien de l’énergie\n2. Monter le dossier FSL + chèque énergie\n3. Négocier un échéancier soutenable\n4. Proposer des éco-gestes simples et chiffrés\n\n## Prévenir les rechutes\n- Suivi budgétaire mensuel 3 mois\n- Orientation vers ateliers budgétaires ou micro-crédit si besoin",
+    "relatedArticles": []
+  },
+  {
+    "id": "rupture-professionnelle-janv-2025",
+    "title": "Accompagner une rupture professionnelle soudaine",
+    "date": "2025-02-12",
+    "author": "Rachel Gervais",
+    "readTime": "5 min",
+    "excerpt": "Licenciement, fin de CDD, inaptitude : comment sécuriser rapidement la situation sociale et financière des personnes concernées.",
+    "image": "/assets/images/blog/rupture-pro-2025.svg",
+    "tags": ["emploi", "droits sociaux", "budget", "orientation"],
+    "content": "## Réflexes à 72h\n- Inscription France Travail / Pôle Emploi\n- Attestation employeur, solde de tout compte, préavis\n- Ouverture des droits : ARE, CSS, APL (actualisation adresse/revenus)\n\n## Approche globale\n- Évaluation logement/budget/dettes\n- Sécurisation santé (mutuelle, CSS)\n- Soutien psycho-social si isolement\n\n## Rebond\n- Bilan compétences rapide\n- Formations courtes financées (CPF, Transitions Pro)\n- Réseaux locaux et mobilité géographique",
+    "relatedArticles": []
+  },
+  {
+    "id": "aidants-familiaux-mars-2025",
+    "title": "Soutenir les aidants familiaux en 2025 : droits et répit",
+    "date": "2025-03-24",
+    "author": "Rachel Gervais",
+    "readTime": "6 min",
+    "excerpt": "Identifier les signes d’épuisement, activer les dispositifs de répit et sécuriser la situation administrative de l’aidant et de l’aidé.",
+    "image": "/assets/images/blog/aidants-2025.svg",
+    "tags": ["aidants", "répit", "APA", "handicap"],
+    "content": "## Signes d’alerte\n- Fatigue, isolement, renoncement aux soins\n- Désorganisation budgétaire\n\n## Dispositifs 2025 à mobiliser\n- Droit au répit (APA) et forfait relai handicap\n- Solutions temporaires : accueil de jour, hébergement temporaire\n- Aides financières : PCH, MDPH, CAF (aide au temps libre)\n\n## Plan d’action\n1. Cartographier les besoins de l’aidé\n2. Alléger la charge (répit, relais pro)\n3. Sécuriser les revenus/droits de l’aidant\n4. Mettre en place un suivi trimestriel",
+    "relatedArticles": []
+  },
+  {
+    "id": "logement-prevention-expulsions-avril-2025",
+    "title": "Prévenir les expulsions locatives : agir tôt en 2025",
+    "date": "2025-04-09",
+    "author": "Rachel Gervais",
+    "readTime": "6 min",
+    "excerpt": "Repérer les impayés dès la première échéance et coordonner bailleur, CAF et services sociaux pour éviter la procédure.",
+    "image": "/assets/images/blog/expulsions-2025.svg",
+    "tags": ["logement", "impayés", "CAF", "médiation"],
+    "content": "## Repérage précoce\n- 1er impayé = alerte et contact immédiat\n- Vérifier APL/AL, changement de situation\n\n## Outils 2025\n- Maintien des droits APL (signalements CAF)\n- FSL maintien, moratoires amiables\n- Médiation bailleur/locataire\n\n## Étapes\n1. Bilan budgétaire + plan de remboursement réaliste\n2. Saisine FSL + attestation de démarches\n3. Suivi mensuel sur 3 à 6 mois",
+    "relatedArticles": []
+  },
+  {
+    "id": "seniors-isolement-mai-2025",
+    "title": "Rompre l’isolement des seniors : parcours d’accompagnement",
+    "date": "2025-05-21",
+    "author": "Rachel Gervais",
+    "readTime": "5 min",
+    "excerpt": "Identifier l’isolement social, mobiliser les dispositifs locaux et sécuriser les besoins essentiels (soins, budget, mobilité).",
+    "image": "/assets/images/blog/seniors-isolement-2025.svg",
+    "tags": ["seniors", "isolement", "mobilité", "santé"],
+    "content": "## Diagnostic\n- Visites à domicile, repérage par voisins/soignants\n- Risques : chutes, dénutrition, renoncement aux soins\n\n## Leviers d’action\n- Portage de repas, téléassistance, transport solidaire\n- Clubs seniors, bénévolat intergénérationnel\n- Coordination médecin traitant / SSIAD / APA\n\n## Sécuriser le budget\n- APA, ASPA, aides caisses retraite, tarifs sociaux énergie",
+    "relatedArticles": []
+  },
+  {
+    "id": "violences-intrafamiliales-juin-2025",
+    "title": "Violences intrafamiliales : protocoles d’orientation en 2025",
+    "date": "2025-06-27",
+    "author": "Rachel Gervais",
+    "readTime": "7 min",
+    "excerpt": "Structurer une réponse rapide : mise à l’abri, dépôts de plainte, aides financières d’urgence et suivi psycho-social.",
+    "image": "/assets/images/blog/vif-2025.svg",
+    "tags": ["violences", "urgence", "hébergement", "droits"],
+    "content": "## Priorités immédiates\n- Sécuriser : 17 / 3919 / 114 SMS\n- Hébergement d’urgence, ordonnances de protection\n\n## Droits et aides\n- Aide juridictionnelle, dépôt de plainte, main courante\n- Aides CAF, secours d’urgence, avances\n\n## Coordination\n- Réseau local (associations VIF, police, CHRS)\n- Suivi 30/60/90 jours pour éviter le retour en arrière",
+    "relatedArticles": []
+  },
+  {
+    "id": "jeunes-18-25-insertion-juil-2025",
+    "title": "Jeunes 18-25 ans : sécuriser l’insertion en 2025",
+    "date": "2025-07-15",
+    "author": "Rachel Gervais",
+    "readTime": "5 min",
+    "excerpt": "Passerelles vers l’emploi/formation, aides au logement et santé pour stabiliser les parcours des jeunes adultes.",
+    "image": "/assets/images/blog/jeunes-insertion-2025.svg",
+    "tags": ["jeunes", "emploi", "logement", "santé"],
+    "content": "## Droits prioritaires\n- Contrat d’engagement jeune, missions locales\n- APL, garantie Visale, aides mobili-jeune\n- CSS, prévention santé (addictions, santé mentale)\n\n## Parcours type en 4 étapes\n1. État des lieux (ressources, logement, santé)\n2. Plan d’action emploi/formation\n3. Stabilisation logement + budget\n4. Suivi bimensuel 3 mois",
+    "relatedArticles": []
+  },
+  {
+    "id": "parents-solos-rentree-sept-2025",
+    "title": "Parents solos : sécuriser la rentrée 2025",
+    "date": "2025-09-10",
+    "author": "Rachel Gervais",
+    "readTime": "5 min",
+    "excerpt": "Aides scolaires, organisation et budget : les réflexes pour éviter le décrochage financier et scolaire à la rentrée.",
+    "image": "/assets/images/blog/parents-solos-2025.svg",
+    "tags": ["famille", "budget", "éducation", "CAF"],
+    "content": "## Aides mobilisables\n- ARS, bourses collège/lycée, cantine tarifée\n- Aides CAF, secours d’urgence associations\n\n## Organisation\n- Planning gardes/activités, transports scolaires\n- Prévoir les dépenses fixes et variables sur 3 mois\n\n## Prévenir l’épuisement\n- Relais parental, accueils de loisirs, soutien scolaire associatif",
+    "relatedArticles": []
+  },
+  {
+    "id": "handicap-droits-oct-2025",
+    "title": "Handicap : renouvellements MDPH et simplifications 2025",
+    "date": "2025-10-22",
+    "author": "Rachel Gervais",
+    "readTime": "6 min",
+    "excerpt": "Anticiper les renouvellements MDPH et informer sur les simplifications 2025 pour éviter les ruptures de droits.",
+    "image": "/assets/images/blog/handicap-2025.svg",
+    "tags": ["handicap", "droits", "MDPH", "PCH"],
+    "content": "## Points de vigilance\n- Anticiper 6 mois avant l’échéance\n- Dossier complet : certificats, projet de vie, devis\n\n## Nouveautés 2025 (exemples)\n- Allègements pour renouvellements stables\n- Dématérialisation accrue et suivi en ligne\n\n## Accompagnement\n- Check-list dossier, simulations PCH/AAH\n- Coordination avec écoles, employeurs, bailleurs",
+    "relatedArticles": []
+  },
+  {
+    "id": "aidants-sante-mentale-nov-2025",
+    "title": "Santé mentale : accompagner proches et aidants",
+    "date": "2025-11-19",
+    "author": "Rachel Gervais",
+    "readTime": "6 min",
+    "excerpt": "Orientation, dispositifs de crise et soutien des proches : comment agir vite tout en respectant la personne accompagnée.",
+    "image": "/assets/images/blog/sante-mentale-2025.svg",
+    "tags": ["santé mentale", "aidants", "urgence", "orientation"],
+    "content": "## Agir en situation de crise\n- Numéros utiles : 3114, CMP, urgences psy\n- Sécuriser le cadre, évaluer le risque\n\n## Soutien des proches\n- Psychoéducation, groupes de parole\n- Répit et relais à domicile\n\n## Suivi\n- Plan de soins partagé (médecin traitant, CMP, associations)\n- Suivi social : logement, ressources, droits",
+    "relatedArticles": []
   }
 ]
