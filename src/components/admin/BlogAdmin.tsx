@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Trash2, Plus, Edit2 } from 'lucide-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import './BlogAdmin.css';
 
 // Calcule l'URL d'API : VITE_API_URL > origin. En dev Vite (5173), bascule sur :3000 pour joindre le serveur Express.
 const resolveApiUrl = () => {
@@ -37,6 +40,29 @@ export const BlogAdmin = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Configuration de l'éditeur WYSIWYG
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['blockquote', 'code-block'],
+      [{ 'color': [] }, { 'background': [] }],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const quillFormats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet',
+    'blockquote', 'code-block',
+    'color', 'background',
+    'link', 'image'
+  ];
+
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -210,19 +236,36 @@ export const BlogAdmin = () => {
               onChange={(e) => setFormData({...formData, title: e.target.value})}
               required
             />
-            <Input
-              placeholder="Extrait"
-              value={formData.excerpt}
-              onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
-              required
-            />
-            <textarea
-              placeholder="Contenu (Markdown)"
-              value={formData.content}
-              onChange={(e) => setFormData({...formData, content: e.target.value})}
-              required
-              className="w-full p-3 border rounded-lg h-48"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Extrait
+              </label>
+              <ReactQuill
+                theme="snow"
+                value={formData.excerpt}
+                onChange={(value) => setFormData({...formData, excerpt: value})}
+                modules={quillModules}
+                formats={quillFormats}
+                placeholder="Écrivez l'extrait de l'article..."
+                className="bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Contenu
+              </label>
+              <div className="content-editor">
+                <ReactQuill
+                  theme="snow"
+                  value={formData.content}
+                  onChange={(value) => setFormData({...formData, content: value})}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  placeholder="Écrivez le contenu de l'article..."
+                  className="bg-white"
+                />
+              </div>
+            </div>
             <Input
               placeholder="URL de l'image"
               value={formData.image}

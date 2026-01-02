@@ -23,7 +23,9 @@ const toSlug = (title = "") =>
 
 const requireConfig = (res) => {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    res.status(500).json({ error: "SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant" });
+    res
+      .status(500)
+      .json({ error: "SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant" });
     return false;
   }
   return true;

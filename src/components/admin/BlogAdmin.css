@@ -1,0 +1,38 @@
+/* Styles personnalisés pour l'éditeur Quill dans BlogAdmin */
+
+.ql-container {
+  font-family: inherit;
+  font-size: 14px;
+  min-height: 200px;
+}
+
+.ql-editor {
+  min-height: 200px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Styles pour l'éditeur de contenu plus grand */
+.ql-editor.ql-blank::before {
+  font-style: italic;
+  color: #9ca3af;
+}
+
+/* Amélioration de l'apparence de la toolbar */
+.ql-toolbar.ql-snow {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-color: #e5e7eb;
+  background: #f9fafb;
+}
+
+.ql-container.ql-snow {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-color: #e5e7eb;
+}
+
+/* Espacement pour le contenu */
+.content-editor .ql-editor {
+  min-height: 300px;
+}
