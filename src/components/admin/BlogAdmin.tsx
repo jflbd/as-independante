@@ -142,6 +142,11 @@ export const BlogAdmin = () => {
         ? `${API_URL}/api/blog-id?id=${encodeURIComponent(editingId)}`
         : `${API_URL}/api/blog`;
 
+      // Debug: afficher le mot de passe envoyé
+      console.log('Authentification - Mot de passe:', storedPassword ? '***' : 'VIDE');
+      console.log('URL:', url);
+      console.log('Méthode:', method);
+
       const payload = {
         ...formData,
         tags: formData.tags.split(',').map(t => t.trim()).filter(t => t)
@@ -158,6 +163,7 @@ export const BlogAdmin = () => {
 
       if (!response.ok) {
         const text = await response.text();
+        console.error('Réponse d\'erreur:', text);
         throw new Error(`Erreur lors de la sauvegarde (HTTP ${response.status}) ${text || ''}`);
       }
 
