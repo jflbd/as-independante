@@ -18,6 +18,8 @@ const BlogIndexPage: React.FC = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 9;
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -42,6 +44,13 @@ const BlogIndexPage: React.FC = () => {
       const haystack = `${article.title} ${(article.content || '')}`.toLowerCase();
       return haystack.includes(searchTerm.toLowerCase());
     });
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredArticles.length / PAGE_SIZE));
+  const paginatedArticles = filteredArticles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Helmet>
@@ -107,10 +116,10 @@ const BlogIndexPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
               <div className="col-span-full text-center py-8">Chargement des articles...</div>
-            ) : filteredArticles.length === 0 ? (
+            ) : paginatedArticles.length === 0 ? (
               <div className="col-span-full text-center py-8 text-gray-600">Aucun article trouvé.</div>
             ) : (
-              filteredArticles.map((article) => (
+              paginatedArticles.map((article) => (
               <article key={article.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
                 <Link to={`/blog/${article.id}`} className="block">
                   <div className="h-40 sm:h-48 md:h-52 bg-gray-200 relative overflow-hidden">
@@ -162,6 +171,31 @@ const BlogIndexPage: React.FC = () => {
             ))
             )}
           </div>
+
+          {/* Pagination */}
+          {!loading && filteredArticles.length > 0 && (
+            <div className="mt-10 flex items-center justify-between flex-wrap gap-3">
+              <span className="text-sm text-gray-600">
+                Page {page} sur {totalPages}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm disabled:opacity-50"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                >
+                  Précédent
+                </button>
+                <button
+                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm disabled:opacity-50"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                >
+                  Suivant
+                </button>
+              </div>
+            </div>
+          )}
           
           {/* Message d'encouragement */}
           <div className="mt-12 text-center max-w-2xl mx-auto">

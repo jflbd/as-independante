@@ -11,7 +11,10 @@ export const BlogAdmin = () => {
   const [articles, setArticles] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [password, setPassword] = useState('');
+  const [storedPassword, setStoredPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 8;
   const [formData, setFormData] = useState({
     title: '',
     excerpt: '',
@@ -20,6 +23,7 @@ export const BlogAdmin = () => {
     tags: ''
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // Récupérer les articles (lecture en statique pour afficher la liste même sans API)
   useEffect(() => {
@@ -33,6 +37,7 @@ export const BlogAdmin = () => {
       const response = await fetch(DATA_URL);
       const data = await response.json();
       setArticles(data);
+      setPage(1);
     } catch (error) {
       console.error('Erreur lors de la récupération des articles:', error);
     }
@@ -42,6 +47,7 @@ export const BlogAdmin = () => {
     e.preventDefault();
     // Simple authentication - in production, use proper JWT
     if (password) {
+      setStoredPassword(password);
       setIsAuthenticated(true);
       setPassword('');
     }
@@ -66,7 +72,7 @@ export const BlogAdmin = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${password}`
+          'Authorization': `Bearer ${storedPassword}`
         },
         body: JSON.stringify(payload)
       });
@@ -78,8 +84,10 @@ export const BlogAdmin = () => {
       await fetchArticles();
       setFormData({ title: '', excerpt: '', content: '', image: '', tags: '' });
       setEditingId(null);
+      setError('');
     } catch (error) {
       console.error('Erreur:', error);
+      setError(error.message || 'Erreur lors de la sauvegarde');
     } finally {
       setLoading(false);
     }
@@ -103,7 +111,7 @@ export const BlogAdmin = () => {
       const response = await fetch(`${API_URL}/api/blog/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${password}`
+          'Authorization': `Bearer ${storedPassword}`
         }
       });
 
@@ -112,8 +120,10 @@ export const BlogAdmin = () => {
       }
 
       await fetchArticles();
+      setPage(1);
     } catch (error) {
       console.error('Erreur:', error);
+      setError(error.message || 'Erreur lors de la suppression');
     }
   };
 
@@ -142,7 +152,10 @@ export const BlogAdmin = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Gestion des articles</h1>
-          <Button onClick={() => setIsAuthenticated(false)}>Déconnexion</Button>
+          <Button onClick={() => {
+            setIsAuthenticated(false);
+            setStoredPassword('');
+          }}>Déconnexion</Button>
         </div>
 
         {/* Formulaire */}
@@ -150,6 +163,13 @@ export const BlogAdmin = () => {
           <h2 className="text-xl font-bold mb-4">
             {editingId ? 'Modifier l\'article' : 'Nouvel article'}
           </h2>
+          
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               placeholder="Titre"
@@ -200,7 +220,7 @@ export const BlogAdmin = () => {
           </form>
         </div>
 
-        {/* Liste des articles */}
+        {/* Liste des articles avec pagination et tri descendant */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
@@ -212,41 +232,70 @@ export const BlogAdmin = () => {
               </tr>
             </thead>
             <tbody>
-              {articles.map((article) => (
-                <tr key={article.id} className="border-b hover:bg-gray-50">
-                  <td className="px-6 py-3">{article.title}</td>
-                  <td className="px-6 py-3">{article.date}</td>
-                  <td className="px-6 py-3">
-                    <div className="flex gap-1 flex-wrap">
-                      {article.tags.map(tag => (
-                        <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded text-xs">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-6 py-3 flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(article)}
-                      className="flex items-center gap-1"
-                    >
-                      <Edit2 className="w-4 h-4" /> Éditer
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(article.id)}
-                      className="flex items-center gap-1"
-                    >
-                      <Trash2 className="w-4 h-4" /> Supprimer
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {articles
+                .slice()
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+                .map((article) => (
+                  <tr key={article.id} className="border-b hover:bg-gray-50">
+                    <td className="px-6 py-3">{article.title}</td>
+                    <td className="px-6 py-3">{article.date}</td>
+                    <td className="px-6 py-3">
+                      <div className="flex gap-1 flex-wrap">
+                        {article.tags.map(tag => (
+                          <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded text-xs">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(article)}
+                        className="flex items-center gap-1"
+                      >
+                        <Edit2 className="w-4 h-4" /> Éditer
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(article.id)}
+                        className="flex items-center gap-1"
+                      >
+                        <Trash2 className="w-4 h-4" /> Supprimer
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between px-6 py-4 border-t">
+            <span className="text-sm text-gray-600">
+              Page {page} sur {Math.max(1, Math.ceil(articles.length / PAGE_SIZE))}
+            </span>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                Précédent
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page >= Math.ceil(articles.length / PAGE_SIZE)}
+                onClick={() => setPage((p) => Math.min(Math.ceil(articles.length / PAGE_SIZE), p + 1))}
+              >
+                Suivant
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
