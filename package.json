@@ -7,7 +7,7 @@
     "dev": "vite",
     "vite:dev": "vite",
     "server": "node server.js",
-    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
+    "dev:full": "npm run dev",
     "check-env": "node scripts/check-env.js",
     "prepare-vercel-env": "node scripts/prepare-vercel-env.js",
     "generate-seo": "chmod +x scripts/optimize-seo.sh && ./scripts/optimize-seo.sh",

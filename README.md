@@ -12,6 +12,7 @@ Ce projet est un site web professionnel pour Rachel Gervais, assistante sociale 
 - **Paiement personnalisable** permettant aux utilisateurs de définir leur propre montant
 - **Vente d'e-book** avec téléchargement automatique après paiement
 - **Prise de rendez-vous en ligne** avec confirmation par email
+- **Blog dynamique** avec gestion des articles via Supabase et interface d'administration
 - **Mentions légales complètes** et gestion des cookies conforme au RGPD
 - **Infrastructure serverless** pour le traitement sécurisé des paiements
 - **Optimisation automatique des images** avec conversion WebP et compression intelligente
@@ -30,6 +31,7 @@ Ce projet est un site web professionnel pour Rachel Gervais, assistante sociale 
 - **Stripe API** - Traitement sécurisé des paiements par carte bancaire
 - **PayPal API** - Intégration des paiements alternatifs
 - **Vercel API Routes** - Architecture serverless pour le backend
+- **Supabase** - Base de données PostgreSQL pour la gestion des articles de blog
 - **React Helmet Async** - Gestion du SEO et méta-données compatible avec le Concurrent Mode
 - **Sharp** - Optimisation et transformation d'images
 - **PostCSS** - Traitement CSS avancé avec support pour le nesting et autres fonctionnalités modernes
@@ -56,26 +58,71 @@ npm install
 
 ### Configuration
 
-Créez un fichier `.env` à la racine du projet avec les variables suivantes :
+Créez un fichier `.env.local` à la racine du projet avec les variables suivantes :
 
 ```
 # Configuration pour les méta-données
 VITE_APP_TITLE=Rachel Gervais - Assistante Sociale Indépendante
-VITE_APP_DESCRIPTION=Rachel Gervais, assistante sociale diplômée d'État depuis 2009, vous accompagne dans vos démarches sociales en Normandie. Plus de 10 ans d'expérience au service de votre bien-être social.
-VITE_APP_KEYWORDS=assistante sociale, Normandie, Rachel Gervais, accompagnement social, démarches administratives
+VITE_APP_DESCRIPTION=Rachel Gervais, assistante sociale diplômée d'État depuis 2009, vous accompagne dans vos démarches sociales en Normandie.
+VITE_APP_KEYWORDS=assistante sociale, Normandie, Rachel Gervais, accompagnement social
 VITE_APP_URL=https://www.as-independante.fr
 
-# Configuration Stripe (remplacer par vos clés réelles)
+# Configuration Stripe
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
 STRIPE_SECRET_KEY=sk_test_your_secret_key
 
-# Configuration PayPal (remplacer par votre ID client réel en production)
-VITE_PAYPAL_CLIENT_ID="votre_id_client"
+# Configuration PayPal
+VITE_PAYPAL_CLIENT_ID=votre_id_client
+
+# Configuration Email (pour formulaire de contact)
+EMAIL_SERVICE=smtp
+EMAIL_HOST=votre_host
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=votre_email
+EMAIL_PASSWORD=votre_mot_de_passe
+EMAIL_RECIPIENT=destinataire@example.com
+
+# Configuration Supabase (pour le blog)
+SUPABASE_URL=https://votre-projet.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=votre_service_role_key
+
+# Mot de passe admin pour gérer les articles
+ADMIN_PASSWORD=votre_mot_de_passe_admin
+
+# Configuration API
+VITE_API_BASE_URL=/api
 ```
 
 ### Démarrage du serveur de développement
 
-Pour un développement complet avec fonctions API serverless (formulaire de contact, paiements, etc.) :
+Le projet utilise deux serveurs en développement :
+
+#### Serveur API (port 3000)
+
+```bash
+npm run server
+```
+
+Le serveur API démarre sur [http://localhost:3000](http://localhost:3000) et gère :
+
+- Les articles du blog via Supabase (`/api/blog`)
+- L'envoi d'emails (`/api/send-email`)
+- Les paiements Stripe
+
+#### Serveur Frontend (port 5173)
+
+```bash
+npm run dev -- --host --port 5173
+```
+
+Le site sera accessible à [http://localhost:5173](http://localhost:5173)
+
+> **Important**: Pour un développement complet, lancez les deux serveurs dans des terminaux séparés. Le frontend se connectera automatiquement à l'API sur le port 3000.
+
+### Alternative avec Vercel Dev
+
+Pour un développement avec fonctions serverless Vercel :
 
 ```bash
 # Configuration initiale de Vercel (à faire une seule fois)
@@ -86,8 +133,6 @@ vercel dev
 ```
 
 Le site sera accessible à l'adresse [http://localhost:3000](http://localhost:3000)
-
-> **Important**: Utilisez toujours `vercel dev` pour le développement local si vous avez besoin des fonctions API (envoi d'email, paiement Stripe, etc.). La commande `npm run dev` ne permet pas d'accéder aux fonctions serverless.
 
 ### Build pour la production
 
@@ -108,6 +153,7 @@ vercel deploy
 
 ```
 api/                # Fonctions API pour Vercel serverless
+  ├── blog.js       # Gestion des articles de blog (CRUD via Supabase)
   ├── create-payment-intent.js
   ├── mailchimp-subscribe.js
   └── send-email.js
@@ -124,8 +170,10 @@ scripts/              # Scripts d'automatisation
   ├── convert-to-webp.js      # Conversion d'images au format WebP
   ├── generate-favicons.js    # Génération des favicons à différentes tailles
   └── optimize-images.js      # Optimisation des images existantes
+server.js             # Serveur Express local pour le développement
 src/
   ├── components/     # Composants React réutilisables
+  │   ├── admin/      # Interface d'administration du blog
   │   ├── animations/ # Composants d'animation
   │   ├── checkout/   # Composants pour le processus d'achat et paiement
   │   ├── legal/      # Composants pour les mentions légales
@@ -141,6 +189,8 @@ src/
   ├── contexts/       # Contexts React pour l'état global
   ├── hooks/          # Hooks React personnalisés
   ├── pages/          # Pages principales du site
+  │   ├── BlogIndexPage.tsx   # Page d'index du blog
+  │   ├── BlogArticlePage.tsx # Page d'article individuel
   │   ├── CheckoutPage.tsx    # Page de paiement avec choix du montant
   │   ├── EbookPage.tsx       # Page de présentation des e-books
   │   ├── BookingPage.tsx     # Page de prise de rendez-vous
@@ -212,8 +262,9 @@ Pour passer du mode test au mode production :
 
 ## 📦 Scripts disponibles
 
-- `vercel dev` - Lance le serveur de développement complet avec support des API routes
-- `npm run dev` - Lance le serveur de développement frontend uniquement (sans API fonctionnelles)
+- `npm run server` - Lance le serveur API Express sur le port 3000
+- `npm run dev` - Lance le serveur de développement Vite (frontend uniquement)
+- `vercel dev` - Lance le serveur de développement complet avec support des API routes Vercel
 - `npm run build` - Génère le build de production (incluant l'optimisation des images et la génération des favicons)
 - `npm run preview` - Prévisualise le build de production en local
 - `npm run lint` - Lance l'analyse du code avec ESLint
@@ -244,6 +295,11 @@ Le projet met l'accent sur la sécurité à plusieurs niveaux :
 
 ## 🔄 Mises à jour récentes
 
+- **Système de blog dynamique** : Intégration de Supabase pour la gestion des articles
+- **Interface d'administration** : Page `/admin` pour créer, modifier et supprimer des articles
+- **API blog** : Endpoints REST complets pour la gestion du contenu (GET, POST, PUT, DELETE)
+- **Serveur Express local** : Architecture dual-server pour le développement (API + Frontend)
+- **Résolution automatique des ports** : Le frontend détecte automatiquement l'API locale
 - Migration de Netlify vers Vercel pour améliorer les performances et la fiabilité
 - Intégration complète de PayPal avec support du passage en production
 - Ajout d'un système de vente d'e-books avec téléchargement sécurisé
@@ -298,4 +354,14 @@ Après la mise à jour du sitemap :
 
 ---
 
-Dernière mise à jour : 12 mai 2025
+**Note sur le blog** : Les articles sont stockés dans Supabase. Pour y accéder en développement local, assurez-vous que :
+
+1. Le serveur API (`npm run server`) est lancé sur le port 3000
+2. Les variables d'environnement Supabase sont configurées dans `.env.local`
+3. La table `blog_articles` existe dans votre projet Supabase avec les colonnes : `id`, `title`, `excerpt`, `content`, `image`, `tags`, `date`, `author`, `readtime`
+
+Pour accéder à l'interface d'administration : `/admin` (nécessite le mot de passe défini dans `ADMIN_PASSWORD`)
+
+---
+
+Dernière mise à jour : 2 janvier 2026

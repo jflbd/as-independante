@@ -3,9 +3,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Trash2, Plus, Edit2 } from 'lucide-react';
 
-// Utilise l'origine du site si VITE_API_URL n'est pas fourni (évite localhost en prod)
-const API_URL = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-const DATA_URL = '/blog-data.json';
+// Calcule l'URL d'API : VITE_API_URL > origin. En dev Vite (5173), bascule sur :3000 pour joindre le serveur Express.
+const resolveApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window === 'undefined') return '';
+  try {
+    const url = new URL(window.location.href);
+    if (url.port === '5173') {
+      return `${url.protocol}//${url.hostname}:3000`;
+    }
+    return url.origin;
+  } catch (e) {
+    return '';
+  }
+};
+
+const API_URL = resolveApiUrl();
 
 export const BlogAdmin = () => {
   const [articles, setArticles] = useState([]);
@@ -25,6 +38,24 @@ export const BlogAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setStoredPassword('');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('blogAdminToken');
+    }
+  };
+
+  // Restaurer une session existante depuis le stockage local
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const savedToken = localStorage.getItem('blogAdminToken');
+    if (savedToken) {
+      setStoredPassword(savedToken);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   // Récupérer les articles (lecture en statique pour afficher la liste même sans API)
   useEffect(() => {
     if (isAuthenticated) {
@@ -34,7 +65,7 @@ export const BlogAdmin = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await fetch(DATA_URL);
+      const response = await fetch(`${API_URL}/api/blog`);
       const data = await response.json();
       setArticles(data);
       setPage(1);
@@ -48,6 +79,9 @@ export const BlogAdmin = () => {
     // Simple authentication - in production, use proper JWT
     if (password) {
       setStoredPassword(password);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('blogAdminToken', password);
+      }
       setIsAuthenticated(true);
       setPassword('');
     }
@@ -78,7 +112,8 @@ export const BlogAdmin = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la sauvegarde');
+        const text = await response.text();
+        throw new Error(`Erreur lors de la sauvegarde (HTTP ${response.status}) ${text || ''}`);
       }
 
       await fetchArticles();
@@ -116,7 +151,8 @@ export const BlogAdmin = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la suppression');
+        const text = await response.text();
+        throw new Error(`Erreur lors de la suppression (HTTP ${response.status}) ${text || ''}`);
       }
 
       await fetchArticles();
@@ -152,10 +188,7 @@ export const BlogAdmin = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Gestion des articles</h1>
-          <Button onClick={() => {
-            setIsAuthenticated(false);
-            setStoredPassword('');
-          }}>Déconnexion</Button>
+          <Button onClick={handleLogout}>Déconnexion</Button>
         </div>
 
         {/* Formulaire */}

@@ -15,7 +15,7 @@ import TelechargementPage from './pages/TelechargementPage';
 import Sitemap from './pages/Sitemap';
 import BlogLinkMainPage from './pages/BlogLinkMainPage';
 import BlogIndexPage from './pages/BlogIndexPage';
-import BlogArticlePage from './pages/BlogArticlePage.jsx';
+import BlogArticlePage from './pages/BlogArticlePage';
 import AdminPage from './pages/AdminPage';
 import { ebookConfig } from './config/ebookConfig';
 import { useScrollToTop } from './hooks/useScrollToTop';

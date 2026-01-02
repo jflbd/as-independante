@@ -102,7 +102,8 @@ if (process.env.EMAIL_SECURE)
   global.process.env.EMAIL_SECURE = process.env.EMAIL_SECURE;
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Utiliser le port 3000 pour correspondre au proxy de Vite
+// Serveur API sur 3000 par défaut
+const PORT = process.env.PORT || 3000;
 
 // Vérifier si nous sommes dans un environnement Vercel Dev
 const isVercelDev =
@@ -114,16 +115,16 @@ app.use(express.json()); // Parser le JSON
 
 // Importer les routes et fonctions d'API de manière dynamique
 let sendEmail;
-let blogArticlesRouter;
+let blogHandler;
 try {
   // Import dynamique pour les modules ES
   const sendEmailModule = await import("./api/send-email.js");
   sendEmail = sendEmailModule.default;
 
-  const blogModule = await import("./api/blog-articles.js");
-  blogArticlesRouter = blogModule.default;
+  const blogModule = await import("./api/blog.js");
+  blogHandler = blogModule.default;
 } catch (e) {
-  console.log("Module send-email.js non trouvé ou non compatible: ", e.message);
+  console.log("Module d'API non trouvé ou non compatible: ", e.message);
 }
 
 // Routes API
@@ -166,10 +167,84 @@ app.get("/api/test", (req, res) => {
   });
 });
 
-// Routes du blog
-if (blogArticlesRouter) {
-  app.use("/api/blog", blogArticlesRouter);
-  console.log("✅ Routes du blog intégrées sur /api/blog");
+// Routes du blog - Intégrer le handler Vercel serverless
+if (blogHandler) {
+  // GET /api/blog - Liste des articles
+  app.get("/api/blog", async (req, res) => {
+    try {
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogHandler(req, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // GET /api/blog/:id - Un article
+  app.get("/api/blog/:id", async (req, res) => {
+    try {
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogHandler(req, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // POST /api/blog - Créer un article
+  app.post("/api/blog", async (req, res) => {
+    try {
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogHandler(req, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // PUT /api/blog/:id - Modifier un article
+  app.put("/api/blog/:id", async (req, res) => {
+    try {
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogHandler(req, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // DELETE /api/blog/:id - Supprimer un article
+  app.delete("/api/blog/:id", async (req, res) => {
+    try {
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogHandler(req, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  console.log("✅ Routes du blog Supabase intégrées sur /api/blog");
 }
 
 // Ne démarrer le serveur que si nous ne sommes pas dans Vercel Dev

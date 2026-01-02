@@ -13,38 +13,60 @@ import { OptimizedImage } from '@/components/OptimizedImage';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
+// Calcule la base API : VITE_API_URL > origin et mappe le port Vite 5173 vers l'API locale 3000
+const resolveApiBase = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window === 'undefined') return '';
+  try {
+    const url = new URL(window.location.href);
+    if (url.port === '5173') {
+      return `${url.protocol}//${url.hostname}:3000`;
+    }
+    return url.origin;
+  } catch (e) {
+    return '';
+  }
+};
+
 /**
  * Page d'article de blog individuelle pour présenter des contenus optimisés SEO
  */
 export default function BlogArticlePage() {
   const { articleId } = useParams<{ articleId: string }>();
   const navigate = useNavigate();
-  const [article, setArticle] = useState<any | null>(null);
+  const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+  const [error, setError] = useState('');
+  
+  // Utiliser useEffect en dehors de la condition pour éviter les hooks conditionnels
   useEffect(() => {
-    const loadArticle = async () => {
+    const fetchArticle = async () => {
+      if (!articleId) return;
       try {
-        const response = await fetch('/blog-data.json');
-        const data = await response.json();
-        const found = data.find((a: any) => a.id === articleId);
-        if (!found) {
-          navigate('/404', { replace: true });
-          return;
+        const apiBase = resolveApiBase();
+        const response = await fetch(`${apiBase}/api/blog/${articleId}`);
+        if (!response.ok) {
+          throw new Error('Article introuvable');
         }
-        setArticle(found);
-      } catch (error) {
-        console.error('Erreur lors du chargement de l\'article:', error);
+        const data = await response.json();
+        setArticle(data);
+        setError('');
+      } catch (e: any) {
+        setError(e?.message || 'Erreur de chargement');
         navigate('/404', { replace: true });
       } finally {
         setLoading(false);
       }
     };
 
-    loadArticle();
+    fetchArticle();
   }, [articleId, navigate]);
+  
+  if (loading) {
+    return null;
+  }
 
-  if (loading || !article) {
+  if (!article) {
     return null;
   }
   

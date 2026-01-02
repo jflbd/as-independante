@@ -11,6 +11,21 @@ import { OptimizedImage } from '@/components/OptimizedImage';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
+// Calcule la base API : VITE_API_URL > origin et mappe le port Vite 5173 vers l'API locale 3000
+const resolveApiBase = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window === 'undefined') return '';
+  try {
+    const url = new URL(window.location.href);
+    if (url.port === '5173') {
+      return `${url.protocol}//${url.hostname}:3000`;
+    }
+    return url.origin;
+  } catch (e) {
+    return '';
+  }
+};
+
 /**
  * Page d'index du blog avec articles optimisés pour le SEO
  */
@@ -24,9 +39,13 @@ const BlogIndexPage: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch('/blog-data.json');
+        const apiBase = resolveApiBase();
+        const response = await fetch(`${apiBase}/api/blog`);
         const data = await response.json();
-        setArticles(data);
+        // tri anti-chronologique (garde par sécurité si l'API ne trie pas)
+        setArticles(
+          (data || []).slice().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        );
       } catch (error) {
         console.error('Erreur lors du chargement des articles:', error);
         setArticles([]);
@@ -38,12 +57,12 @@ const BlogIndexPage: React.FC = () => {
     fetchArticles();
   }, []);
 
-  const filteredArticles = [...articles]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .filter((article) => {
-      const haystack = `${article.title} ${(article.content || '')}`.toLowerCase();
-      return haystack.includes(searchTerm.toLowerCase());
-    });
+  const filteredArticles = articles.filter((article) => {
+    const haystack = `${article.title} ${article.excerpt || ''} ${(article.content || '')} ${
+      article.tags ? article.tags.join(' ') : ''
+    }`.toLowerCase();
+    return haystack.includes(searchTerm.toLowerCase());
+  });
 
   useEffect(() => {
     setPage(1);
@@ -105,7 +124,7 @@ const BlogIndexPage: React.FC = () => {
           <div className="max-w-xl mx-auto mb-8">
             <input
               type="search"
-              placeholder="Rechercher un article (titre ou contenu)"
+              placeholder="Rechercher un article (titre, contenu, tags)"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -117,7 +136,7 @@ const BlogIndexPage: React.FC = () => {
             {loading ? (
               <div className="col-span-full text-center py-8">Chargement des articles...</div>
             ) : paginatedArticles.length === 0 ? (
-              <div className="col-span-full text-center py-8 text-gray-600">Aucun article trouvé.</div>
+              <div className="col-span-full text-center py-8 text-gray-600">Aucun article disponible pour le moment.</div>
             ) : (
               paginatedArticles.map((article) => (
               <article key={article.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
