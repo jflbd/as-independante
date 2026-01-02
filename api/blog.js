@@ -65,13 +65,109 @@ export default async function handler(req, res) {
   const { pathname } = parse(req.url, true);
   const id = pathname.replace("/api/blog", "").replace(/^\/+/, "");
 
-  // Si il y a un ID dans le path, rediriger vers /api/blog/[id]
+  // Si il y a un ID dans le path, gérer les opérations sur cet article
   if (id) {
-    return res.status(400).json({
-      error:
-        "Utilisez /api/blog/[id] pour les opérations sur un article spécifique",
-    });
+    // GET one article
+    if (req.method === "GET") {
+      const { response, data } = await callSupabase(
+        `/blog_articles?id=eq.${encodeURIComponent(id)}&select=*`
+      );
+      if (!response.ok) {
+        return res
+          .status(response.status)
+          .json({ error: data || "Erreur lors de la récupération" });
+      }
+      if (!data || data.length === 0) {
+        return res.status(404).json({ error: "Article non trouvé" });
+      }
+      return res.status(200).json(data[0]);
+    }
+
+    // PUT/PATCH one article
+    if (req.method === "PUT" || req.method === "PATCH") {
+      if (!requireAuth(req, res)) return;
+
+      const body = req.body || {};
+      const updatePayload = {
+        ...(body.title ? { title: body.title } : {}),
+        ...(body.excerpt ? { excerpt: body.excerpt } : {}),
+        ...(body.content ? { content: body.content } : {}),
+        ...(body.image ? { image: body.image } : {}),
+        ...(body.tags
+          ? {
+              tags: Array.isArray(body.tags)
+                ? body.tags
+                : typeof body.tags === "string"
+                ? body.tags
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean)
+                : [],
+            }
+          : {}),
+        ...(body.date ? { date: body.date } : {}),
+        ...(body.author ? { author: body.author } : {}),
+        ...(body.readtime
+          ? { readtime: body.readtime }
+          : body.content
+          ? {
+              readtime: `${Math.ceil(
+                (body.content || "").split(" ").length / 200
+              )} min`,
+            }
+          : {}),
+      };
+
+      const { response, data } = await callSupabase(
+        `/blog_articles?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: "PATCH",
+          headers: {
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify(updatePayload),
+        }
+      );
+
+      if (!response.ok) {
+        return res
+          .status(response.status)
+          .json({ error: data || "Erreur lors de la modification" });
+      }
+
+      return res
+        .status(200)
+        .json(data && data[0] ? data[0] : { id, ...updatePayload });
+    }
+
+    // DELETE one article
+    if (req.method === "DELETE") {
+      if (!requireAuth(req, res)) return;
+
+      const { response, data } = await callSupabase(
+        `/blog_articles?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+          headers: {
+            Prefer: "return=minimal",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        return res
+          .status(response.status)
+          .json({ error: data || "Erreur lors de la suppression" });
+      }
+
+      return res.status(200).json({ message: "Article supprimé" });
+    }
+
+    res.setHeader("Allow", "GET,PUT,PATCH,DELETE");
+    return res.status(405).json({ error: "Méthode non autorisée pour cet article" });
   }
+
+  // Pas d'ID = opérations sur la collection
 
   if (req.method === "GET") {
     // List all articles
