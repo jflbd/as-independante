@@ -115,10 +115,6 @@
   ],
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    },
-    {
       "source": "/admin",
       "destination": "/index.html"
     },
