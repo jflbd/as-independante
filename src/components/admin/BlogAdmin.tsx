@@ -3,7 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Trash2, Plus, Edit2 } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Utilise l'origine du site si VITE_API_URL n'est pas fourni (évite localhost en prod)
+const API_URL = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+const DATA_URL = '/blog-data.json';
 
 export const BlogAdmin = () => {
   const [articles, setArticles] = useState([]);
@@ -19,7 +21,7 @@ export const BlogAdmin = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // Récupérer les articles
+  // Récupérer les articles (lecture en statique pour afficher la liste même sans API)
   useEffect(() => {
     if (isAuthenticated) {
       fetchArticles();
@@ -28,7 +30,7 @@ export const BlogAdmin = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/blog`);
+      const response = await fetch(DATA_URL);
       const data = await response.json();
       setArticles(data);
     } catch (error) {
