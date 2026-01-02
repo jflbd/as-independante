@@ -116,6 +116,7 @@ app.use(express.json()); // Parser le JSON
 // Importer les routes et fonctions d'API de manière dynamique
 let sendEmail;
 let blogHandler;
+let blogIdHandler;
 try {
   // Import dynamique pour les modules ES
   const sendEmailModule = await import("./api/send-email.js");
@@ -123,6 +124,9 @@ try {
 
   const blogModule = await import("./api/blog.js");
   blogHandler = blogModule.default;
+
+  const blogIdModule = await import("./api/blog/[id].js");
+  blogIdHandler = blogIdModule.default;
 } catch (e) {
   console.log("Module d'API non trouvé ou non compatible: ", e.message);
 }
@@ -168,13 +172,17 @@ app.get("/api/test", (req, res) => {
 });
 
 // Routes du blog - Intégrer le handler Vercel serverless
-if (blogHandler) {
+if (blogHandler && blogIdHandler) {
   // GET /api/blog - Liste des articles
   app.get("/api/blog", async (req, res) => {
     try {
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
       await blogHandler(req, mockRes);
@@ -187,12 +195,17 @@ if (blogHandler) {
   // GET /api/blog/:id - Un article
   app.get("/api/blog/:id", async (req, res) => {
     try {
+      const mockReq = { ...req, query: { id: req.params.id } };
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
-      await blogHandler(req, mockRes);
+      await blogIdHandler(mockReq, mockRes);
     } catch (error) {
       console.error("Erreur blog:", error);
       res.status(500).json({ error: error.message });
@@ -205,6 +218,10 @@ if (blogHandler) {
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
       await blogHandler(req, mockRes);
@@ -217,12 +234,17 @@ if (blogHandler) {
   // PUT /api/blog/:id - Modifier un article
   app.put("/api/blog/:id", async (req, res) => {
     try {
+      const mockReq = { ...req, query: { id: req.params.id } };
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
-      await blogHandler(req, mockRes);
+      await blogIdHandler(mockReq, mockRes);
     } catch (error) {
       console.error("Erreur blog:", error);
       res.status(500).json({ error: error.message });
@@ -232,12 +254,17 @@ if (blogHandler) {
   // DELETE /api/blog/:id - Supprimer un article
   app.delete("/api/blog/:id", async (req, res) => {
     try {
+      const mockReq = { ...req, query: { id: req.params.id } };
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
-      await blogHandler(req, mockRes);
+      await blogIdHandler(mockReq, mockRes);
     } catch (error) {
       console.error("Erreur blog:", error);
       res.status(500).json({ error: error.message });
