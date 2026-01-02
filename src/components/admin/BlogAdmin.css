@@ -12,6 +12,18 @@
   overflow-y: auto;
 }
 
+/* Éditeur de titre plus compact */
+.title-editor .ql-container {
+  min-height: 60px;
+}
+
+.title-editor .ql-editor {
+  min-height: 60px;
+  max-height: 100px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
 /* Styles pour l'éditeur de contenu plus grand */
 .ql-editor.ql-blank::before {
   font-style: italic;

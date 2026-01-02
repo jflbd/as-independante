@@ -155,12 +155,13 @@ export const BlogAdmin = () => {
   };
 
   const handleEdit = (article) => {
+    console.log('Edition article:', article); // Debug
     setFormData({
-      title: article.title,
-      excerpt: article.excerpt,
-      content: article.content,
-      image: article.image,
-      tags: article.tags.join(', ')
+      title: article.title || '',
+      excerpt: article.excerpt || '',
+      content: article.content || '',
+      image: article.image || '',
+      tags: Array.isArray(article.tags) ? article.tags.join(', ') : ''
     });
     setEditingId(article.id);
   };
@@ -230,12 +231,26 @@ export const BlogAdmin = () => {
           )}
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              placeholder="Titre"
-              value={formData.title}
-              onChange={(e) => setFormData({...formData, title: e.target.value})}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Titre *
+              </label>
+              <ReactQuill
+                theme="snow"
+                value={formData.title}
+                onChange={(value) => setFormData({...formData, title: value})}
+                modules={{
+                  toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'color': [] }],
+                    ['clean']
+                  ]
+                }}
+                formats={['bold', 'italic', 'underline', 'color']}
+                placeholder="Saisissez le titre de l'article..."
+                className="bg-white title-editor"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Extrait
