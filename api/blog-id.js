@@ -16,8 +16,7 @@ const authHeaders = {
 
 const requireConfig = (res) => {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    res.statusCode = 500;
-    res.json({ error: "SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant" });
+    res.status(500).json({ error: "SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant" });
     return false;
   }
   return true;
@@ -26,8 +25,7 @@ const requireConfig = (res) => {
 const requireAuth = (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token || token !== ADMIN_PASSWORD) {
-    res.statusCode = 401;
-    res.json({ error: "Non autorisé" });
+    res.status(401).json({ error: "Non autorisé" });
     return false;
   }
   return true;
