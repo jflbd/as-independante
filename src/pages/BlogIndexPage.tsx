@@ -17,6 +17,7 @@ import { fr } from 'date-fns/locale';
 const BlogIndexPage: React.FC = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -34,6 +35,13 @@ const BlogIndexPage: React.FC = () => {
 
     fetchArticles();
   }, []);
+
+  const filteredArticles = [...articles]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .filter((article) => {
+      const haystack = `${article.title} ${(article.content || '')}`.toLowerCase();
+      return haystack.includes(searchTerm.toLowerCase());
+    });
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Helmet>
@@ -84,14 +92,25 @@ const BlogIndexPage: React.FC = () => {
             </p>
           </header>
           
+          {/* Barre de recherche */}
+          <div className="max-w-xl mx-auto mb-8">
+            <input
+              type="search"
+              placeholder="Rechercher un article (titre ou contenu)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
           {/* Liste des articles */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
               <div className="col-span-full text-center py-8">Chargement des articles...</div>
-            ) : articles.length === 0 ? (
-              <div className="col-span-full text-center py-8 text-gray-600">Aucun article disponible pour le moment.</div>
+            ) : filteredArticles.length === 0 ? (
+              <div className="col-span-full text-center py-8 text-gray-600">Aucun article trouvé.</div>
             ) : (
-              articles.map((article) => (
+              filteredArticles.map((article) => (
               <article key={article.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
                 <Link to={`/blog/${article.id}`} className="block">
                   <div className="h-40 sm:h-48 md:h-52 bg-gray-200 relative overflow-hidden">
