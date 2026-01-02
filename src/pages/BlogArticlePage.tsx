@@ -44,7 +44,7 @@ export default function BlogArticlePage() {
       if (!articleId) return;
       try {
         const apiBase = resolveApiBase();
-        const response = await fetch(`${apiBase}/api/blog/${articleId}`);
+        const response = await fetch(`${apiBase}/api/blog-id?id=${encodeURIComponent(articleId)}`);
         if (!response.ok) {
           throw new Error('Article introuvable');
         }

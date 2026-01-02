@@ -116,6 +116,7 @@ app.use(express.json()); // Parser le JSON
 // Importer les routes et fonctions d'API de manière dynamique
 let sendEmail;
 let blogHandler;
+let blogIdHandler;
 try {
   // Import dynamique pour les modules ES
   const sendEmailModule = await import("./api/send-email.js");
@@ -123,6 +124,9 @@ try {
 
   const blogModule = await import("./api/blog.js");
   blogHandler = blogModule.default;
+
+  const blogIdModule = await import("./api/blog-id.js");
+  blogIdHandler = blogIdModule.default;
 } catch (e) {
   console.log("Module d'API non trouvé ou non compatible: ", e.message);
 }
@@ -188,12 +192,13 @@ if (blogHandler) {
     }
   });
 
-  // GET /api/blog/:id - Un article
+  // GET /api/blog/:id - Un article (legacy)
   app.get("/api/blog/:id", async (req, res) => {
+    if (!blogIdHandler) {
+      return res.status(404).json({ error: "Handler non disponible" });
+    }
     try {
-      // Construire une URL complète pour le parser
-      const fullUrl = `http://localhost:3000/api/blog/${req.params.id}`;
-      const mockReq = { ...req, url: fullUrl };
+      const mockReq = { ...req, query: { id: req.params.id } };
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
@@ -203,7 +208,29 @@ if (blogHandler) {
         },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
-      await blogHandler(mockReq, mockRes);
+      await blogIdHandler(mockReq, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // GET /api/blog-id - Un article avec query parameter
+  app.get("/api/blog-id", async (req, res) => {
+    if (!blogIdHandler) {
+      return res.status(404).json({ error: "Handler non disponible" });
+    }
+    try {
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogIdHandler(req, mockRes);
     } catch (error) {
       console.error("Erreur blog:", error);
       res.status(500).json({ error: error.message });
@@ -229,12 +256,13 @@ if (blogHandler) {
     }
   });
 
-  // PUT /api/blog/:id - Modifier un article
+  // PUT /api/blog/:id - Modifier un article (legacy)
   app.put("/api/blog/:id", async (req, res) => {
+    if (!blogIdHandler) {
+      return res.status(404).json({ error: "Handler non disponible" });
+    }
     try {
-      // Construire une URL complète pour le parser
-      const fullUrl = `http://localhost:3000/api/blog/${req.params.id}`;
-      const mockReq = { ...req, url: fullUrl };
+      const mockReq = { ...req, query: { id: req.params.id } };
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
@@ -244,19 +272,19 @@ if (blogHandler) {
         },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
-      await blogHandler(mockReq, mockRes);
+      await blogIdHandler(mockReq, mockRes);
     } catch (error) {
       console.error("Erreur blog:", error);
       res.status(500).json({ error: error.message });
     }
   });
 
-  // DELETE /api/blog/:id - Supprimer un article
-  app.delete("/api/blog/:id", async (req, res) => {
+  // PUT /api/blog-id - Modifier un article avec query parameter
+  app.put("/api/blog-id", async (req, res) => {
+    if (!blogIdHandler) {
+      return res.status(404).json({ error: "Handler non disponible" });
+    }
     try {
-      // Construire une URL complète pour le parser
-      const fullUrl = `http://localhost:3000/api/blog/${req.params.id}`;
-      const mockReq = { ...req, url: fullUrl };
       const mockRes = {
         statusCode: 200,
         setHeader: (name, value) => res.setHeader(name, value),
@@ -266,7 +294,52 @@ if (blogHandler) {
         },
         json: (data) => res.status(mockRes.statusCode).json(data),
       };
-      await blogHandler(mockReq, mockRes);
+      await blogIdHandler(req, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // DELETE /api/blog/:id - Supprimer un article (legacy)
+  app.delete("/api/blog/:id", async (req, res) => {
+    if (!blogIdHandler) {
+      return res.status(404).json({ error: "Handler non disponible" });
+    }
+    try {
+      const mockReq = { ...req, query: { id: req.params.id } };
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogIdHandler(mockReq, mockRes);
+    } catch (error) {
+      console.error("Erreur blog:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // DELETE /api/blog-id - Supprimer un article avec query parameter
+  app.delete("/api/blog-id", async (req, res) => {
+    if (!blogIdHandler) {
+      return res.status(404).json({ error: "Handler non disponible" });
+    }
+    try {
+      const mockRes = {
+        statusCode: 200,
+        setHeader: (name, value) => res.setHeader(name, value),
+        status: (code) => {
+          mockRes.statusCode = code;
+          return mockRes;
+        },
+        json: (data) => res.status(mockRes.statusCode).json(data),
+      };
+      await blogIdHandler(req, mockRes);
     } catch (error) {
       console.error("Erreur blog:", error);
       res.status(500).json({ error: error.message });

@@ -164,7 +164,9 @@ export default async function handler(req, res) {
     }
 
     res.setHeader("Allow", "GET,PUT,PATCH,DELETE");
-    return res.status(405).json({ error: "Méthode non autorisée pour cet article" });
+    return res
+      .status(405)
+      .json({ error: "Méthode non autorisée pour cet article" });
   }
 
   // Pas d'ID = opérations sur la collection

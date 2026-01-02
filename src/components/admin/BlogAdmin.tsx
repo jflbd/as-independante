@@ -94,7 +94,7 @@ export const BlogAdmin = () => {
     try {
       const method = editingId ? 'PUT' : 'POST';
       const url = editingId 
-        ? `${API_URL}/api/blog/${editingId}`
+        ? `${API_URL}/api/blog-id?id=${encodeURIComponent(editingId)}`
         : `${API_URL}/api/blog`;
 
       const payload = {
@@ -143,7 +143,7 @@ export const BlogAdmin = () => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet article?')) return;
 
     try {
-      const response = await fetch(`${API_URL}/api/blog/${id}`, {
+      const response = await fetch(`${API_URL}/api/blog-id?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${storedPassword}`
