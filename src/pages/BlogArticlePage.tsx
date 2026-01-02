@@ -9,7 +9,6 @@ import RelatedLinks from '@/components/RelatedLinks';
 import SEOSchema from '@/components/SEOSchema';
 import Breadcrumb from '@/components/Breadcrumb';
 import ShareButton from '@/components/ShareButton';
-import { blogArticles } from '@/data/blogArticles';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -20,16 +19,32 @@ import { fr } from 'date-fns/locale';
 export default function BlogArticlePage() {
   const { articleId } = useParams<{ articleId: string }>();
   const navigate = useNavigate();
-  const article = blogArticles.find(a => a.id === articleId);
-  
-  // Utiliser useEffect en dehors de la condition pour éviter les hooks conditionnels
+  const [article, setArticle] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (!article) {
-      navigate('/404', { replace: true });
-    }
-  }, [article, navigate]);
-  
-  if (!article) {
+    const loadArticle = async () => {
+      try {
+        const response = await fetch('/blog-data.json');
+        const data = await response.json();
+        const found = data.find((a: any) => a.id === articleId);
+        if (!found) {
+          navigate('/404', { replace: true });
+          return;
+        }
+        setArticle(found);
+      } catch (error) {
+        console.error('Erreur lors du chargement de l\'article:', error);
+        navigate('/404', { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadArticle();
+  }, [articleId, navigate]);
+
+  if (loading || !article) {
     return null;
   }
   

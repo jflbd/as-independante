@@ -21,8 +21,7 @@ const BlogIndexPage: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-        const response = await fetch(`${apiUrl}/api/blog`);
+        const response = await fetch('/blog-data.json');
         const data = await response.json();
         setArticles(data);
       } catch (error) {
