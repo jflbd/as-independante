@@ -48,3 +48,32 @@
 .content-editor .ql-editor {
   min-height: 300px;
 }
+
+/* Force l'affichage du bouton d'upload image si un style global le masque */
+.image-upload-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.image-upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #2563eb;
+  color: white;
+  border: 1px solid #1d4ed8;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+}
+
+.image-upload-button:hover {
+  background: #1d4ed8;
+}
+
+.image-upload-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
