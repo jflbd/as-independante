@@ -45,15 +45,18 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, description }) =>
     
     const articleTitle = encodeURIComponent(title);
     const articleDesc = encodeURIComponent(description);
+    const textWithDesc = encodeURIComponent(`${title} — ${description}`);
     
     let shareUrl = '';
     
     switch (platform) {
       case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`;
+        // Facebook lit surtout les balises OG; on ajoute quote pour inclure l'extrait
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}&quote=${articleDesc}`;
         break;
       case 'twitter':
-        shareUrl = `https://twitter.com/intent/tweet?text=${articleTitle}&url=${encodeURIComponent(articleUrl)}`;
+        // Inclure titre + extrait dans le texte du tweet
+        shareUrl = `https://twitter.com/intent/tweet?text=${textWithDesc}&url=${encodeURIComponent(articleUrl)}`;
         break;
       case 'linkedin':
         shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(articleUrl)}&title=${articleTitle}&summary=${articleDesc}`;
