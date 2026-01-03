@@ -8,11 +8,15 @@ interface BreadcrumbItem {
   isLast: boolean;
 }
 
+interface BreadcrumbProps {
+  currentLabel?: string; // permet de surcharger le dernier segment (ex: titre d'article)
+}
+
 /**
  * Composant de fil d'Ariane pour l'amélioration de la navigation et du SEO
  * Génère un fil d'Ariane basé sur l'URL actuelle
  */
-const Breadcrumb: React.FC = () => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ currentLabel }) => {
   const location = useLocation();
   
   // Ne pas afficher le fil d'Ariane sur la page d'accueil
@@ -62,10 +66,11 @@ const Breadcrumb: React.FC = () => {
         name = segment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     }
     
+    const isLast = index === pathSegments.length - 1;
     breadcrumbItems.push({
-      name,
+      name: isLast && currentLabel ? currentLabel : name,
       path: currentPath,
-      isLast: index === pathSegments.length - 1
+      isLast,
     });
   });
   

@@ -99,8 +99,8 @@ export default function BlogArticlePage() {
       
       <div className="flex-grow pt-20 pb-12"> 
         <div className="container mx-auto px-4">
-          {/* Fil d'Ariane */}
-          <Breadcrumb />
+          {/* Fil d'Ariane avec titre d'article */}
+          <Breadcrumb currentLabel={article.title} />
           
           {/* Article principal */}
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
