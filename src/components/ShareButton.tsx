@@ -17,15 +17,31 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, description }) =>
     setShowShareMenu(prev => !prev);
   };
   
+  const buildArticleUrl = () => {
+    // Si déjà absolu, renvoyer tel quel
+    if (url && url.startsWith('http')) return url;
+
+    // En client : reconstruire avec le domaine courant (preview, prod ou localhost)
+    if (typeof window !== 'undefined') {
+      const base = window.location.origin;
+      const path = url
+        ? (url.startsWith('/') ? url : `/${url}`)
+        : window.location.pathname;
+      return `${base}${path}`;
+    }
+
+    // SSR : fallback sur domaine configuré
+    if (url) {
+      const path = url.startsWith('/') ? url : `/${url}`;
+      return `${siteConfig.url}${path}`;
+    }
+    return siteConfig.url;
+  };
+
   // Partage sur les réseaux sociaux
   const shareOnSocial = (platform: string) => {
-    // S'assurer que l'URL est complète avec le domaine et formatée correctement
-    // Utiliser toujours l'URL complète fournie pour éviter les problèmes de routage
-    const articleUrl = url.startsWith('http') 
-      ? url 
-      : `${siteConfig.url}${url.startsWith('/') ? url : `/${url}`}`;
-    
-    console.log('URL de partage:', articleUrl); // Pour le débogage
+    const articleUrl = buildArticleUrl();
+    console.log('URL de partage:', articleUrl); // Debug
     
     const articleTitle = encodeURIComponent(title);
     const articleDesc = encodeURIComponent(description);
@@ -59,10 +75,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, description }) =>
   
   // Fonction pour copier le lien dans le presse-papier
   const copyToClipboard = () => {
-    // Utiliser le même format d'URL que pour le partage social pour cohérence
-    const articleUrl = url.startsWith('http') 
-      ? url 
-      : `${siteConfig.url}${url.startsWith('/') ? url : `/${url}`}`;
+    const articleUrl = buildArticleUrl();
       
     navigator.clipboard.writeText(articleUrl).then(() => {
       setCopied(true);

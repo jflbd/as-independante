@@ -12,13 +12,13 @@ import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { stripHtmlTags, truncateHtml } from '@/utils/htmlContent';
 
-// Calcule la base API : VITE_API_URL > origin et mappe le port Vite 5173 vers l'API locale 3000
+// Calcule la base API : VITE_API_URL > origin et mappe le port Vite 5173/8080 vers l'API locale 3000
 const resolveApiBase = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   if (typeof window === 'undefined') return '';
   try {
     const url = new URL(window.location.href);
-    if (url.port === '5173') {
+    if (url.port === '5173' || url.port === '8080') {
       return `${url.protocol}//${url.hostname}:3000`;
     }
     return url.origin;
@@ -180,10 +180,6 @@ const BlogIndexPage: React.FC = () => {
                     <span className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
                       {format(parseISO(article.date), "d MMMM yyyy", { locale: fr })}
-                    </span>
-                    <span className="flex items-center">
-                      <Clock className="h-3 w-3 mr-1" />
-                      {article.readTime}
                     </span>
                   </div>
                 </div>

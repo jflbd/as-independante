@@ -1,4 +1,5 @@
 import React from 'react';
+import './htmlContent.css';
 
 /**
  * Composant pour afficher du contenu HTML en toute sécurité
@@ -34,7 +35,7 @@ export const HtmlContent = ({ html, className = '' }) => {
 
   return (
     <div
-      className={`prose prose-sm max-w-none ${className}`}
+      className={`html-content ${className}`}
       dangerouslySetInnerHTML={{ __html: cleanHtml }}
     />
   );

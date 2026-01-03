@@ -41,7 +41,6 @@ const ScrollButtons: React.FC<ScrollButtonsProps> = ({ includeHomeButton = false
       // Détection plus précise avec une marge d'erreur minime
       const needsScrolling = docHeight > window.innerHeight + 5;
       
-      console.log(`ScrollButtons: Heights:`, heightValues, `Needs scrolling: ${needsScrolling}`);
       setShowButtons(needsScrolling);
     };
     

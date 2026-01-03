@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Trash2, Plus, Edit2 } from 'lucide-react';
@@ -6,13 +6,13 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './BlogAdmin.css';
 
-// Calcule l'URL d'API : VITE_API_URL > origin. En dev Vite (5173), bascule sur :3000 pour joindre le serveur Express.
+// Calcule l'URL d'API : VITE_API_URL > origin. En dev Vite (5173 ou 8080), bascule sur :3000 pour joindre le serveur Express.
 const resolveApiUrl = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   if (typeof window === 'undefined') return '';
   try {
     const url = new URL(window.location.href);
-    if (url.port === '5173') {
+    if (url.port === '5173' || url.port === '8080') {
       return `${url.protocol}//${url.hostname}:3000`;
     }
     return url.origin;
@@ -67,6 +67,7 @@ const truncateText = (text, length = 100) => {
 };
 
 export const BlogAdmin = () => {
+  const formRef = useRef<HTMLDivElement | null>(null);
   const [articles, setArticles] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [password, setPassword] = useState('');
@@ -120,7 +121,7 @@ export const BlogAdmin = () => {
     if (typeof window === 'undefined') return;
     const savedToken = localStorage.getItem('blogAdminToken');
     if (savedToken) {
-      setStoredPassword(savedToken);
+      setStoredPassword(savedToken.trim());
       setIsAuthenticated(true);
     }
   }, []);
@@ -147,9 +148,10 @@ export const BlogAdmin = () => {
     e.preventDefault();
     // Simple authentication - in production, use proper JWT
     if (password) {
-      setStoredPassword(password);
+      const normalized = password.trim();
+      setStoredPassword(normalized);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('blogAdminToken', password);
+        localStorage.setItem('blogAdminToken', normalized);
       }
       setIsAuthenticated(true);
       setPassword('');
@@ -160,16 +162,19 @@ export const BlogAdmin = () => {
     e.preventDefault();
     setLoading(true);
 
+    const adminToken = (storedPassword || '').trim();
+    if (!adminToken) {
+      setError('Non autorisé. Merci de vous reconnecter.');
+      setLoading(false);
+      handleLogout();
+      return;
+    }
+
     try {
       const method = editingId ? 'PUT' : 'POST';
       const url = editingId 
         ? `${API_URL}/api/blog-id?id=${encodeURIComponent(editingId)}`
         : `${API_URL}/api/blog`;
-
-      // Debug: afficher le mot de passe envoyé
-      console.log('Authentification - Mot de passe:', storedPassword ? '***' : 'VIDE');
-      console.log('URL:', url);
-      console.log('Méthode:', method);
 
       const payload = {
         ...formData,
@@ -180,13 +185,20 @@ export const BlogAdmin = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${storedPassword}`
+          'Authorization': `Bearer ${adminToken}`,
+          'x-admin-password': adminToken,
         },
         body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
         const text = await response.text();
+        if (response.status === 401) {
+          // Token invalide en local : forcer une reconnexion
+          handleLogout();
+          setError('Non autorisé. Merci de vous reconnecter.');
+          return;
+        }
         console.error('Réponse d\'erreur:', text);
         throw new Error(`Erreur lors de la sauvegarde (HTTP ${response.status}) ${text || ''}`);
       }
@@ -204,7 +216,6 @@ export const BlogAdmin = () => {
   };
 
   const handleEdit = (article) => {
-    console.log('Edition article:', article); // Debug
     setFormData({
       title: article.title || '',
       excerpt: markdownToHtml(article.excerpt) || '',
@@ -213,16 +224,28 @@ export const BlogAdmin = () => {
       tags: Array.isArray(article.tags) ? article.tags.join(', ') : ''
     });
     setEditingId(article.id);
+    // Ramener le formulaire en vue lors de l'édition
+    requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet article?')) return;
 
+    const adminToken = (storedPassword || '').trim();
+    if (!adminToken) {
+      setError('Non autorisé. Merci de vous reconnecter.');
+      handleLogout();
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/api/blog-id?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${storedPassword}`
+          'Authorization': `Bearer ${adminToken}`,
+          'x-admin-password': adminToken,
         }
       });
 
@@ -268,7 +291,7 @@ export const BlogAdmin = () => {
         </div>
 
         {/* Formulaire */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+        <div ref={formRef} className="bg-white rounded-lg shadow-lg p-8 mb-8">
           <h2 className="text-xl font-bold mb-4">
             {editingId ? 'Modifier l\'article' : 'Nouvel article'}
           </h2>

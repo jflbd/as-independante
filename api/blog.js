@@ -2,7 +2,7 @@ import { parse } from "url";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD || "admin").trim();
 
 const jsonHeaders = {
   "Content-Type": "application/json",
@@ -32,8 +32,20 @@ const requireConfig = (res) => {
 };
 
 const requireAuth = (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token || token !== ADMIN_PASSWORD) {
+  const header = req.headers.authorization || req.headers["x-admin-password"];
+  const token = header?.includes(" ") ? header.split(" ")[1] : header;
+  const normalized = (token || "").trim();
+
+  const expected = ADMIN_PASSWORD;
+  const match = normalized === expected;
+
+  if (!match) {
+    console.warn("[auth] token mismatch", {
+      providedLength: normalized.length,
+      expectedLength: expected.length,
+      hasBearer: !!req.headers.authorization,
+      hasCustom: !!req.headers["x-admin-password"],
+    });
     res.status(401).json({ error: "Non autorisé" });
     return false;
   }

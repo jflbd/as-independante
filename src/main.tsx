@@ -16,17 +16,15 @@ if (import.meta.env.DEV) {
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <BrowserRouter>
-        <CookieConsentProvider>
-          <ModalProvider>
-            <LegalModalProvider>
-              <App />
-            </LegalModalProvider>
-          </ModalProvider>
-        </CookieConsentProvider>
-      </BrowserRouter>
-    </HelmetProvider>
-  </React.StrictMode>,
+  <HelmetProvider>
+    <BrowserRouter>
+      <CookieConsentProvider>
+        <ModalProvider>
+          <LegalModalProvider>
+            <App />
+          </LegalModalProvider>
+        </ModalProvider>
+      </CookieConsentProvider>
+    </BrowserRouter>
+  </HelmetProvider>,
 )
