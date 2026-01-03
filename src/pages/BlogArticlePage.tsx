@@ -12,7 +12,7 @@ import ShareButton from '@/components/ShareButton';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { HtmlContent } from '@/utils/htmlContent';
+import { HtmlContent, stripHtmlTags } from '@/utils/htmlContent';
 
 // Calcule la base API : VITE_API_URL > origin et mappe le port Vite 5173/8080 vers l'API locale 3000
 const resolveApiBase = () => {
@@ -70,6 +70,9 @@ export default function BlogArticlePage() {
   if (!article) {
     return null;
   }
+
+  const plainExcerpt = stripHtmlTags(article.excerpt || '');
+  const plainTitle = stripHtmlTags(article.title || '');
   
   // Le contenu est maintenant en HTML (depuis l'éditeur Quill)
   // Plus besoin de formatContent() pour convertir Markdown en HTML
@@ -77,16 +80,16 @@ export default function BlogArticlePage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Helmet>
-        <title>{article.title} | {siteConfig.title}</title>
-        <meta name="description" content={article.excerpt} />
+        <title>{plainTitle} | {siteConfig.title}</title>
+        <meta name="description" content={plainExcerpt} />
         <meta name="keywords" content={article.tags.join(', ')} />
         <link rel="canonical" href={`${siteConfig.url}/blog/${article.id}`} />
       </Helmet>
       
       <SEOSchema 
         pageType="ArticlePage"
-        title={`${article.title} | ${siteConfig.title}`}
-        description={article.excerpt}
+        title={`${plainTitle} | ${siteConfig.title}`}
+        description={plainExcerpt}
         url={`${siteConfig.url}/blog/${article.id}`}
       />
       
@@ -95,7 +98,7 @@ export default function BlogArticlePage() {
       <div className="flex-grow pt-20 pb-12"> 
         <div className="container mx-auto px-4">
           {/* Fil d'Ariane avec titre d'article */}
-          <Breadcrumb currentLabel={article.title} />
+          <Breadcrumb currentLabel={plainTitle} />
           
           {/* Article principal */}
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
@@ -110,7 +113,7 @@ export default function BlogArticlePage() {
               </Link>
               
               <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
-                {article.title}
+                {plainTitle}
               </h1>
               
               <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-6">
@@ -136,9 +139,10 @@ export default function BlogArticlePage() {
                 ))}
               </div>
               
-              <p className="text-lg text-gray-700 mb-8 font-medium leading-relaxed">
-                {article.excerpt}
-              </p>
+              <HtmlContent
+                html={article.excerpt}
+                className="text-lg text-gray-700 mb-8 font-medium leading-relaxed"
+              />
             </div>
             
             {/* Image de l'article - Améliorée pour la responsivité mobile */}
@@ -170,7 +174,7 @@ export default function BlogArticlePage() {
                 <ShareButton 
                   title={article.title}
                   url={`/blog/${article.id}`}
-                  description={article.excerpt}
+                  description={plainExcerpt}
                 />
               </div>
             </div>
