@@ -42,6 +42,30 @@ const markdownToHtml = (markdown) => {
   return html;
 };
 
+// Nettoyer le HTML pour afficher du texte brut
+const stripHtml = (html) => {
+  if (!html) return '';
+  if (typeof window === 'undefined') {
+    // Mode SSR - utiliser une regex simple
+    return html.replace(/<[^>]*>/g, '').trim();
+  }
+  // Mode client
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  const text = div.textContent || div.innerText || '';
+  return text.trim();
+};
+
+// Limiter le texte à une certaine longueur
+const truncateText = (text, length = 100) => {
+  if (!text) return '';
+  const clean = stripHtml(text);
+  if (clean.length > length) {
+    return clean.substring(0, length) + '...';
+  }
+  return clean;
+};
+
 export const BlogAdmin = () => {
   const [articles, setArticles] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -354,7 +378,11 @@ export const BlogAdmin = () => {
                 .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                 .map((article) => (
                   <tr key={article.id} className="border-b hover:bg-gray-50">
-                    <td className="px-6 py-3">{article.title}</td>
+                    <td className="px-6 py-3 max-w-xs">
+                      <div className="truncate" title={stripHtml(article.title)}>
+                        {stripHtml(article.title)}
+                      </div>
+                    </td>
                     <td className="px-6 py-3">{article.date}</td>
                     <td className="px-6 py-3">
                       <div className="flex gap-1 flex-wrap">

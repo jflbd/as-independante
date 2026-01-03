@@ -12,6 +12,7 @@ import ShareButton from '@/components/ShareButton';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { HtmlContent } from '@/utils/htmlContent';
 
 // Calcule la base API : VITE_API_URL > origin et mappe le port Vite 5173 vers l'API locale 3000
 const resolveApiBase = () => {
@@ -70,31 +71,8 @@ export default function BlogArticlePage() {
     return null;
   }
   
-  // Transformation du contenu Markdown en HTML
-  const formatContent = () => {
-    if (!article.content) return '';
-    
-    let formattedContent = article.content;
-    
-    // Remplacer les titres
-    formattedContent = formattedContent.replace(/## (.*?)$/gm, '<h2 class="text-2xl font-semibold mt-8 mb-4 text-gray-800">$1</h2>');
-    formattedContent = formattedContent.replace(/### (.*?)$/gm, '<h3 class="text-xl font-semibold mt-6 mb-3 text-gray-800">$1</h3>');
-    formattedContent = formattedContent.replace(/#### (.*?)$/gm, '<h4 class="text-lg font-semibold mt-5 mb-2 text-gray-800">$1</h4>');
-    
-    // Remplacer les paragraphes
-    formattedContent = formattedContent.replace(/(?<!\n)\n(?!\n)(.*?)(?=\n|$)/gm, '<p class="mb-4 text-gray-700">$1</p>');
-    
-    // Remplacer les listes
-    formattedContent = formattedContent.replace(/- (.*?)$/gm, '<li class="mb-1">$1</li>');
-    formattedContent = formattedContent.split('\n\n').map(block => {
-      if (block.includes('<li')) {
-        return `<ul class="list-disc pl-5 mb-5 space-y-1 text-gray-700">${block}</ul>`;
-      }
-      return block;
-    }).join('\n\n');
-    
-    return formattedContent;
-  };
+  // Le contenu est maintenant en HTML (depuis l'éditeur Quill)
+  // Plus besoin de formatContent() pour convertir Markdown en HTML
   
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -191,10 +169,7 @@ export default function BlogArticlePage() {
             
             {/* Contenu de l'article */}
             <div className="p-6 md:p-8">
-              <article 
-                className="prose prose-lg max-w-none" 
-                dangerouslySetInnerHTML={{ __html: formatContent() }} 
-              />
+              <HtmlContent html={article.content} className="prose-lg" />
               
               {/* Meta-données pour SEO */}
               <div className="mt-8 pt-4 border-t border-gray-200 flex justify-between items-center">

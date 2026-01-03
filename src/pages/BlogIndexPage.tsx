@@ -10,6 +10,7 @@ import LocalSEOCities from '@/components/LocalSEOCities';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { stripHtmlTags, truncateHtml } from '@/utils/htmlContent';
 
 // Calcule la base API : VITE_API_URL > origin et mappe le port Vite 5173 vers l'API locale 3000
 const resolveApiBase = () => {
@@ -167,12 +168,12 @@ const BlogIndexPage: React.FC = () => {
                   
                   <Link to={`/blog/${article.id}`} className="block">
                     <h2 className="text-xl font-semibold mb-2 text-gray-800 hover:text-primary transition-colors">
-                      {article.title}
+                      {stripHtmlTags(article.title)}
                     </h2>
                   </Link>
                   
                   <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
-                    {article.excerpt}
+                    {truncateHtml(article.excerpt, 200)}
                   </p>
                   
                   <div className="flex justify-between text-gray-600 text-xs pt-2 mt-auto border-t border-gray-100">
