@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2, Plus, Edit2 } from 'lucide-react';
+import { Trash2, Plus, Edit2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import supabase from '@/lib/supabase-client';
 import './BlogAdmin.css';
 
 // Calcule l'URL d'API : VITE_API_URL > origin. En dev Vite (5173 ou 8080), bascule sur :3000 pour joindre le serveur Express.
@@ -68,6 +69,7 @@ const truncateText = (text, length = 100) => {
 
 export const BlogAdmin = () => {
   const formRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [articles, setArticles] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [password, setPassword] = useState('');
@@ -83,7 +85,10 @@ export const BlogAdmin = () => {
     tags: ''
   });
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
+  const [uploadedFileName, setUploadedFileName] = useState('');
 
   // Configuration de l'éditeur WYSIWYG
   const quillModules = {
@@ -158,6 +163,60 @@ export const BlogAdmin = () => {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Vérifier le type de fichier
+    if (!file.type.startsWith('image/')) {
+      setError('Veuillez sélectionner une image valide');
+      return;
+    }
+
+    // Vérifier la taille (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('L\'image ne doit pas dépasser 5MB');
+      return;
+    }
+
+    setUploading(true);
+    setError('');
+
+    try {
+      // Générer un nom de fichier unique
+      const timestamp = Date.now();
+      const ext = file.name.split('.').pop();
+      const fileName = `${timestamp}-${Math.random().toString(36).substr(2, 9)}.${ext}`;
+
+      // Uploader vers Supabase Storage
+      const { data, error: uploadError } = await supabase.storage
+        .from('blog-images')
+        .upload(fileName, file, { upsert: false });
+
+      if (uploadError) {
+        throw new Error(`Upload échoué: ${uploadError.message}`);
+      }
+
+      // Obtenir l'URL publique
+      const { data: publicUrl } = supabase.storage
+        .from('blog-images')
+        .getPublicUrl(fileName);
+
+      // Mettre à jour le formulaire avec l'URL
+      setFormData({...formData, image: publicUrl.publicUrl});
+      setImagePreview(publicUrl.publicUrl);
+      setUploadedFileName(file.name);
+    } catch (err: any) {
+      setError(`Erreur d'upload: ${err.message}`);
+    } finally {
+      setUploading(false);
+      // Réinitialiser l'input file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -205,6 +264,8 @@ export const BlogAdmin = () => {
 
       await fetchArticles();
       setFormData({ title: '', excerpt: '', content: '', image: '', tags: '' });
+      setImagePreview('');
+      setUploadedFileName('');
       setEditingId(null);
       setError('');
     } catch (error) {
@@ -223,6 +284,8 @@ export const BlogAdmin = () => {
       image: article.image || '',
       tags: Array.isArray(article.tags) ? article.tags.join(', ') : ''
     });
+    setImagePreview(article.image || '');
+    setUploadedFileName(article.image ? article.image.split('/').pop() || '' : '');
     setEditingId(article.id);
     // Ramener le formulaire en vue lors de l'édition
     requestAnimationFrame(() => {
@@ -241,6 +304,20 @@ export const BlogAdmin = () => {
     }
 
     try {
+      // Récupérer l'article pour obtenir le chemin de l'image
+      const article = articles.find(a => a.id === id);
+      if (article && article.image) {
+        // Supprimer l'image de Supabase Storage
+        const imageUrl = article.image;
+        const fileName = imageUrl.split('/').pop();
+        if (fileName) {
+          await supabase.storage
+            .from('blog-images')
+            .remove([fileName])
+            .catch(err => console.warn('Image suppression warning:', err));
+        }
+      }
+
       const response = await fetch(`${API_URL}/api/blog-id?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
         headers: {
@@ -353,11 +430,58 @@ export const BlogAdmin = () => {
                 />
               </div>
             </div>
-            <Input
-              placeholder="URL de l'image"
-              value={formData.image}
-              onChange={(e) => setFormData({...formData, image: e.target.value})}
-            />
+
+            {/* Upload d'image */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Image de l'article
+              </label>
+              <div className="flex gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+                >
+                  <Upload className="w-4 h-4" />
+                  {uploading ? 'Upload...' : 'Choisir une image'}
+                </button>
+                {imagePreview && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImagePreview('');
+                      setFormData({...formData, image: ''});
+                      setUploadedFileName('');
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    <X className="w-4 h-4" />
+                    Supprimer
+                  </button>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleImageUpload}
+              />
+              {imagePreview && (
+                <div className="mt-2 relative inline-block">
+                  <img src={imagePreview} alt="Aperçu" className="max-w-xs h-auto rounded border border-gray-300" />
+                  <p className="text-xs text-gray-600 mt-1">{uploadedFileName}</p>
+                </div>
+              )}
+              {formData.image && !imagePreview && (
+                <p className="text-xs text-gray-600 mt-1">
+                  <ImageIcon className="w-4 h-4 inline mr-1" />
+                  {formData.image.split('/').pop()}
+                </p>
+              )}
+            </div>
+
             <Input
               placeholder="Tags (séparés par des virgules)"
               value={formData.tags}
@@ -374,6 +498,7 @@ export const BlogAdmin = () => {
                   onClick={() => {
                     setEditingId(null);
                     setFormData({ title: '', excerpt: '', content: '', image: '', tags: '' });
+                    setImagePreview('');
                   }}
                 >
                   Annuler

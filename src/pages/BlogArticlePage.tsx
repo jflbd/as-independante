@@ -71,12 +71,6 @@ export default function BlogArticlePage() {
     return null;
   }
   
-  const imageUrl = article.image
-    ? (article.image.startsWith('http')
-        ? article.image
-        : `${siteConfig.url}${article.image.startsWith('/') ? '' : '/'}${article.image}`)
-    : `${siteConfig.url}${siteConfig.ui.logo}`;
-  
   // Le contenu est maintenant en HTML (depuis l'éditeur Quill)
   // Plus besoin de formatContent() pour convertir Markdown en HTML
   
@@ -86,16 +80,6 @@ export default function BlogArticlePage() {
         <title>{article.title} | {siteConfig.title}</title>
         <meta name="description" content={article.excerpt} />
         <meta name="keywords" content={article.tags.join(', ')} />
-        <meta property="og:title" content={`${article.title} | ${siteConfig.title}`} />
-        <meta property="og:description" content={article.excerpt} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={`${siteConfig.url}/blog/${article.id}`} />
-        <meta property="og:image" content={imageUrl} />
-        <meta property="og:image:alt" content={article.title} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${article.title} | ${siteConfig.title}`} />
-        <meta name="twitter:description" content={article.excerpt} />
-        <meta name="twitter:image" content={imageUrl} />
         <link rel="canonical" href={`${siteConfig.url}/blog/${article.id}`} />
       </Helmet>
       
